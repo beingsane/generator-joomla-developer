@@ -22,13 +22,9 @@ module.exports = yeoman.generators.Base.extend({
 			{
 				type : 'input',
 				name : 'camelcase',
-				message : 'Enter name of the new module using CamelCase formatting:'
-			},
-			{
-				type : 'input',
-				name : 'description',
-				message : 'Enter a description for your new module:'
-			},
+				message : 'What is name of the new module using CamelCase formatting?',
+				store : true
+			}
 		];
 
 		this.prompt(prompts, function (props) {
@@ -39,27 +35,22 @@ module.exports = yeoman.generators.Base.extend({
 
 	writing: {
 		module: function () {
-			var months = ['January', 'February', 'March', 'April','May','June','July','August','September','October','November','December'];
-			var date = new Date();
-			
 			var params = {
 					module: this.camelcase.toLowerCase(),
-					author: this.author || this.config.get('author'),
-					created: months[date.getMonth()] + ' ' + date.getFullYear(),
-					copyright: this.copyright || this.config.get('copyright'),
-					license: this.license || this.config.get('license'),
-					email: this.email || this.config.get('email'),
-					website: this.website || this.config.get('website'),
+					author: 'Binary Pursuits',
+					created: 'January 2015',
+					copyright: '&copy; 2011 - 2015 Binary Pursuits.  All Rights Reserved.',
+					license: 'GNU General Public License version 2 or later; see LICENSE.txt',
+					email: 'joomla@binarypursuits.com',
+					website: 'www.binarypursuits.com',
 					version: '0.0.0',
-					description: this.description,
+					description: 'Test Yeoman Generator for Joomla Modules.',
 					uppercase: this.camelcase.toUpperCase(),
 					camelcase: this.camelcase,
 					languagefile: true,
-					languagecode: this.languagecode || this.config.get('languagecode'),
+					languagecode: 'en-GB',
 					mediafolder: false
 				};
-				
-			var module = params;
 
 			this.fs.copyTpl(
 				this.templatePath('_manifest.xml'),

@@ -23,23 +23,56 @@ module.exports = yeoman.generators.Base.extend({
 		var prompts =
 		[
 			{
-				type: 'confirm',
-				name: 'someOption',
-				message: 'Would you like to enable this option?',
-				default: true
+				type : 'input',
+				name : 'author',
+				message : 'Enter default author for development on this Joomla instance:',
+				store : true
 			},
 			{
 				type : 'input',
-				name : 'author',
-				message : 'Enter default author for Joomla Development',
+				name : 'copyright',
+				message : 'Enter default copyright for development on this Joomla instance:',
 				store : true
-			}
+			},
+			{
+				type : 'input',
+				name : 'license',
+				message : 'Enter default license for development on this Joomla instance:',
+				default: '',
+				store : true
+			},
+			{
+				type : 'input',
+				name : 'email',
+				message : 'Enter default email for development on this Joomla instance:',
+				store : true
+			},
+			{
+				type : 'input',
+				name : 'website',
+				message : 'Enter default website for development on this Joomla instance:',
+				store : true
+			},
+			{
+				type : 'input',
+				name : 'languagecode',
+				message : 'Enter default language code for development on this Joomla instance:',
+				default: 'en-GB',
+				store : true
+			},
 		];
 
 		this.prompt(prompts, function (props) {
-			this.someOption = props.someOption;
+			props.components = [];
+			props.modules = [];
+			props.plugins = [];
+			props.templates = [];
+			props.libraries = [];
+			props.packages = [];
+			this.config.defaults(props);
 			done();
 		}.bind(this));
+		
 	},
 
 	writing: {
@@ -77,7 +110,7 @@ module.exports = yeoman.generators.Base.extend({
 			};
 
 			Git.clone({
-				repo: "git://github.com/joomla/joomla-cms",
+				repo: "https://github.com/brian-bolli/joomla-cms.git",
 				dir: 'joomla'
 			}, this.cloneCallback);
 		}
