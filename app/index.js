@@ -24,6 +24,18 @@ module.exports = yeoman.generators.Base.extend({
 		[
 			{
 				type : 'input',
+				name : 'githubUser',
+				message : 'Enter username for GitHub Account containg the  Joomla Repository you wish to clone for your development instance:',
+				store : true
+			},
+			{
+				type : 'input',
+				name : 'githubRepo',
+				message : 'Enter name for the GitHub Joomla Repository you wish to clone for your development instance:',
+				store : true
+			},
+			{
+				type : 'input',
 				name : 'author',
 				message : 'Enter default author for development on this Joomla instance:',
 				store : true
@@ -69,6 +81,8 @@ module.exports = yeoman.generators.Base.extend({
 			props.templates = [];
 			props.libraries = [];
 			props.packages = [];
+			this.username = props.userName;
+			this.repository = props.repository;
 			this.config.defaults(props);
 			done();
 		}.bind(this));
@@ -110,7 +124,7 @@ module.exports = yeoman.generators.Base.extend({
 			};
 
 			Git.clone({
-				repo: "https://github.com/brian-bolli/joomla-cms.git",
+				repo: "https://github.com/" + this.username + "/" + this.repository + ".git",
 				dir: 'joomla'
 			}, this.cloneCallback);
 		}

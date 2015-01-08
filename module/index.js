@@ -59,7 +59,9 @@ module.exports = yeoman.generators.Base.extend({
 					mediafolder: false
 				};
 				
-			var module = params;
+			var modules = this.config.get('modules');
+			modules.push(params);
+			this.config.set('modules', modules);
 
 			this.fs.copyTpl(
 				this.templatePath('_manifest.xml'),
