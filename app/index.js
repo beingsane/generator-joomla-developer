@@ -50,7 +50,7 @@ module.exports = yeoman.generators.Base.extend({
 				type : 'input',
 				name : 'license',
 				message : 'Enter default license for development on this Joomla instance:',
-				default: '',
+				default: 'GNU General Public License version 2 or later; see LICENSE.txt',
 				store : true
 			},
 			{
@@ -86,7 +86,7 @@ module.exports = yeoman.generators.Base.extend({
 			this.config.defaults(props);
 			done();
 		}.bind(this));
-		
+
 	},
 
 	writing: {
@@ -127,7 +127,13 @@ module.exports = yeoman.generators.Base.extend({
 				repo: "https://github.com/" + this.username + "/" + this.repository + ".git",
 				dir: 'joomla'
 			}, this.cloneCallback);
+		},
+
+		install: function()
+		{
+
 		}
+
 	},
 
 	install: function () {
