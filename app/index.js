@@ -81,8 +81,8 @@ module.exports = yeoman.generators.Base.extend({
 			props.templates = [];
 			props.libraries = [];
 			props.packages = [];
-			this.username = props.userName;
-			this.repository = props.repository;
+			this.githubUser = props.githubUser;
+			this.githubRepo = props.githubRepo;
 			this.config.defaults(props);
 			done();
 		}.bind(this));
@@ -124,7 +124,7 @@ module.exports = yeoman.generators.Base.extend({
 			};
 
 			Git.clone({
-				repo: "https://github.com/" + this.username + "/" + this.repository + ".git",
+				repo: "https://github.com/" + this.githubUser + "/" + this.githubRepo + ".git",
 				dir: 'joomla'
 			}, this.cloneCallback);
 		},
