@@ -90,6 +90,8 @@ module.exports = yeoman.generators.Base.extend({
 	},
 
 	writing: {
+		this.gruntfile.insertConfig("compass", "{ watch: { watch: true } }");
+		
 		app: function () {
 			this.fs.copy(
 				this.templatePath('_package.json'),
