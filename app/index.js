@@ -162,8 +162,8 @@ module.exports = yeoman.generators.Base.extend({
 				}
 			};
 
-			this.gruntfile.insertConfig(concat);
-			this.gruntfile.registerTask('build', 'concat');
+			//this.gruntfile.insertConfig(concat);
+			//this.gruntfile.registerTask('build', 'concat');
 
 			this.fs.copy(
 				this.templatePath('_package.json'),
