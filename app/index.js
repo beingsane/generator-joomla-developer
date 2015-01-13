@@ -5,7 +5,10 @@ var yosay = require('yosay');
 var path = require('path');
 var Git = require('git-tools');
 
-var branches;
+var path = require('path');
+var childProcess = require('child_process');
+var phantomjs = require('phantomjs');
+var binPath = phantomjs.path
 
 module.exports = yeoman.generators.Base.extend({
 
@@ -72,6 +75,49 @@ module.exports = yeoman.generators.Base.extend({
 				default: 'en-GB',
 				store : true
 			},
+			{
+				type : 'input',
+				name : 'destinationRepo',
+				message : 'Enter destination repository name forthis particular development instance:',
+				store : true
+			},
+			{
+				type : 'input',
+				name : 'url',
+				message : 'Enter local URL for development off this Joomla instance:',
+				store : true
+			},
+			{
+				type : 'input',
+				name : 'db_user',
+				message : 'Enter database user for this Joomla instance:',
+				store: true
+			},
+			{
+				type : 'input',
+				name : 'db_password',
+				message : 'Enter database password for this Joomla instance:',
+				store : true
+			},
+			{
+				type : 'db_server',
+				name : 'url',
+				message : 'Enter database url for this Joomla instance:',
+				store : true
+			},
+			{
+				type : 'input',
+				name : 'db_name',
+				message : 'Enter database name for this Joomla instance:',
+				store : true
+			},
+			{
+				type : 'input',
+				name : 'db_prefix',
+				message : 'Enter database prefix for this Joomla instance:',
+				store : true
+			},
+
 		];
 
 		this.prompt(prompts, function (props) {
@@ -81,18 +127,44 @@ module.exports = yeoman.generators.Base.extend({
 			props.templates = [];
 			props.libraries = [];
 			props.packages = [];
+
+			this.url = props.url;
 			this.githubUser = props.githubUser;
 			this.githubRepo = props.githubRepo;
+			this.destinationRepo = props.destinationRepo;
+
+			this.db_user = props.db_user;
+			this.db_password = props.db_password;
+			this.db_server = props.db_server;
+			this.db_name = props.db_name;
+			this.db_prefix = props.db_prefix;
+
 			this.config.defaults(props);
+
 			done();
 		}.bind(this));
 
 	},
 
 	writing: {
-		this.gruntfile.insertConfig("compass", "{ watch: { watch: true } }");
-		
+
 		app: function () {
+			var concat =
+			{
+				options:
+				{
+					separator: ';'
+				},
+				dist:
+				{
+					src: ['./src/data/set.js', './src/data/dictionary.js'],
+					dest: './dist/<%= pkg.name %>.js'
+				}
+			};
+
+			this.gruntfile.insertConfig(concat);
+			this.gruntfile.registerTask('build', 'concat');
+
 			this.fs.copy(
 				this.templatePath('_package.json'),
 				this.destinationPath('package.json')
@@ -101,6 +173,11 @@ module.exports = yeoman.generators.Base.extend({
 			this.fs.copy(
 				this.templatePath('_bower.json'),
 				this.destinationPath('bower.json')
+			);
+
+			this.fs.copy(
+				this.templatePath('mysql.backup.js'),
+				this.destinationPath('database/mysql.backup.js')
 			);
 		},
 
@@ -133,7 +210,16 @@ module.exports = yeoman.generators.Base.extend({
 
 		install: function()
 		{
+			var childArgs = [path.join(__dirname, 'installation.js'), this.config.getAll()];
 
+			childProcess.execFile(binPath, childArgs, function(err, stdout, stderr) {
+				console.log('err');
+				console.log(err);
+				console.log('stdout');
+				console.log(stdout);
+				console.log('stderr');
+				console.log(stderr);
+			})
 		}
 
 	},
