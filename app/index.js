@@ -176,6 +176,11 @@ module.exports = yeoman.generators.Base.extend({
 			);
 
 			this.fs.copy(
+				this.templatePath('libs/compiler.jar'),
+				this.destinationPath('libs/compiler.jar')
+			);
+
+			this.fs.copy(
 				this.templatePath('mysql.backup.js'),
 				this.destinationPath('database/mysql.backup.js')
 			);
