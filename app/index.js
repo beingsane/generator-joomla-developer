@@ -27,14 +27,8 @@ module.exports = yeoman.generators.Base.extend({
 		[
 			{
 				type : 'input',
-				name : 'githubUser',
-				message : 'Enter username for GitHub Account containg the  Joomla Repository you wish to clone for your development instance:',
-				store : true
-			},
-			{
-				type : 'input',
-				name : 'githubRepo',
-				message : 'Enter name for the GitHub Joomla Repository you wish to clone for your development instance:',
+				name : 'gitRepoUrl',
+				message : 'Enter URL for GIT repo containg the  Joomla Repository you wish to clone for your development instance:',
 				store : true
 			},
 			{
@@ -73,12 +67,6 @@ module.exports = yeoman.generators.Base.extend({
 				name : 'languagecode',
 				message : 'Enter default language code for development on this Joomla instance:',
 				default: 'en-GB',
-				store : true
-			},
-			{
-				type : 'input',
-				name : 'destinationRepo',
-				message : 'Enter destination repository name forthis particular development instance:',
 				store : true
 			},
 			{
@@ -129,9 +117,7 @@ module.exports = yeoman.generators.Base.extend({
 			props.packages = [];
 
 			this.url = props.url;
-			this.githubUser = props.githubUser;
-			this.githubRepo = props.githubRepo;
-			this.destinationRepo = props.destinationRepo;
+			this.gitRepoUrl = props.gitRepoUrl;
 
 			this.db_user = props.db_user;
 			this.db_password = props.db_password;
@@ -176,11 +162,6 @@ module.exports = yeoman.generators.Base.extend({
 			);
 
 			this.fs.copy(
-				this.templatePath('libs/compiler.jar'),
-				this.destinationPath('libs/compiler.jar')
-			);
-
-			this.fs.copy(
 				this.templatePath('mysql.backup.js'),
 				this.destinationPath('database/mysql.backup.js')
 			);
@@ -208,23 +189,23 @@ module.exports = yeoman.generators.Base.extend({
 			};
 
 			Git.clone({
-				repo: "https://github.com/" + this.githubUser + "/" + this.githubRepo + ".git",
+				repo: this.gitRepoUrl,
 				dir: 'joomla'
 			}, this.cloneCallback);
 		},
 
 		install: function()
 		{
-			var childArgs = [path.join(__dirname, 'installation.js'), this.config.getAll()];
+			//var childArgs = [path.join(__dirname, 'installation.js'), this.config.getAll()];
 
-			childProcess.execFile(binPath, childArgs, function(err, stdout, stderr) {
-				console.log('err');
-				console.log(err);
-				console.log('stdout');
-				console.log(stdout);
-				console.log('stderr');
-				console.log(stderr);
-			})
+			//childProcess.execFile(binPath, childArgs, function(err, stdout, stderr) {
+				//console.log('err');
+				//console.log(err);
+				//console.log('stdout');
+				//console.log(stdout);
+				//console.log('stderr');
+				//console.log(stderr);
+			//})
 		}
 
 	},
