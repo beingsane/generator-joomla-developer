@@ -2,12 +2,14 @@
 /*global module*/
 var pkgData = require('./package.json');
 
+var mysql = require('');
+
 module.exports = function(grunt) {
 	grunt.initConfig({
 		pkg: '<json:package.json>',
 
 		uglify: {
-			media: {
+			media: [{
 				files: {
 					'./joomla/media/com_jopt/cdn/home.min.js' :
 					[
@@ -18,7 +20,7 @@ module.exports = function(grunt) {
 						'./joomla/templates/protostar/js/template.js'
 					]
 				}
-			}
+			}]
 
 		},
 

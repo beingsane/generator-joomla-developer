@@ -162,8 +162,8 @@ module.exports = yeoman.generators.Base.extend({
 			);
 
 			this.fs.copy(
-				this.templatePath('mysql.backup.js'),
-				this.destinationPath('database/mysql.backup.js')
+				this.templatePath('Gruntfile.js'),
+				this.destinationPath('Gruntfile.js')
 			);
 		},
 
