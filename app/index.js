@@ -27,8 +27,8 @@ module.exports = yeoman.generators.Base.extend({
 		[
 			{
 				type : 'input',
-				name : 'gitRepoUrl',
-				message : 'Enter URL for GIT repo containg the  Joomla Repository you wish to clone for your development instance:',
+				name : 'gitRepo',
+				message : 'Enter Git Repository URL Joomla Repository you wish to clone for your development instance:',
 				store : true
 			},
 			{
@@ -117,7 +117,7 @@ module.exports = yeoman.generators.Base.extend({
 			props.packages = [];
 
 			this.url = props.url;
-			this.gitRepoUrl = props.gitRepoUrl;
+			this.gitRepo = props.gitRepo;
 
 			this.db_user = props.db_user;
 			this.db_password = props.db_password;
@@ -135,18 +135,6 @@ module.exports = yeoman.generators.Base.extend({
 	writing: {
 
 		app: function () {
-			var concat =
-			{
-				options:
-				{
-					separator: ';'
-				},
-				dist:
-				{
-					src: ['./src/data/set.js', './src/data/dictionary.js'],
-					dest: './dist/<%= pkg.name %>.js'
-				}
-			};
 
 			//this.gruntfile.insertConfig(concat);
 			//this.gruntfile.registerTask('build', 'concat');
@@ -162,8 +150,8 @@ module.exports = yeoman.generators.Base.extend({
 			);
 
 			this.fs.copy(
-				this.templatePath('Gruntfile.js'),
-				this.destinationPath('Gruntfile.js')
+				this.templatePath('gruntfile.js'),
+				this.destinationPath('gruntfile.js')
 			);
 		},
 
@@ -189,7 +177,7 @@ module.exports = yeoman.generators.Base.extend({
 			};
 
 			Git.clone({
-				repo: this.gitRepoUrl,
+				repo: this.gitRepo,
 				dir: 'joomla'
 			}, this.cloneCallback);
 		},

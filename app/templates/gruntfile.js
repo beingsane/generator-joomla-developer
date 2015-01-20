@@ -2,33 +2,19 @@
 /*global module*/
 var pkgData = require('./package.json');
 
-var mysql = require('');
-
 module.exports = function(grunt) {
 	grunt.initConfig({
 		pkg: '<json:package.json>',
 
 		uglify: {
-			media: [{
-				files: {
-					'./joomla/media/com_jopt/cdn/home.min.js' :
-					[
-						'./joomla/media/jui/js/jquery-noconflict.js',
-						'./joomla/media/jui/js/jquery-migrate.js',
-						'./joomla/media/system/js/caption.js',
-						'./joomla/media/jui/js/bootstrap.js',
-						'./joomla/templates/protostar/js/template.js'
-					]
-				}
-			}]
-
+			media: {
+				files: grunt.file.readJSON('./joomla/media/com_jopt/json/grunt.javascript.json')
+			}
 		},
 
 		cssmin: {
 			media: {
-				files: {
-					'./joomla/media/com_jopt/cdn/home.min.css': ['./joomla/templates/protostar/css/template.css', './joomla/media/mod_languages/css/template.css']
-				}
+				files: grunt.file.readJSON('./joomla/media/com_jopt/json/grunt.css.json')
 			}
 		},
 
@@ -60,6 +46,12 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-compress');
 
-	grunt.registerTask('media', ['uglify', 'cssmin', 'compress']);
-	grunt.registerTask('default', ['cssmin']);
+	grunt.registerTask('initialize', 'Initialize Stuff', function() {
+		//var css = grunt.file.readJSON('./joomla/media/com_jopt/json/grunt.javascript.json');
+		//console.log(css);
+		//var js = grunt.file.readJSON('./joomla/media/com_jopt/json/grunt.css.json');
+		//console.log(js);
+	});
+
+	grunt.registerTask('default', ['initialize', 'uglify', 'cssmin', 'compress']);
 };
