@@ -53,7 +53,8 @@ module.exports = function(grunt) {
 					}
 				},
 
-				src: './joomla/media/com_jopt/cdn/home.gz.min.css'
+				src: './joomla/media/com_jopt/cdn/home.gz.min.css',
+				dest: ''
 			}
 		}
 
