@@ -52,11 +52,15 @@ module.exports = function(grunt) {
 						cacheControl: "public, max-age=31556926"
 					}
 				},
-				files: [{
-					expand: true,
-					cwd: './joomla/media/com_jopt/cdn/',
-					src: ['*.gz.min.*']
-				}]
+				files:
+				[
+					{
+						expand: true,
+						cwd: './joomla/media/com_jopt/cdn/',
+						src: '*.gz.min.*',
+						dest: ''
+					}
+				]
 			}
 		}
 
