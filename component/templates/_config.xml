@@ -3,9 +3,9 @@
 
 	<fieldset
 		name="<%= component %>"
-		label="COM_<%= language %>_FIELD_CONFIG_LABEL"
-		description="COM_<%= language %>_FIELD_CONFIG_DESC">
-		
+		label="COM_<%= uppercase %>_FIELD_CONFIG_LABEL"
+		description="COM_<%= uppercase %>_FIELD_CONFIG_DESC">
+
 	</fieldset><% if (acl) { %>
 
 	<fieldset
@@ -19,7 +19,7 @@
 			validate="rules"
 			filter="rules"
 			component="com_<%= component %>"
-			section="component" 
+			section="component"
 		/>
 
 	</fieldset><% } %>

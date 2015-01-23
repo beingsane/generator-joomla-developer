@@ -16,7 +16,7 @@ defined('_JEXEC') or die;
  * @subpackage  com<%= component %>
  * @since       1.6
  */
-class <%= camelcase %>Model<%= listcamelcase %> extends JModelList
+class <%= camelcase %>Model<%= views.standard.listview.camelcase %> extends JModelList
 {
 	/**
 	 * Constructor.
@@ -74,7 +74,7 @@ class <%= camelcase %>Model<%= listcamelcase %> extends JModelList
 		<% if (db.fields.categories) { %>
 		$categoryId = $this->getUserStateFromRequest($this->context . '.filter.category_id', 'filter_category_id', '');
 		$this->setState('filter.category_id', $categoryId);
-		<% if (db.fields.language) { %><% } %>
+		<% if (db.fields.language) { %>
 		$language = $this->getUserStateFromRequest($this->context . '.filter.language', 'filter_language', '');
 		$this->setState('filter.language', $language);<% } %>
 		<% if (db.fields.tags) { %>

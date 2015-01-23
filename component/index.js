@@ -22,7 +22,7 @@ module.exports = yeoman.generators.Base.extend({
 			{
 				type : 'input',
 				name : 'camelcase',
-				message : 'What is name of the new module using CamelCase formatting?',
+				message : 'What is name of the new component using CamelCase formatting?',
 				store : true
 			}
 		];
@@ -40,7 +40,7 @@ module.exports = yeoman.generators.Base.extend({
 			var date = new Date();
 
 			var params = {
-					module: this.camelcase.toLowerCase(),
+					component: this.camelcase.toLowerCase(),
 					author: this.author || this.config.get('author'),
 					created: months[date.getMonth()] + ' ' + date.getFullYear(),
 					copyright: this.copyright || this.config.get('copyright'),
@@ -54,6 +54,7 @@ module.exports = yeoman.generators.Base.extend({
 					languagefile: true,
 					languagecode: this.languagecode || this.config.get('languagecode'),
 					mediafolder: false,
+					acl: true,
 					db: {
 						fields: {
 							categories: true,
@@ -66,13 +67,30 @@ module.exports = yeoman.generators.Base.extend({
 							language: true,
 							tags: true
 						}
+					},
+					views: {
+						bare: false,
+						standard: {
+							listview: {
+								camelcase: 'Widgets',
+								lowercase: 'widgets',
+								uppercase: 'WIDGETS'
+							},
+							detailview:{
+								camelcase: 'Widget',
+								lowercase: 'widget',
+								uppercase: 'WIDGET'
+							},
+						}
 					}
 				};
+
 
 			var components = this.config.get('components');
 			components.push(params);
 			this.config.set('components', components);
 
+			console.log('Added new component to yo manifest...');
 
 			// template out admin root folder files
 			this.fs.copyTpl(
@@ -81,11 +99,15 @@ module.exports = yeoman.generators.Base.extend({
 				params
 			);
 
+			console.log('Manifest');
+
 			this.fs.copyTpl(
 				this.templatePath('_admin_component.php'),
 				this.destinationPath('joomla/administrator/components/com_' + params.component + '/' + params.component + '.php'),
 				params
 			);
+
+			console.log('Migrate component.php file...');
 
 			this.fs.copyTpl(
 				this.templatePath('_admin_controller.php'),
@@ -93,17 +115,23 @@ module.exports = yeoman.generators.Base.extend({
 				params
 			);
 
+			console.log('Migrate controller.php file...');
+
 			this.fs.copyTpl(
-				this.templatePath('_access.php'),
-				this.destinationPath('joomla/administrator/components/com_' + params.component + '/access.php'),
+				this.templatePath('_access.xml'),
+				this.destinationPath('joomla/administrator/components/com_' + params.component + '/access.xml'),
 				params
 			);
 
+			console.log('Migrate access.xml file...');
+
 			this.fs.copyTpl(
-				this.templatePath('_config.php'),
-				this.destinationPath('joomla/administrator/components/com_' + params.component + '/config.php'),
+				this.templatePath('_config.xml'),
+				this.destinationPath('joomla/administrator/components/com_' + params.component + '/config.xml'),
 				params
 			);
+
+			console.log('Migrate config.xml file...');
 
 			this.fs.copyTpl(
 				this.templatePath('index.html'),
@@ -113,15 +141,19 @@ module.exports = yeoman.generators.Base.extend({
 			// template out admin controllers folder
 			this.fs.copyTpl(
 				this.templatePath('_admin_list_controller.php'),
-				this.destinationPath('joomla/administrator/components/com_' + params.component + '/controllers/' + params.listview + '.php'),
+				this.destinationPath('joomla/administrator/components/com_' + params.component + '/controllers/' + params.views.standard.listview.lowercase + '.php'),
 				params
 			);
 
+			console.log('Migrated list view controller.php file...');
+
 			this.fs.copyTpl(
 				this.templatePath('_admin_edit_controller.php'),
-				this.destinationPath('joomla/administrator/components/com_' + params.component + '/controllers/' + params.editview + '.php'),
+				this.destinationPath('joomla/administrator/components/com_' + params.component + '/controllers/' + params.views.standard.detailview.lowercase + '.php'),
 				params
 			);
+
+			console.log('Migrate detail view controller.php file...');
 
 			this.fs.copyTpl(
 				this.templatePath('index.html'),
@@ -131,8 +163,11 @@ module.exports = yeoman.generators.Base.extend({
 			// Template out admin helpers folder
 			this.fs.copyTpl(
 				this.templatePath('_admin_helper.php'),
-				this.destinationPath('joomla/administrator/components/com_' + params.component + '/helpers/' + params.component + '.php')
+				this.destinationPath('joomla/administrator/components/com_' + params.component + '/helpers/' + params.component + '.php'),
+				params
 			);
+
+			console.log('Migrate helper.php file...');
 
 			this.fs.copyTpl(
 				this.templatePath('index.html'),
@@ -142,15 +177,19 @@ module.exports = yeoman.generators.Base.extend({
 			// Template out admin models and forms folder
 			this.fs.copyTpl(
 				this.templatePath('_admin_list_model.php'),
-				this.destinationPath('joomla/administrator/components/com_' + params.component + '/models/' + params.listview + '.php'),
+				this.destinationPath('joomla/administrator/components/com_' + params.component + '/models/' + params.views.standard.listview.lowercase + '.php'),
 				params
 			);
+
+			console.log('Migrate list view modal.php file...');
 
 			this.fs.copyTpl(
 				this.templatePath('_admin_edit_model.php'),
 				this.destinationPath('joomla/administrator/components/com_' + params.component + '/models/' + params.editview + '.php'),
 				params
 			);
+
+			console.log('Migrate detail view modal.php file...');
 
 			this.fs.copyTpl(
 				this.templatePath('_form.xml'),
@@ -220,6 +259,8 @@ module.exports = yeoman.generators.Base.extend({
 				this.destinationPath('joomla/administrator/components/com_' + params.component + '/views/' + editview + '/view.html.php')
 			);
 
+			console.log('Migrate edit.php file...');
+
 			this.fs.copyTpl(
 				this.templatePath('index.html'),
 				this.destinationPath('joomla/administrator/components/com_' + params.component + '/views/' + editview + '/index.html')
@@ -239,6 +280,8 @@ module.exports = yeoman.generators.Base.extend({
 				this.templatePath('_admin_list_default_batch.php'),
 				this.destinationPath('joomla/administrator/components/com_' + params.component + '/views/' + listview + '/tmpl/default_batch.php')
 			);
+
+			console.log('Migrate default_batch.php file...');
 
 			this.fs.copyTpl(
 				this.templatePath('index.html'),
@@ -278,6 +321,8 @@ module.exports = yeoman.generators.Base.extend({
 				);
 
 			}
+
+			console.log('Done migrating template files...');
 
 		}
 	},
