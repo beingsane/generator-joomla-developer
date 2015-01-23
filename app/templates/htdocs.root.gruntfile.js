@@ -70,6 +70,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-compress');
 	grunt.loadNpmTasks('grunt-azure');
+	grunt.loadNpmTasks('grunt-jira');
 
 	grunt.registerTask('initialize', 'Initialize Stuff', function() {
 		//var css = grunt.file.readJSON('./joomla/media/com_jopt/json/grunt.javascript.json');
@@ -78,6 +79,57 @@ module.exports = function(grunt) {
 		//console.log(js);
 	});
 
+	grunt.registerTask('myjira', 'test jira grunt task', function() {
+
+	});
+
+	grunt.registerTask('mycasper', 'test casper grunt task', function() {
+		var done = this.async();
+		var casper = require('casper').create();
+
+		casper.start('http://casperjs.org/', function() {
+			this.echo(this.getTitle());
+		});
+
+		casper.thenOpen('http://phantomjs.org', function() {
+			this.echo(this.getTitle());
+			done();
+		});
+
+		casper.run();
+	});
+
+	grunt.registerTask('mytest', 'Testing custom multitask', function() {
+		var done = this.async();
+
+		var mysql = require('mysql');
+		var db = mysql.createConnection({
+			host: 'localhost',
+			user: 'root',
+			password: 'Tiand2012',
+			database: 'joomla'
+		});
+
+		db.connect();
+
+		db.query('SELECT * FROM `j34_jopt_endpoint` WHERE state=1', function(err, rows, fields) {
+			if (err)
+			{
+				throw err;
+			}
+
+			console.log(rows);
+
+			done();
+		});
+
+		console.log('worked');
+
+    });
+
+	grunt.registerTask('casper', ['mycasper']);
+	grunt.registerTask('jira', ['myjira']);
+	grunt.registerTask('test', ['mytest']);
 	grunt.registerTask('default', ['initialize', 'uglify', 'cssmin', 'compress', 'azure-blob-upload']);
 
 };
