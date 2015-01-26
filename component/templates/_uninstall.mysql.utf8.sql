@@ -1,1 +1,1 @@
-DROP TABLE IF EXISTS `#__<%= component %>_<%= editview %>`;
+DROP TABLE IF EXISTS `#__<%= component %>_<%= views.standard.detailview.lowercase %>`;

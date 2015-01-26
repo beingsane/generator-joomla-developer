@@ -19,12 +19,12 @@ $user		= JFactory::getUser();
 $userId		= $user->get('id');
 $listOrder	= $this->escape($this->state->get('list.ordering'));
 $listDirn	= $this->escape($this->state->get('list.direction'));
-$canOrder	= $user->authorise('core.edit.state', 'com_<%= component %>.category');
+$canOrder	= $user->authorise('core.edit.state', <% if (db.fields.categories) { %>'com_<%= component %>.category'<% } %>);
 $saveOrder	= $listOrder == 'a.ordering';
 if ($saveOrder)
 {
-	$saveOrderingUrl = 'index.php?option=com_<%= component %>&task=<%= listview %>.saveOrderAjax&tmpl=component';
-	JHtml::_('sortablelist.sortable', 'weblinkList', 'adminForm', strtolower($listDirn), $saveOrderingUrl);
+	$saveOrderingUrl = 'index.php?option=com_<%= component %>&task=<%= views.standard.listview.lowercase %>.saveOrderAjax&tmpl=component';
+	JHtml::_('sortablelist.sortable', '<% views.standard.detailview.lowercase %>List', 'adminForm', strtolower($listDirn), $saveOrderingUrl);
 }
 $sortFields = $this->getSortFields();
 ?>
@@ -45,7 +45,7 @@ $sortFields = $this->getSortFields();
 		Joomla.tableOrdering(order, dirn, '');
 	}
 </script>
-<form action="<?php echo JRoute::_('index.php?option=com_<%= component %>&view=<%= listview %>'); ?>" method="post" name="adminForm" id="adminForm">
+<form action="<?php echo JRoute::_('index.php?option=com_<%= component %>&view=<%= views.standard.listview.lowercase %>'); ?>" method="post" name="adminForm" id="adminForm">
 <?php if (!empty( $this->sidebar)) : ?>
 	<div id="j-sidebar-container" class="span2">
 		<?php echo $this->sidebar; ?>
@@ -56,8 +56,8 @@ $sortFields = $this->getSortFields();
 <?php endif;?>
 		<div id="filter-bar" class="btn-toolbar">
 			<div class="filter-search btn-group pull-left">
-				<label for="filter_search" class="element-invisible"><?php echo JText::_('COM_<%= language %>_SEARCH_IN_TITLE');?></label>
-				<input type="text" name="filter_search" id="filter_search" placeholder="<?php echo JText::_('JSEARCH_FILTER'); ?>" value="<?php echo $this->escape($this->state->get('filter.search')); ?>" class="hasTooltip" title="<?php echo JHtml::tooltipText('COM_<%= language %>_SEARCH_IN_TITLE'); ?>" />
+				<label for="filter_search" class="element-invisible"><?php echo JText::_('COM_<%= uppercase %>_SEARCH_IN_TITLE');?></label>
+				<input type="text" name="filter_search" id="filter_search" placeholder="<?php echo JText::_('JSEARCH_FILTER'); ?>" value="<?php echo $this->escape($this->state->get('filter.search')); ?>" class="hasTooltip" title="<?php echo JHtml::tooltipText('COM_<%= uppercase %>_SEARCH_IN_TITLE'); ?>" />
 			</div>
 			<div class="btn-group pull-left">
 				<button type="submit" class="btn hasTooltip" title="<?php echo JHtml::tooltipText('JSEARCH_FILTER_SUBMIT'); ?>"><i class="icon-search"></i></button>
@@ -159,11 +159,11 @@ $sortFields = $this->getSortFields();
 							<?php echo JHtml::_('grid.id', $i, $item->id); ?>
 						</td><% if (db.fields.publish) { %>
 						<td class="center">
-							<?php echo JHtml::_('jgrid.published', $item->state, $i, '<%= listview %>.', $canChange, 'cb', $item->publish_up, $item->publish_down); ?>
+							<?php echo JHtml::_('jgrid.published', $item->state, $i, '<%= views.standard.listview.lowercase %>.', $canChange, 'cb', $item->publish_up, $item->publish_down); ?>
 						</td><% } %>
 						<td class="nowrap has-context">
 							<?php if ($item->checked_out) : ?>
-								<?php echo JHtml::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, '<%= listview %>.', $canCheckin); ?>
+								<?php echo JHtml::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, '<%= views.standard.listview.lowercase %>.', $canCheckin); ?>
 							<?php endif; ?>
 							<?php if ($canEdit) : ?>
 								<a href="<?php echo JRoute::_('index.php?option=com_<%= component %>&task=weblink.edit&id='.(int) $item->id); ?>">

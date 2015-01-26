@@ -27,7 +27,7 @@ class <%= camelcase %>Helper extends JHelperContent
 	 *
 	 * @since   1.6
 	 */
-	public static function addSubmenu($vName = '<%= views.standard.listview %>')
+	public static function addSubmenu($vName = '<%= views.standard.listview.lowercase %>')
 	{
 		JHtmlSidebar::addEntry(
 			JText::_('COM_<%= uppercase %>__SUBMENU_<%= views.standard.listview.uppercase %>'),

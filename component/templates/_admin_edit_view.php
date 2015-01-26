@@ -10,13 +10,13 @@
 defined('_JEXEC') or die;
 
 /**
- * View to edit a <%= editview %>.
+ * View to edit a <%= views.standard.detailview.lowercase %>.
  *
  * @package     Joomla.Administrator
  * @subpackage  com_<%= component %>
  * @since       1.5
  */
-class <%= camelcase %>View<%= editcamelcase %> extends JViewLegacy
+class <%= camelcase %>View<%= views.standard.detailview.camelcase %> extends JViewLegacy
 {
 	protected $state;
 	protected $item;
@@ -56,40 +56,40 @@ class <%= camelcase %>View<%= editcamelcase %> extends JViewLegacy
 		$checkedOut	= !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
 
 		// Since we don't track these assets at the item level, use the category id.
-		$canDo		= JHelperContent::getActions('com_<%= component %>', 'category', $this->item->catid);
+		$canDo		= JHelperContent::getActions('com_<%= component %>'<% if (db.fields.categories) { %>, 'category', $this->item->catid<% } %>);
 
-		JToolbarHelper::title(JText::_('COM_<%= language %>_MANAGER_<%= editlanguage %>'), 'link <%= editview %>s');
+		JToolbarHelper::title(JText::_('COM_<%= uppercase %>_MANAGER_<%= views.standard.detailview.uppercase %>'));
 
 		// If not checked out, can save the item.
 		if (!$checkedOut && ($canDo->get('core.edit')||<% if (db.fields.categories) { %>(count($user->getAuthorisedCategories('com_<%= component %>', 'core.create'))))<% } else { %>($canDo->get('core.create')<% } %>)
 		{
-			JToolbarHelper::apply('<%= editview %>.apply');
-			JToolbarHelper::save('<%= editview %>.save');
+			JToolbarHelper::apply('<%= views.standard.detailview.lowercase %>.apply');
+			JToolbarHelper::save('<%= views.standard.detailview.lowercase %>.save');
 		}
 		if (!$checkedOut && (count($user->getAuthorisedCategories('com_<%= component %>', 'core.create'))))
 		{
-			JToolbarHelper::save2new('<%= editview %>.save2new');
+			JToolbarHelper::save2new('<%= views.standard.detailview.lowercase %>.save2new');
 		}
 		// If an existing item, can save to a copy.
 		if (!$isNew && (count($user->getAuthorisedCategories('com_<%= component %>', 'core.create')) > 0))
 		{
-			JToolbarHelper::save2copy('<%= editview %>.save2copy');
+			JToolbarHelper::save2copy('<%= views.standard.detailview.lowercase %>.save2copy');
 		}
 		if (empty($this->item->id))
 		{
-			JToolbarHelper::cancel('<%= editview %>.cancel');
+			JToolbarHelper::cancel('<%= views.standard.detailview.lowercase %>.cancel');
 		}
 		else
 		{
 			if ($this->state->params->get('save_history', 0) && $user->authorise('core.edit'))
 			{
-				JToolbarHelper::versions('com_<%= component %>.<%= editview %>', $this->item->id);
+				JToolbarHelper::versions('com_<%= component %>.<%= views.standard.detailview.lowercase %>', $this->item->id);
 			}
 
-			JToolbarHelper::cancel('<%= editview %>.cancel', 'JTOOLBAR_CLOSE');
+			JToolbarHelper::cancel('<%= views.standard.detailview.lowercase %>.cancel', 'JTOOLBAR_CLOSE');
 		}
 
 		JToolbarHelper::divider();
-		JToolbarHelper::help('JHELP_COMPONENTS_<%= language %>_<%= editlanguage %>_EDIT');
+		JToolbarHelper::help('JHELP_COMPONENTS_<%= uppercase %>_<%= views.standard.detailview.uppercase %>_EDIT');
 	}
 }

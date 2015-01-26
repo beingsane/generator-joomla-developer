@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `#__<%= component %>_<%= editview %>` (
+CREATE TABLE IF NOT EXISTS `#__<%= component %>_<%= views.standard.detailview.lowercase %>` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,<% if (db.fields.categories) { %>
   `catid` int(11) NOT NULL DEFAULT '0',
   `sid` int(11) NOT NULL DEFAULT '0',

@@ -16,7 +16,7 @@ defined('_JEXEC') or die;
  * @subpackage  com_<%= component %>
  * @since       1.5
  */
-class <%= camelcase %>Table<%= editviewcamelcase %> extends JTable
+class <%= camelcase %>Table<%= views.standard.detailview.camelcase %> extends JTable
 {
 	/**
 	 * Constructor
@@ -25,9 +25,9 @@ class <%= camelcase %>Table<%= editviewcamelcase %> extends JTable
 	 */
 	public function __construct(&$db)
 	{
-		parent::__construct('#__<%= component %>_<%= editview %>', 'id', $db);<% if (tags) { %>
-		JTableObserverTags::createObserver($this, array('typeAlias' => 'com_<%= component %><%= editview %>'));
-		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_<%= component %><%= editview %>'));<% } %>
+		parent::__construct('#__<%= component %>_<%= views.standard.detailview.lowercase %>', 'id', $db);<% if (db.fields.tags) { %>
+		JTableObserverTags::createObserver($this, array('typeAlias' => 'com_<%= component %><%= views.standard.detailview.lowercase %>'));
+		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_<%= component %><%= views.standard.detailview.lowercase %>'));<% } %>
 	}
 
 	/**
@@ -112,7 +112,7 @@ class <%= camelcase %>Table<%= editviewcamelcase %> extends JTable
 		}<% } %>
 		<% if (db.fields.alias) {  %>
 		// Verify that the alias is unique
-		$table = JTable::getInstance('<%= editviewcamelcase %>', '<%= camelcase %>Table');
+		$table = JTable::getInstance('<%= views.standard.detailview.lowercasecamelcase %>', '<%= camelcase %>Table');
 
 		if ($table->load(array('alias' => $this->alias, 'catid' => $this->catid)) && ($table->id != $this->id || $this->id == 0))
 		{
@@ -149,7 +149,7 @@ class <%= camelcase %>Table<%= editviewcamelcase %> extends JTable
 		// Check for existing name
 		$query = $this->_db->getQuery(true)
 			->select($this->_db->quoteName('id'))
-			->from($this->_db->quoteName('#__<%= component %>_<%= editview %>'))
+			->from($this->_db->quoteName('#__<%= component %>_<%= views.standard.detailview.lowercase %>'))
 			->where($this->_db->quoteName('title') . ' = ' . $this->_db->quote($this->title))<% if (db.fields.category) { %>
 			->where($this->_db->quoteName('catid') . ' = ' . (int) $this->catid);<% } %>
 		$this->_db->setQuery($query);
