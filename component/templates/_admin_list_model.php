@@ -36,16 +36,16 @@ class <%= camelcase %>Model<%= views.standard.listview.camelcase %> extends JMod
 				'checked_out', 'a.checked_out',
 				'checked_out_time', 'a.checked_out_time',
 				'created', 'a.created',
-				'created_by', 'a.created_by',<% } if (db.fields.categories) { %>
+				'created_by', 'a.created_by',<% } %><% if (db.fields.categories) { %>
 				'catid', 'a.catid', 'category_title',<% } %>
 				'access', 'a.access', 'access_level',<% if (db.fields.ordering) { %>
-				'ordering', 'a.ordering',<% } if (db.fields.featured) { %>
-				'featured', 'a.featured',<% } if (db.fields.language) { %>
-				'language', 'a.language',<% } if (db.fields.hits) { %>
-				'hits', 'a.hits',<% } if (db.fields.publish) { %>
+				'ordering', 'a.ordering',<% } %><% if (db.fields.featured) { %>
+				'featured', 'a.featured',<% } %><% if (db.fields.language) { %>
+				'language', 'a.language',<% } %><% if (db.fields.hits) { %>
+				'hits', 'a.hits',<% } %><% if (db.fields.publish) { %>
 				'state', 'a.state',
 				'publish_up', 'a.publish_up',
-				'publish_down', 'a.publish_down',<% if (db.fields.url) { %>
+				'publish_down', 'a.publish_down',<% } %><% if (db.fields.url) { %>
 				'url', 'a.url',<% } %>
 			);
 		}
@@ -73,7 +73,7 @@ class <%= camelcase %>Model<%= views.standard.listview.camelcase %> extends JMod
 		$this->setState('filter.state', $published);<% } %>
 		<% if (db.fields.categories) { %>
 		$categoryId = $this->getUserStateFromRequest($this->context . '.filter.category_id', 'filter_category_id', '');
-		$this->setState('filter.category_id', $categoryId);
+		$this->setState('filter.category_id', $categoryId);<% } %>
 		<% if (db.fields.language) { %>
 		$language = $this->getUserStateFromRequest($this->context . '.filter.language', 'filter_language', '');
 		$this->setState('filter.language', $language);<% } %>
@@ -82,7 +82,7 @@ class <%= camelcase %>Model<%= views.standard.listview.camelcase %> extends JMod
 		$this->setState('filter.tag', $tag);
 		<% } %>
 		// Load the parameters.
-		$params = JComponentHelper::getParams('com<%= component %>');
+		$params = JComponentHelper::getParams('com_<%= component %>');
 		$this->setState('params', $params);
 
 		// List state information.
@@ -139,7 +139,7 @@ class <%= camelcase %>Model<%= views.standard.listview.camelcase %> extends JMod
 				'a.language'<% } %>
 			)
 		);
-		$query->from($db->quoteName('#_<%= component %>_<%= editview %>') . ' AS a');
+		$query->from($db->quoteName('#_<%= component %>_<%= views.standard.detailview.lowercase %>') . ' AS a');
 		<% if (db.fields.language) { %>
 		// Join over the language
 		$query->select('l.title AS language_title')
