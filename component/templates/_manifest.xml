@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="module" version="3.3" method="upgrade">
-	<name>mod_<%= component %></name>
+<extension type="component" version="3.3" method="upgrade">
+	<name>com_<%= component %></name>
 	<author><%= author %></author>
 	<creationDate><%= created %></creationDate>
 	<copyright><%= copyright %></copyright>
@@ -8,63 +8,69 @@
 	<authorEmail><%= email %></authorEmail>
 	<authorUrl><%= website %></authorUrl>
 	<version><%= version %></version>
-	<description>MOD_<%= uppercase %>_XML_DESCRIPTION</description>
-
-	<files>
-		<filename module="mod_<%= component %>">mod_<%= component %>.php</filename>
-		<filename>index.html</filename>
-		<filename>helpers</filename>
-		<folder>tmpl</folder>
-	</files><% if (languagefile === true) { %>
-
-	<languages>
-		<language tag="<%= languagecode %>"><%= languagecode %>.mod_<%= component %>.ini</language>
-		<language tag="<%= languagecode %>"><%= languagecode %>.mod_<%= component %>.ini.sys</language>
+	<description>COM_<%= uppercase %>_XML_DESCRIPTION</description>
+	<% if (db) { %>
+	<install>
+		<sql>
+			<file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
+		</sql>
+	</install>
+	<uninstall>
+		<sql>
+			<file driver="mysql" charset="utf8" folder="sql">sql/uninstall.mysql.utf8.sql</file>
+		</sql>
+	</uninstall><% } %><% if (languagefiles) { %>
+	<languages folder="site">
+		<language tag="en-GB">language/en-GB/en-GB.com_<%= component %>.ini</language>
 	</languages><% } %>
-
-	<help key="JHELP_EXTENSIONS_MODULE_MANAGER_WRAPPER" />
-
-	<config>
-		<fields name="params">
-			<fieldset name="advanced">
-				<field
-					name="layout"
-					type="modulelayout"
-					label="JFIELD_ALT_LAYOUT_LABEL"
-					description="JFIELD_ALT_MODULE_LAYOUT_DESC"
-				/>
-				<field
-					name="moduleclass_sfx"
-					type="textarea"
-					rows="3"
-					label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL"
-					description="COM_MODULES_FIELD_MODULECLASS_SFX_DESC"
-					/>
-				<field
-					name="cache"
-					type="list"
-					default="1"
-					label="COM_MODULES_FIELD_CACHING_LABEL"
-					description="COM_MODULES_FIELD_CACHING_DESC">
-					<option value="1">JGLOBAL_USE_GLOBAL</option>
-					<option value="0">COM_MODULES_FIELD_VALUE_NOCACHING</option>
-				</field>
-				<field
-					name="cache_time"
-					type="text"
-					default="900"
-					label="COM_MODULES_FIELD_CACHE_TIME_LABEL"
-					description="COM_MODULES_FIELD_CACHE_TIME_DESC"
-					/>
-				<field
-					name="cachemode"
-					type="hidden"
-					default="static">
-					<option value="static"></option>
-				</field>
-			</fieldset>
-		</fields>
-	</config>
+	<% if (media) { %>
+	<media destination="com_<%= component %>">
+		<% if (media.css) { %><folder>css</folder><% } %>
+		<% if (media.js) { %><folder>js</folder><% } %>
+		<% if (media.images) { %><folder>images</folder><% } %>
+		<% if (media.fonts) { %><folder>fonts</folder><% } %>
+		<filename>index.html</filename>
+	</media>
+	<% } %>
+	<files folder="site">
+		<filename>controller.php</filename>
+		<filename><%= component %>.php</filename>
+		<filename>index.html</filename>
+		<folder>controllers</folder>
+		<folder>models</folder>
+		<folder>views</folder>
+	</files>
+	
+	<administrator>
+		<menu <% if (icon) { %>img="components/com_<%= component %>/<%= icon.filename %>-16.png"<% } %>>COM_<%= uppercase %></menu><% if (views.standard.listview) { %>
+		<submenu>
+			<menu link="option=com_<%= component %>">COM_<%= views.standard.listview.uppercase</menu>
+			<% if (db.fields.categories) { %><menu link="option=com_users">Users</menu><% } %>
+		</submenu><% } %>
+		<files folder="admin">
+			<filename>access.xml</filename>
+			<filename>config.xml</filename>
+			<filename>controller.php</filename>
+			<filename><%= component %>.php</filename>
+			<filename>index.html</filename>
+			<folder>controllers</folder>
+			<folder>helpers</folder>
+			<folder>layouts</folder>
+			<folder>models</folder>
+			<folder>sql</folder>
+			<folder>tables</folder>
+			<folder>views</folder>
+		</files><% if (languagefile === true) { %>
+		<languages>
+			<language tag="<%= languagecode %>"><%= languagecode %>.com_<%= component %>.ini</language>
+			<language tag="<%= languagecode %>"><%= languagecode %>.com_<%= component %>.ini.sys</language>
+		</languages><% } %>
+	</administrator>
+	<% if (updateserver) { %>
+	<updateservers>
+		<server type="extension" priority="1" name="Extension Update Site">http://jsitepoint.com/update/components/com_alpha/extension.xml</server> <!-- useful for single extensions -->
+		<server type="collection" priority="2" name="Collection Update Site">http://jsitepoint.com/update/update.xml</server><!-- useful for collections of extensions -->
+	</updateservers><% } %>
 </extension>
 
 

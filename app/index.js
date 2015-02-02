@@ -115,10 +115,10 @@ module.exports = yeoman.generators.Base.extend({
 			props.templates = [];
 			props.libraries = [];
 			props.packages = [];
-			peopa.submodules = [];
+			props.submodules = [];
 
 			this.url = props.url;
-			this.path = this.detinationRoot();
+			this.path = this.destinationRoot();
 			this.gitRepo = props.gitRepo;
 
 			this.db_user = props.db_user;
@@ -156,9 +156,9 @@ module.exports = yeoman.generators.Base.extend({
 				this.destinationPath('gruntfile.js')
 			);
 			
-			this.fs.directory(
-				this.templatePath('tasks'),
-				this.destinationPath('./')
+			this.fs.copy(
+				this.templatePath('tasks/*.js'),
+				this.destinationPath('./tasks/')
 			);
 		},
 
