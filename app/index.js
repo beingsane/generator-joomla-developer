@@ -1,4 +1,5 @@
 'use strict';
+
 var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
 var yosay = require('yosay');
@@ -27,6 +28,23 @@ module.exports = yeoman.generators.Base.extend({
 		[
 			{
 				type : 'input',
+				name : 'name',
+				message : 'Enter name for this Joomla instance:'
+			},
+			{
+				type : 'input',
+				name : 'version',
+				message : 'Enter name for this Joomla instance:',
+				"default": '0.1.0'
+			},
+			{
+				type : 'input',
+				name : 'url',
+				message : 'Enter local URL for development off this Joomla instance:',
+				store : true
+			},
+			{
+				type : 'input',
 				name : 'gitRepo',
 				message : 'Enter Git Repository URL Joomla Repository you wish to clone for your development instance:',
 				store : true
@@ -47,7 +65,7 @@ module.exports = yeoman.generators.Base.extend({
 				type : 'input',
 				name : 'license',
 				message : 'Enter default license for development on this Joomla instance:',
-				default: 'GNU General Public License version 2 or later; see LICENSE.txt',
+				"default": 'GNU General Public License version 2 or later; see LICENSE.txt',
 				store : true
 			},
 			{
@@ -66,13 +84,7 @@ module.exports = yeoman.generators.Base.extend({
 				type : 'input',
 				name : 'languagecode',
 				message : 'Enter default language code for development on this Joomla instance:',
-				default: 'en-GB',
-				store : true
-			},
-			{
-				type : 'input',
-				name : 'url',
-				message : 'Enter local URL for development off this Joomla instance:',
+				"default": 'en-GB',
 				store : true
 			},
 			{
@@ -120,6 +132,8 @@ module.exports = yeoman.generators.Base.extend({
 			this.url = props.url;
 			this.path = this.destinationRoot();
 			this.gitRepo = props.gitRepo;
+			this.name = props.name;
+			this.version = props.version;
 
 			this.db_user = props.db_user;
 			this.db_password = props.db_password;
@@ -138,12 +152,12 @@ module.exports = yeoman.generators.Base.extend({
 
 		app: function () {
 
-			//this.gruntfile.insertConfig(concat);
-			//this.gruntfile.registerTask('build', 'concat');
+			var params = this.config.get();
 
-			this.fs.copy(
+			this.fs.copyTpl(
 				this.templatePath('_package.json'),
-				this.destinationPath('package.json')
+				this.destinationPath('package.json'),
+				params
 			);
 
 			this.fs.copy(
@@ -151,14 +165,20 @@ module.exports = yeoman.generators.Base.extend({
 				this.destinationPath('bower.json')
 			);
 
-			this.fs.copy(
-				this.templatePath('gruntfile.js'),
-				this.destinationPath('gruntfile.js')
+			this.fs.copyTpl(
+				this.templatePath('_gruntfile.js'),
+				this.destinationPath('gruntfile.js'),
+				params
 			);
-			
+
 			this.fs.copy(
 				this.templatePath('tasks/*.js'),
 				this.destinationPath('./tasks/')
+			);
+
+			this.fs.copy(
+				this.templatePath('index.html'),
+				this.destinationPath('build/index.html')
 			);
 		},
 

@@ -5,15 +5,16 @@ module.exports = function(grunt) {
 		var done = this.async();
 
 		var mysql = require('mysql');
-		var db = mysql.createConnection(grunt.config.get('database'));
+		var db = mysql.createConnection(grunt.config.get('database.options'));
 
 		db.connect();
 
-		db.query('SELECT alias, link FROM `jos_menu` WHERE published=1 AND menutype!="menu" AND alias!="root"', function(err, rows, fields) {
+		db.query('SELECT alias, link FROM `' + grunt.config.get('database.prefix') + '_menu` WHERE published=1 AND menutype!="menu" AND alias!="root"', function(err, rows, fields) {
 			if (err)
 			{
 				throw err;
 			}
+
 			var results = {};
 
 			for (var i = 0; i < rows.length; i ++)

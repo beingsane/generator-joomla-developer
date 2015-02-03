@@ -1,4 +1,5 @@
 'use strict';
+
 /*global module*/
 var pkgData = require('./package.json');
 
@@ -8,15 +9,21 @@ module.exports = function(grunt) {
 
 		endpoints: [],
 
-		baseUrl: null,
+		baseUrl: '<%= url %>',
 
-		repoPath: null,
+		repo: {
+			path: '<%= path %>',
+			name: '<%= gitRepo %>'
+		},
 
 		database: {
-			host: '',
-			user: '',
-			password: '',
-			database: ''
+			options: {
+				host: '<%= database.options.host %>',
+				user: '<%= database.options.user %>',
+				password: '<%= database.options.password %>',
+				database: '<%= database.options.database %>'
+			},
+			prefix: '<%= database.prefix %>'
 		},
 
 		jshint: {
@@ -123,6 +130,52 @@ module.exports = function(grunt) {
 			}
 		},
 
+		s3: {
+			options: {
+				key: 'AKIAICEQIBR7TLOUM6ZQ',
+				secret: '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',
+				bucket: 'bp-cdn-media',
+				access: 'public-read',
+				headers: {
+					// Two Year cache policy (1000 * 60 * 60 * 24 * 730)
+					"Content-Encoding": "gzip",
+					"Cache-Control": "max-age=630720000, public",
+					"Expires": new Date(Date.now() + 63072000000).toUTCString()
+				}
+			},
+			js: {
+				options: {
+					headers: {
+						"Content-Type": "text/javascript"
+					}
+				},
+				upload:
+				[
+					{
+						cwd: './build/',
+						src: '*.min.js.gz',
+						dest: 'js/'
+					}
+				]
+			},
+			css: {
+				options: {
+					headers: {
+						"Content-Type": "text/css"
+					}
+				},
+				upload:
+				[
+					{
+						cwd: './build/',
+						src: '*.min.css.gz',
+						dest: 'css/'
+					}
+				]
+
+			}
+		},
+
 		'azure-blob-upload': {
 			js: {
 				options: {
@@ -189,84 +242,34 @@ module.exports = function(grunt) {
 
 	});
 
-	grunt.registerTask('git-init', 'Testing custom multitask', function() {
-		var done = this.async();
-		var cmd = require('cmd-exec').init();
-
-		var project = grunt.option('repository');
-		var branch = grunt.option('branch');
-
-		grunt.log.writeln('Checking out branch ' + branch + ' for project ' + project + '.');
-
-		var exec = require('child_process').exec;
-		exec('git checkout ' + branch, { cwd: grunt.option('source') }, function (error, stdout, stderr) {
-			if (error)
-			{
-				grunt.log.errorlns(error);
-			}
-			else
-			{
-				grunt.log.writeln(stdout);
-			}
-		});
-
-		exec('git pull origin', { cwd: grunt.option('source') }, function (error, stdout, stderr) {
-			if (error)
-			{
-				grunt.log.errorlns(error);
-			}
-			else
-			{
-				grunt.log.writeln(stdout);
-			}
-
-			done();
-
-		});
-	});
-
-	grunt.registerTask('mysql-scripts', 'Run any import scripts for mysql', function() {
-		var done = this.async();
-		var cmd = require('cmd-exec').init();
-
-		grunt.log.writeln('Importing SQL script into ' + grunt.option('database') + ' database.');
-
-		var exec = require('child_process').exec;
-		exec('mysql -u root --password=Q3q3N75EUNRpuLRV ' + grunt.option('database') + ' < ' + grunt.option('database') + '.sql', { cwd: grunt.option('source') + '/build/database' }, function (error, stdout, stderr) {
-			if (error)
-			{
-				grunt.log.errorlns(error);
-			}
-			else
-			{
-				grunt.log.writeln(stdout);
-			}
-
-			done();
-		});
-	});
-
-	grunt.registerTask('dump', 'Test Variables', function() {
+	grunt.registerTask('dump', 'Utility to dump variables for troubleshooting purposes.', function() {
+		var endpoints = grunt.config.get('endpoints');
+		grunt.log.writeln('Endpoints:');
+		//grunt.log.writeln(endpoints);
+		console.log(endpoints);
 		var js = grunt.config.get('jshint.all');
 		var css = grunt.config.get('csslint.lax.src');
 
 		grunt.log.writeln('JS Unique:');
-		console.log(js);
+		grunt.log.writeln(js);
 		grunt.log.writeln('CSS Unique:');
-		console.log(css);
+		grunt.log.writeln(css);
 
 		js = grunt.config.get('uglify.media.files');
 		css = grunt.config.get('cssmin.media.files');
 
 		grunt.log.writeln('JS Endpoint Files:');
+		//grunt.log.writeln(js);
 		console.log(js);
 		grunt.log.writeln('CSS Endpoint Files:');
-		console.log(css);
+		//grunt.log.writeln(css);
+		console.log(js);
 	});
 
 	grunt.registerTask('initialize', 'Set default values for build server credentials and directories', function() {
 		var branch = grunt.option('branch') || 'master';
 		grunt.option('branch', branch);
+		grunt.log.writeln('Operating in ' + branch + ' branch...');
 	});
 
 	grunt.loadTasks('./tasks');
@@ -279,12 +282,18 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-azure');
+	grunt.loadNpmTasks('grunt-s3');
 	grunt.loadNpmTasks('grunt-mysql-runfile');
 
-	grunt.registerTask('scrub', ['clean'])
-	grunt.registerTask('init', ['scrub', 'initialize', 'joomla-endpoints', 'grunt-scrape']);
-	grunt.registerTask('test', ['init', 'jshint']); //,'csslint']);
-	grunt.registerTask('build', ['test', 'uglify', 'cssmin', 'compress', 'copy', 'azure-blob-upload']);
+	grunt.registerTask('scrub', ['clean']);
+	grunt.registerTask('endpoints', ['initialize', 'joomla-endpoints']);
+	grunt.registerTask('init', ['endpoints', 'grunt-scrape']);
+	grunt.registerTask('aws', ['s3']);
+	//grunt.registerTask('test', ['init', 'jshint','csslint']);
+	grunt.registerTask('test', ['init']);
+	//grunt.registerTask('build', ['test', 'uglify', 'cssmin', 'compress', 'copy']);
+	grunt.registerTask('build', ['test', 'scrub', 'uglify', 'cssmin', 'compress', 'copy', 'azure-blob-upload']);
+	//grunt.registerTask('build', ['test', 'uglify', 'cssmin', 'compress', 'copy', 'aws']);
 	grunt.registerTask('default', ['build']);
 
 };
