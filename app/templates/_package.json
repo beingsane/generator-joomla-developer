@@ -1,5 +1,5 @@
 {
-	"name": "<%= name %>",
+	"name": "<%= packageName %>",
 	"version": "<%= version %>",
 	"dependencies": {
 		"base64-js": "0.0.8",

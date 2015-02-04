@@ -16,7 +16,7 @@ module.exports = function(grunt) {
 			if (files[i].indexOf('media/system/js') === -1 && files[i].indexOf('media/jui/js') === -1)
 			{
 
-				temp.push(files[i].replace(grunt.config.get('baseUrl'), '/'));
+				temp.push(files[i].replace(grunt.config.get('url'), '/'));
 			}
 		}
 
@@ -37,14 +37,12 @@ module.exports = function(grunt) {
 
 	function executeCasper(alias, done, last)
 	{
-		var baseUrl = grunt.config.get('baseUrl');
+		var baseUrl = grunt.config.get('url');
 		var link = baseUrl + endpoints[alias];
 		var isLast = last || false;
-		var path = grunt.config.get('repoPath');
-		grunt.log.writeln('URL: ' + link);
-		console.log('Encode: ', base.encode(link));
+		var path = grunt.config.get('repository.path') + grunt.config.get('repository.name');
 
-		exec('casperjs scrape.js --url=' + base.encode(link) + ' --web-security=false', { cwd: grunt.config.get('gruntPath') + "/tasks" }, function (error, stdout, stderr) {
+		exec('casperjs scrape.js --url=' + base.encode(link) + ' --web-security=false', { cwd: "/tasks" }, function (error, stdout, stderr) {
 			if (error)
 			{
 				grunt.log.errorlns('Child Process Exec Error');
@@ -82,7 +80,7 @@ module.exports = function(grunt) {
 
 				for (i = 0; i < obj.css.length; i++)
 				{
-					//obj.css[i] = path + obj.css[i].replace(grunt.config.get('baseUrl'), '');
+					//obj.css[i] = path + obj.css[i].replace(grunt.config.get('url'), '');
 					var clean = obj.css[i].replace(baseUrl, '/');
 					if (clean.indexOf('/') !== 0)
 					{
@@ -138,7 +136,6 @@ module.exports = function(grunt) {
 		var done = this.async();
 
 		endpoints = grunt.config.get('endpoints');
-		var baseUrl = grunt.config.get('webUrl');
 		var total = Object.keys(endpoints).length;
 		grunt.log.writeln('Grunt scrape has ' + total + ' endpoints to parse...');
 		var count = 1;

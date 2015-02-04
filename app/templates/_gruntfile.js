@@ -9,21 +9,24 @@ module.exports = function(grunt) {
 
 		endpoints: [],
 
-		baseUrl: '<%= url %>',
+		name: '<%= name %>',
 
-		repo: {
+		url: '<%= url %>',
+
+		repository: {
 			path: '<%= path %>',
-			name: '<%= gitRepo %>'
+			name: '<%= repositoryName %>',
+			url: '<%= repositoryUrl %>'
 		},
 
 		database: {
 			options: {
-				host: '<%= database.options.host %>',
-				user: '<%= database.options.user %>',
-				password: '<%= database.options.password %>',
-				database: '<%= database.options.database %>'
+				host: '<%= db_host %>',
+				user: '<%= db_user %>',
+				password: '<%= db_password %>',
+				database: '<%= db_database %>'
 			},
-			prefix: '<%= database.prefix %>'
+			prefix: '<%= db_prefix %>'
 		},
 
 		jshint: {
@@ -97,10 +100,10 @@ module.exports = function(grunt) {
 			'!build/index.html',
 			'build/*js*',
 			'build/*css*',
-			grunt.config.get('repoPath') + '/media/plg_system_jopt/css/*css*',
-			'!' + grunt.config.get('repoPath') + '/media/plg_system_jopt/css/index.html',
-			grunt.config.get('repoPath') + '/media/plg_system_jopt/js/*js*',
-			'!' + grunt.config.get('repoPath') + '/media/plg_system_jopt/js/index.html'
+			grunt.config.get('repository.path') + grunt.config.get('repository.name') + '/media/plg_system_jopt/css/*css*',
+			'!' + grunt.config.get('repository.path') + grunt.config.get('repository.name') + '/media/plg_system_jopt/css/index.html',
+			grunt.config.get('repository.path') + grunt.config.get('repository.name') + '/media/plg_system_jopt/js/*js*',
+			'!' + grunt.config.get('repository.path') + grunt.config.get('repository.name') + '/media/plg_system_jopt/js/index.html'
 		],
 
 		copy: {
@@ -109,22 +112,22 @@ module.exports = function(grunt) {
 					{
 						expand: true,
 						src: ['build/*.css'],
-						dest: grunt.config.get('repoPath') + '/media/plg_system_jopt/css/'
+						dest: grunt.config.get('repository.path') + grunt.config.get('repository.name') + '/media/plg_system_jopt/css/'
 					},
 					{
 						expand: true,
 						src: ['build/*.css.gz'],
-						dest: grunt.config.get('repoPath') + '/media/plg_system_jopt/css/'
+						dest: grunt.config.get('repository.path') + grunt.config.get('repository.name') + '/media/plg_system_jopt/css/'
 					},
 					{
 						expand: true,
 						src: ['build/*.js'],
-						dest: grunt.config.get('repoPath') + '/media/plg_system_jopt/js/'
+						dest: grunt.config.get('repository.path') + grunt.config.get('repository.name') + '/media/plg_system_jopt/js/'
 					},
 					{
 						expand: true,
 						src: ['build/*.js.gz'],
-						dest: grunt.config.get('repoPath') + '/media/plg_system_jopt/js/'
+						dest: grunt.config.get('repository.path') + grunt.config.get('repository.name') + '/media/plg_system_jopt/js/'
 					}
 				]
 			}

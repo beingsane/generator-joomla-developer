@@ -1,7 +1,7 @@
 'use-strict'
 
 module.exports = function(grunt) {
-	grunt.registerTask('joomla-endpoints', 'Testing custom multitask', function() {
+	grunt.registerTask('joomla-endpoints', 'Retrieving Joomla instance menu endpoints...', function() {
 		var done = this.async();
 
 		var mysql = require('mysql');

@@ -34,7 +34,7 @@ module.exports = yeoman.generators.Base.extend({
 			{
 				type : 'input',
 				name : 'version',
-				message : 'Enter name for this Joomla instance:',
+				message : 'Enter version for this Joomla instance:',
 				"default": '0.1.0'
 			},
 			{
@@ -45,7 +45,13 @@ module.exports = yeoman.generators.Base.extend({
 			},
 			{
 				type : 'input',
-				name : 'gitRepo',
+				name : 'repositoryName',
+				message : 'Enter Git Repository Name Joomla Repository you wish to clone for your development instance:',
+				store : true
+			},
+			{
+				type : 'input',
+				name : 'repositoryUrl',
 				message : 'Enter Git Repository URL Joomla Repository you wish to clone for your development instance:',
 				store : true
 			},
@@ -77,7 +83,7 @@ module.exports = yeoman.generators.Base.extend({
 			{
 				type : 'input',
 				name : 'website',
-				message : 'Enter default website for development on this Joomla instance:',
+				message : 'Enter local URL for development off this Joomla instance:',
 				store : true
 			},
 			{
@@ -100,14 +106,14 @@ module.exports = yeoman.generators.Base.extend({
 				store : true
 			},
 			{
-				type : 'db_server',
-				name : 'url',
+				type : 'input',
+				name : 'db_host',
 				message : 'Enter database url for this Joomla instance:',
 				store : true
 			},
 			{
 				type : 'input',
-				name : 'db_name',
+				name : 'db_database',
 				message : 'Enter database name for this Joomla instance:',
 				store : true
 			},
@@ -129,16 +135,20 @@ module.exports = yeoman.generators.Base.extend({
 			props.packages = [];
 			props.submodules = [];
 
-			this.url = props.url;
-			this.path = this.destinationRoot();
-			this.gitRepo = props.gitRepo;
+			props.path = this.destinationRoot();
+			props.packageName = props.name.replace(/\s+/g, '-').toLowerCase();
+
+			this.website = props.website;
+			this.path = props.path;
+			this.repositoryUrl = props.repositoryUrl;
+			this.repositoryName = props.repositoryName;
 			this.name = props.name;
 			this.version = props.version;
 
 			this.db_user = props.db_user;
 			this.db_password = props.db_password;
-			this.db_server = props.db_server;
-			this.db_name = props.db_name;
+			this.db_host = props.db_host;
+			this.db_database = props.db_database;
 			this.db_prefix = props.db_prefix;
 
 			this.config.defaults(props);
@@ -152,7 +162,9 @@ module.exports = yeoman.generators.Base.extend({
 
 		app: function () {
 
-			var params = this.config.get();
+			var params = this.config.getAll();
+
+			console.log(params);
 
 			this.fs.copyTpl(
 				this.templatePath('_package.json'),
@@ -173,7 +185,7 @@ module.exports = yeoman.generators.Base.extend({
 
 			this.fs.copy(
 				this.templatePath('tasks/*.js'),
-				this.destinationPath('./tasks/')
+				this.destinationPath('tasks/')
 			);
 
 			this.fs.copy(
@@ -204,8 +216,8 @@ module.exports = yeoman.generators.Base.extend({
 			};
 
 			Git.clone({
-				repo: this.gitRepo,
-				dir: 'joomla'
+				repo: this.repositoryUrl,
+				dir: this.repositoryName
 			}, this.cloneCallback);
 		},
 

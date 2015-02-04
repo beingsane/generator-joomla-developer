@@ -37,8 +37,6 @@ casper.start(link, function() {
 });
 
 casper.then(function() {
-	// aggregate results for the 'phantomjs' search
-	//links = links.concat(this.evaluate(getLinks));
 
 	var tags, temp;
 
@@ -87,7 +85,7 @@ casper.then(function() {
 });
 
 casper.run(function() {
-	// echo results in some pretty fashion
+
 	var json = {
 			"js" : js,
 			"css" : css

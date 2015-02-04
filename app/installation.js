@@ -1,10 +1,19 @@
-//var casper = require('caspser').create();
 
-var fields = [
-	['jform_site_name','jform_admin_email','jform_admin_user','jform_admin_password', 'jform_admin_password2'],
-	['jform_db_host', 'jform_db_user', 'jform_db_pass', 'jform_db_name', 'jform_db_prefix'],
-	[]
-];
+var casper = require('casper').create({
+	viewportSize: {
+		width: 1920,
+		height: 1080
+	},
+	verbose: true,
+	logLevel: "debug",
+	onError: errorEvent
+});
+
+function errorEvent(e) {
+	this.echo('CasperJS Script Error');
+	this.echo(e);
+	this.exit();
+}
 
 var page_1_maps = {
 	jform_site_name: 'joomla-dev',
@@ -28,38 +37,38 @@ var page_3_maps = {
 
 }
 
-casper.options.verbose = true;
-casper.options.logLevel = "debug";
-casper.options.viewportSize = {width: 1920, height: 1080};
+casper.start('http://joomla-developer/', function() {
 
-casper.test.beging('Joomla Instance Installation', 22, function suite(test) {
+	// pull token value from DOM
+	var token = this.getElementAttribute('form#adminForm input[type="hidden"][name="task"] + input[type="hidden"][value="1"]', 'name');
 
-	casper.start('http://joomla-dev/', function(){
-		this.echo('Running initial installation on Joomla instance.')
-	});
+	this.fill('form#adminForm', {
+		'jform[site_name]': 'Joomla Developer Instance',
+		'jform[admin_email]': 'info@arctg.com',
+		'jform[admin_user]': 'admin',
+		'jform[admin_password]': 'test',
+		'jform[admin_password2]': 'test',
+		'jform[site_metadesc]': '',
+		'jform[site_offline]': '0',
+	}, false);
 
-	casper.waitForSelector('form#adminForm', function(){
-		this.capture('media/joomla_installation_page_1_start.png');
-		this.fill('form#adminForm', page_1_maps, false);
-		this.capture('media/joomla_installation_page_1_end.png');
-		this.click('#container-installation div.btn-toolbar div.btn-group a.btn.btn-primary');
-	});
+});
 
-	casper.then(function(){
-		this.capture('media/joomla_installation_page_2_start.png');
-		this.fill('form#adminForm', page_2_maps, false);
-		this.capture('media/joomla_installation_page_2_end.png');
-		this.click('#container-installation div.btn-toolbar div.btn-group a.btn.btn-primary');
-	});
+casper.then(function() {
+	this.capture('joomla_installation_page_one.png')
+	this.click('div#container-installation div.btn-toolbar div.btn-group a.btn.btn-primary');
 
-	casper.then(function(){
-		this.capture('media/joomla_installation_page_3_start.png');
-		this.fill('form#adminForm', page_3_maps, false);
-		this.capture('media/joomla_installation_page_3_end.png');
-		this.click('#container-installation div.btn-toolbar div.btn-group a.btn.btn-primary');
-	});
-
-	casper.run(function(){
-		test.done();
-	});
 })
+
+casper.thenEvaluate(function() {
+	this.echo(document.body.innerText);
+	return /message sent/.test(document.body.innerText);
+});
+
+casper.then(function() {
+	this.capture('joomla_installation_page_two.png');
+});
+
+casper.run(function() {
+	this.echo('Installation Complete').exit();
+});
