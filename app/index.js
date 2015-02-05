@@ -11,12 +11,11 @@ var random = require('random-ext');
 var childProcess = require('child_process');
 var phantomjs = require('phantomjs');
 var fs = require('fs');
-var runner = require('./libs/runner');
 var binPath = phantomjs.path;
 
 module.exports = yeoman.generators.Base.extend({
 
-	initializing: function () {
+	initialize: function () {
 		this.pkg = require('../package.json');
 	},
 
@@ -138,7 +137,9 @@ module.exports = yeoman.generators.Base.extend({
 			props.packages = [];
 			props.submodules = [];
 
-			props.path = this.destinationRoot();
+
+
+			props.path = this.destinationRoot().replace(/\\/g, "\\\\");
 			props.packageName = props.name.replace(/\s+/g, '-').toLowerCase();
 
 			this.website = props.website;
@@ -227,33 +228,34 @@ module.exports = yeoman.generators.Base.extend({
 		},
 
 		clone: function() {
-			this.log(yosay(
-					chalk.yellow('Cloning Joomla CMS Repository')
-			));
+
+			this.log(yosay(	chalk.yellow('Cloning Joomla CMS Repository')));
 
 			this.writeCallBack = function(err) {
 
 				if (err)
 				{
+					console.log(err);
 					return false;
 				}
 
-				console.log('Importing database...');
+				this.log(yosay(chalk.yellow('Running GruntJs tasks to finalize')));
 
-				var database = {
-						host: this.db_host,
-						user: this.db_user,
-						password: this.db_password,
-						name: this.db_database
-				};
+				this.spawnCommand('grunt', ['install'], function(err, stdout, stderr){
 
-				runner.init(this.destinationPath + '/database/joomla.sql', database, this);
+					if (err)
+					{
+						console.log(err);
+						return false;
+					}
 
+					this.log(yosay(chalk.yellow('Finished!')));
+				});
 
 			}.bind(this);
 
 			this.replaceCallBack = function(err, data) {
-				console.log('Replacing sql file prefixes...');
+				this.log(yosay(chalk.yellow('Replacing sql file prefixes...')));
 
 				if (err)
 				{
@@ -274,24 +276,20 @@ module.exports = yeoman.generators.Base.extend({
 					return false
 				}
 
-				//var params = this.config.getAll();
-
-				console.log('Repository cloning done...');
+				this.log(yosay(chalk.yellow('Repository cloning done...')));
 
 				fs.readFile(this.repositoryName + '/installation/sql/mysql/joomla.sql', 'utf-8', this.replaceCallBack);
 			}.bind(this);
 
 			Git.clone({
 				repo: this.repositoryUrl,
-				dir: this.repositoryName
+				dir: this.destinationRoot(this.repositoryName)
 			}, this.cloneCallBack);
-		}
-
+		},
 	},
-
-	install: function () {
-		this.installDependencies({
-			skipInstall: this.options['skip-install']
-		});
+	install: function() {
+		if (this.options['skip-install'] !== true) {
+			this.installDependencies();
+		}
 	}
 });

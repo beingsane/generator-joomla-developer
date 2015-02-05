@@ -293,6 +293,7 @@ module.exports = function(grunt) {
 
 	grunt.loadTasks('./tasks');
 
+	grunt.loadNpmTasks('grunt');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-csslint');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
