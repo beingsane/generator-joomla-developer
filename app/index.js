@@ -241,7 +241,7 @@ module.exports = yeoman.generators.Base.extend({
 				
 				childProcess.exec(
 					'mysql',
-					['-u=' + this.db_user, '--password=' + this.db_password, this.db_database + '<' + 'joomla.sql'], 
+					['--user=' + this.db_user, '--password=' + this.db_password, this.db_database + '<' + 'joomla.sql'], 
 					{
 						env: 
 						{ 
@@ -257,8 +257,8 @@ module.exports = yeoman.generators.Base.extend({
 							return false;
 						}
 						console.log('Database installation done...');
-						console.log('stdout');
 						console.log(stdout);
+						console.log(stderr);
 					});
 
 			}.bind(this);
