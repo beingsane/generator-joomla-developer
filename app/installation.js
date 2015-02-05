@@ -15,33 +15,13 @@ function errorEvent(e) {
 	this.exit();
 }
 
-var page_1_maps = {
-	jform_site_name: 'joomla-dev',
-	jform_site_description: 'This is a description of my site.',
-	jform_admin_email: 'brian.bolli@arctg.com',
-	jform_admin_user: 'admin',
-	jform_admin_password: 'test',
-	jform_admin_password2: 'test'
-};
+casper.start('http://joomla-developer/');
 
-var page_2_maps = {
-	jform_db_type: 'mysqli',
-	jform_db_host: 'localhost',
-	jform_db_user: 'joomla-dev',
-	jform_db_pass: 'joomla-dev',
-	jform_db_name: 'joomla-dev',
-	jform_db_prefix: 'jdev_'
-}
-
-var page_3_maps = {
-
-}
-
-casper.start('http://joomla-developer/', function() {
+casper.then(function() {
 
 	// pull token value from DOM
 	var token = this.getElementAttribute('form#adminForm input[type="hidden"][name="task"] + input[type="hidden"][value="1"]', 'name');
-
+	this.echo(token);
 	this.fill('form#adminForm', {
 		'jform[site_name]': 'Joomla Developer Instance',
 		'jform[admin_email]': 'info@arctg.com',
@@ -57,17 +37,42 @@ casper.start('http://joomla-developer/', function() {
 casper.then(function() {
 	this.capture('joomla_installation_page_one.png')
 	this.click('div#container-installation div.btn-toolbar div.btn-group a.btn.btn-primary');
+});
 
-})
+casper.waitForResource(function testResource(resource) {
+		return resource;
+	}, function onReceived() {
+		this.echo(this.getTitle());
+		this.capture('joomla_installation_page_two.png');
+	}
+);
 
-casper.thenEvaluate(function() {
-	this.echo(document.body.innerText);
-	return /message sent/.test(document.body.innerText);
+casper.then(function() {
+	// pull token value from DOM
+	var token = this.getElementAttribute('form#adminForm input[type="hidden"][name="task"] + input[type="hidden"][value="1"]', 'name');
+	this.echo(token);
+	this.fill('form#adminForm', {
+		'jform[db_type]': 'mysqli',
+		'jform[db_host]': 'localhost',
+		'jform[db_user]': 'joomladev',
+		'jform[db_pass]': 'joomladev',
+		'jform[db_name]': 'joomladev',
+		'jform[db_prefix]': 'jdev_',
+	}, false);
 });
 
 casper.then(function() {
-	this.capture('joomla_installation_page_two.png');
+	this.capture('joomla_installation_page_three.png')
+	this.click('div#container-installation div.btn-toolbar div.btn-group a.btn.btn-primary');
 });
+
+casper.waitForResource(function testResource(resource) {
+		return resource;
+	}, function onReceived() {
+		this.echo(this.getTitle());
+		this.capture('joomla_installation_page_four.png');
+	}
+);
 
 casper.run(function() {
 	this.echo('Installation Complete').exit();

@@ -5,10 +5,12 @@ var chalk = require('chalk');
 var yosay = require('yosay');
 var path = require('path');
 var Git = require('git-tools');
-
+var md5 = require('MD5');
+var random = require('random-ext');
 var path = require('path');
 var childProcess = require('child_process');
 var phantomjs = require('phantomjs');
+var fs = require('fs');
 var binPath = phantomjs.path
 
 module.exports = yeoman.generators.Base.extend({
@@ -145,11 +147,17 @@ module.exports = yeoman.generators.Base.extend({
 			this.name = props.name;
 			this.version = props.version;
 
+			console.log(props.path + "/" + props.repositoryName);
+
 			this.db_user = props.db_user;
 			this.db_password = props.db_password;
 			this.db_host = props.db_host;
 			this.db_database = props.db_database;
 			this.db_prefix = props.db_prefix;
+
+			var str = random.string(20);
+
+			props.secret = md5(str);
 
 			this.config.defaults(props);
 
@@ -190,8 +198,25 @@ module.exports = yeoman.generators.Base.extend({
 
 			this.fs.copy(
 				this.templatePath('index.html'),
+				this.destinationPath('database/index.html')
+			);
+
+			this.fs.copy(
+				this.templatePath('index.html'),
 				this.destinationPath('build/index.html')
 			);
+
+			this.fs.copyTpl(
+				this.templatePath('_configuration.php'),
+				this.destinationPath(this.repositoryName + '/configuration.php'),
+				params
+			);
+
+			this.fs.copy(
+				this.templatePath('_htaccess.txt'),
+				this.destinationPath(this.repositoryName + '/.htaccess')
+			);
+
 		},
 
 		projectfiles: function () {
@@ -210,29 +235,63 @@ module.exports = yeoman.generators.Base.extend({
 					chalk.yellow('Cloning Joomla CMS Repository')
 			));
 
-			this.cloneCallback = function(error, repo) {
-				console.log(error);
-				console.log(repo);
+			var params = this.config.getAll();
+			var file = this.fs;
+			var templatePath = this.templatePath;
+			var destinationPath = this.destinationPath;
+
+			_writeCallBack = function(err) {
+
+				if (err)
+				{
+					return false;
+				}
+
+				console.log('Importing database...');
+
+				childProcess.exec('mysql -u ' + params.db_user + ' --password=' + params.db_password + ' ' + params.db_name + ' < joomla.sql', { cwd: "/database" }, function (err, stdout, stderr) {
+					console.log('Database installation done...');
+					console.log('err');
+					console.log(err);
+					console.log('stdout');
+					console.log(stdout);
+					console.log('stderr');
+					console.log(stderr);
+				});
+
+			}
+
+			this.replaceCallBack = function(err, data) {
+				console.log('Replacing sql file prefixes...');
+
+				if (err)
+				{
+					console.log(err);
+					return false;
+				}
+
+				data = data.replace(/#__/g, params.db_prefix);
+
+				fs.writeFile('./database/joomla.sql', data, 'utf-8', this.writeCallBack);
+			}
+
+			this.cloneCallBack = function(err, repo) {
+
+				if (err)
+				{
+					console.log(err);
+					return false
+				}
+
+				console.log('Repository cloning done...');
+
+				fs.readFile(params.repositoryName + '/installation/sql/mysql/joomla.sql', 'utf-8', this.replaceCallBack);
 			};
 
 			Git.clone({
 				repo: this.repositoryUrl,
 				dir: this.repositoryName
 			}, this.cloneCallback);
-		},
-
-		install: function()
-		{
-			//var childArgs = [path.join(__dirname, 'installation.js'), this.config.getAll()];
-
-			//childProcess.execFile(binPath, childArgs, function(err, stdout, stderr) {
-				//console.log('err');
-				//console.log(err);
-				//console.log('stdout');
-				//console.log(stdout);
-				//console.log('stderr');
-				//console.log(stderr);
-			//})
 		}
 
 	},

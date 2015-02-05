@@ -23,6 +23,7 @@
     "yeoman-generator"
   ],
   "dependencies": {
+    "MD5": "^1.2.1",
     "casperjs": "^1.1.0-beta3",
     "chalk": "^0.5.0",
     "git-tools": "^0.1.2",
@@ -33,6 +34,7 @@
     "grunt-contrib-jshint": "^0.10.0",
     "grunt-contrib-uglify": "^0.7.0",
     "phantomjs": "^1.9.13",
+    "random-ext": "^2.5.0",
     "yeoman-generator": "^0.18.0",
     "yosay": "^0.3.0"
   },
