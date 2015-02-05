@@ -11,7 +11,8 @@ var random = require('random-ext');
 var childProcess = require('child_process');
 var phantomjs = require('phantomjs');
 var fs = require('fs');
-var binPath = phantomjs.path
+var runner = require('./libs/runner');
+var binPath = phantomjs.path;
 
 module.exports = yeoman.generators.Base.extend({
 
@@ -238,28 +239,16 @@ module.exports = yeoman.generators.Base.extend({
 				}
 
 				console.log('Importing database...');
-				
-				childProcess.exec(
-					'mysql',
-					['--user=' + this.db_user, '--password=' + this.db_password, this.db_database + '<' + 'joomla.sql'], 
-					{
-						env: 
-						{ 
-							'u' : this.db_user, 
-							'p' : this.db_password
-						},
-						cwd: this.destinationRoot() + '\\database' 
-					}, 
-					function (err, stdout, stderr) {
-						if (err)
-						{
-							console.log(err);
-							return false;
-						}
-						console.log('Database installation done...');
-						console.log(stdout);
-						console.log(stderr);
-					});
+
+				var database = {
+						host: this.db_host,
+						user: this.db_user,
+						password: this.db_password,
+						name: this.db_database
+				};
+
+				runner.init(this.destinationPath + '/database/joomla.sql', database, this);
+
 
 			}.bind(this);
 
@@ -284,9 +273,9 @@ module.exports = yeoman.generators.Base.extend({
 					console.log(err);
 					return false
 				}
-				
+
 				//var params = this.config.getAll();
-				
+
 				console.log('Repository cloning done...');
 
 				fs.readFile(this.repositoryName + '/installation/sql/mysql/joomla.sql', 'utf-8', this.replaceCallBack);

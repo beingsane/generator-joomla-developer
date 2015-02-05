@@ -230,16 +230,32 @@ module.exports = function(grunt) {
 			}
 		},
 
-		mysqlrunfile: {
+		db_import: {
 			options: {
-				connection: {
-					host: 'localhost',
-					username: 'root',
-					password: 'Q3q3N75EUNRpuLRV',
-					database: grunt.option('database'),
-					multipleStatements: true
-				},
-				src: grunt.option('source') + '/build/database/arcsupport.sql'
+
+			},
+			"local": {
+				"options": {
+					"title": "Local DB",
+					"database": grunt.config.get(database.database),
+					"user": grunt.config.get(database.user),
+					"pass": grunt.config.get(database.password),
+					"host": grunt.config.get(database.host),
+					"backup_to": "./database/joomla.sql"
+				}
+			}
+		},
+
+		rename: {
+			move: {
+				src: grunt.config.get('repository.path') + grunt.config.get('repository.name') + '/installation/',
+				dest: grunt.config.get('repository.path') + '/database/installation/'
+			}
+		},
+
+		open: {
+			main: {
+				path: grunt.config.get('url')
 			}
 		}
 
@@ -286,7 +302,11 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-azure');
 	grunt.loadNpmTasks('grunt-s3');
-	grunt.loadNpmTasks('grunt-mysql-runfile');
+	grunt.loadNpmTasks('grunt-mysql-dump-import');
+	grunt.loadNpmTasks('grunt-rename');
+	grunt.loadNpmTasks('grunt-open');
+
+	grunt.registerTask('finalize', ['db_import', 'rename', 'open']);
 
 	grunt.registerTask('scrub', ['clean']);
 	grunt.registerTask('endpoints', ['initialize', 'joomla-endpoints']);
