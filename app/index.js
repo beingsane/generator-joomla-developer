@@ -240,7 +240,7 @@ module.exports = yeoman.generators.Base.extend({
 			var templatePath = this.templatePath;
 			var destinationPath = this.destinationPath;
 
-			_writeCallBack = function(err) {
+			this.writeCallBack = function(err) {
 
 				if (err)
 				{
