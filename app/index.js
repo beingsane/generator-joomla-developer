@@ -291,7 +291,7 @@ module.exports = yeoman.generators.Base.extend({
 			Git.clone({
 				repo: this.repositoryUrl,
 				dir: this.repositoryName
-			}, this.cloneCallback);
+			}, this.cloneCallBack);
 		}
 
 	},
