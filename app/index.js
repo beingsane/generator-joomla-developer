@@ -11,20 +11,39 @@ var random = require('random-ext');
 var childProcess = require('child_process');
 var phantomjs = require('phantomjs');
 var fs = require('fs');
+var Download = require('download');
+var progress = require('download-status');
 var binPath = phantomjs.path;
 
 module.exports = yeoman.generators.Base.extend({
 
-	initialize: function () {
+	initializing: function () {
+		this.log(yosay('Welcome to the ' + chalk.red('JoomlaDeveloper') + ' generator!'));
+
 		this.pkg = require('../package.json');
+
+		this.on('dependenciesInstalled', function() {
+			this.log(yosay(chalk.yellow('Run post grunt tasks...')));
+			this.npmInstall();
+			this.spawnCommand('grunt', ['cleanup'], function(err, stdout, stderr) {
+
+				if (err)
+				{
+					this.log(chalk.red(err));
+					return false;
+				}
+
+
+				this.log(yosay(chalk.yellow('Finished!')));
+			});
+		}.bind(this));
 	},
 
 	prompting: function () {
+
 		var done = this.async();
-		// Have Yeoman greet the user.
-		this.log(yosay(
-			'Welcome to the ' + chalk.red('JoomlaDeveloper') + ' generator!'
-		));
+
+		this.log(yosay('Joomla Instance Information'));
 
 		var prompts =
 		[
@@ -55,7 +74,14 @@ module.exports = yeoman.generators.Base.extend({
 			{
 				type : 'input',
 				name : 'repositoryUrl',
+				message : 'Enter Git Repository URL for this Joomla development instance:',
+				store : true
+			},
+			{
+				type : 'confirm',
+				name : 'repositoryExisting',
 				message : 'Enter Git Repository URL Joomla Repository you wish to clone for your development instance:',
+				"default": false,
 				store : true
 			},
 			{
@@ -138,15 +164,14 @@ module.exports = yeoman.generators.Base.extend({
 			props.packages = [];
 			props.submodules = [];
 
-
-
-			props.path = this.destinationRoot().replace(/\\/g, "\\");
+			props.path = this.destinationRoot().replace(/\\/g, "\\\\").replace(/\s/g,"\ ");
 			props.packageName = props.name.replace(/\s+/g, '-').toLowerCase();
 
 			this.website = props.website;
 			this.path = props.path;
 			this.repositoryUrl = props.repositoryUrl;
 			this.repositoryName = props.repositoryName;
+			this.repositoryExisting = props.repositoryExisting;
 			this.name = props.name;
 			this.version = props.version;
 
@@ -186,7 +211,7 @@ module.exports = yeoman.generators.Base.extend({
 
 			this.fs.copyTpl(
 				this.templatePath('_gruntfile.js'),
-				this.destinationPath('gruntfile.js'),
+				this.destinationPath('Gruntfile.js'),
 				params
 			);
 
@@ -222,32 +247,20 @@ module.exports = yeoman.generators.Base.extend({
 
 			var params = this.config.getAll();
 
-			console.log(params);
-
-			this.log(yosay(	chalk.yellow('Cloning Joomla CMS Repository')));
+			this.log(yosay(	chalk.yellow('Acquiring Joomla CMS files')));
 
 			this.writeCallBack = function(err) {
 
 				if (err)
 				{
-					console.log(err);
+					this.log(err);
 					return false;
+					//done(err);
 				}
 
 				this.log(yosay(chalk.yellow('Running GruntJs tasks to finalize')));
 
-				this.npmInstall();
-				
-				this.spawnCommand('grunt', ['cleanup'], function(err, stdout, stderr){
-
-					if (err)
-					{
-						console.log(err);
-						return false;
-					}
-
-					this.log(yosay(chalk.yellow('Finished!')));
-				});
+				//done();
 
 			}.bind(this);
 
@@ -256,24 +269,29 @@ module.exports = yeoman.generators.Base.extend({
 
 				if (err)
 				{
-					console.log(err);
+					this.log(err);
 					return false;
+					//done(err);
 				}
 
 				data = data.replace(/#__/g, this.db_prefix);
 
 				fs.writeFile('./database/joomla.sql', data, 'utf-8', this.writeCallBack);
+
 			}.bind(this);
 
 			this.cloneCallBack = function(err, repo) {
 
 				if (err)
 				{
-					console.log(err);
-					return false
+					this.log(err);
+					return false;
+					//done(err);
 				}
 
-				console.log(params);
+				this.log(yosay(chalk.yellow('Joomla CMS files acquired...')));
+
+				var params = this.config.getAll();
 
 				this.fs.copyTpl(
 					this.templatePath('_configuration.php'),
@@ -286,20 +304,56 @@ module.exports = yeoman.generators.Base.extend({
 					this.destinationPath(this.repositoryName + '/.htaccess')
 				);
 
-				this.log(yosay(chalk.yellow('Repository cloning done...')));
-
 				fs.readFile('./' + this.repositoryName + '/installation/sql/mysql/joomla.sql', 'utf-8', this.replaceCallBack);
+
 			}.bind(this);
 
-			Git.clone({
-				repo: this.repositoryUrl,
-				dir: this.repositoryName
-			}, this.cloneCallBack);
+			if (this.repositoryExisting)
+			{
+
+				Git.clone({
+					repo: this.repositoryUrl,
+					dir: this.repositoryName
+				}, this.cloneCallBack);
+
+			}
+			else
+			{
+
+				var download = new Download({ extract: true, strip: 1, mode: '755' })
+					.get(this.repositoryUrl.replace('.git','') + '/archive/master.zip')
+					.dest(this.destinationPath(this.repositoryName))
+					.use(progress()
+				);
+
+				download.run(function (err, files, stream) {
+
+					if (err) {
+						throw err;
+						return false
+					}
+
+					this.log(yosay(chalk.yellow('Joomla Files downloaded successfully!')));
+
+					this.cloneCallBack(false, {});
+
+				}.bind(this));
+			}
 		},
+
 	},
+
 	install: function() {
-		if (this.options['skip-install'] !== true) {
-			this.installDependencies();
-		}
+
+	},
+
+	end: function() {
+		this.installDependencies({
+			skipInstall: this.options['skip-install'],
+			callback: function()
+			{
+			this.emit('dependenciesInstalled');
+			}.bind(this)
+		});
 	}
 });

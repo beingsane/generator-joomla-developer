@@ -15,7 +15,7 @@ module.exports = function(grunt) {
 			return false;
 		}
 
-		exec('git remote add origin ' + grunt.config.get('repositoryUrl'), { cwd: grunt.config('repoPath') }, remoteCallBack)
+		exec('git remote add origin ' + grunt.config.get('repositoryUrl'), { cwd: grunt.config.get('repositoryPath') }, remoteCallBack)
 	}
 
 	grunt.registerTask('grunt-git-init', 'Initialize new repository', function(origin, branch) {
