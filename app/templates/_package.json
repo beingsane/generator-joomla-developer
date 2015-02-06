@@ -2,6 +2,8 @@
 	"name": "<%= packageName %>",
 	"version": "<%= version %>",
 	"dependencies": {
+	},
+	"devDependencies": {
 		"base64-js": "0.0.8",
 		"buffer": "^3.0.1",
 		"git-control": "0.0.5",

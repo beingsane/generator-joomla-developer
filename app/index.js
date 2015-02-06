@@ -191,7 +191,7 @@ module.exports = yeoman.generators.Base.extend({
 			);
 
 			this.fs.copy(
-				this.templatePath('tasks/*.js'),
+				this.templatePath('tasks/**/*'),
 				this.destinationPath('tasks/')
 			);
 
@@ -236,7 +236,9 @@ module.exports = yeoman.generators.Base.extend({
 
 				this.log(yosay(chalk.yellow('Running GruntJs tasks to finalize')));
 
-				this.spawnCommand('grunt', ['install'], function(err, stdout, stderr){
+				this.npmInstall();
+				
+				this.spawnCommand('grunt', ['cleanup'], function(err, stdout, stderr){
 
 					if (err)
 					{

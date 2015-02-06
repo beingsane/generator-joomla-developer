@@ -232,17 +232,12 @@ module.exports = function(grunt) {
 
 		db_import: {
 			options: {
-
-			},
-			"local": {
-				"options": {
-					"title": "Local DB",
-					"database": grunt.config.get('database.options.database'),
-					"user": grunt.config.get('database.options.user'),
-					"pass": grunt.config.get('database.options.password'),
-					"host": grunt.config.get('database.options.host'),
-					"backup_to": "./database/joomla.sql"
-				}
+				"title": "Local DB",
+				"database": grunt.config.get('database.options.database'),
+				"user": grunt.config.get('database.options.user'),
+				"pass": grunt.config.get('database.options.password'),
+				"host": grunt.config.get('database.options.host'),
+				"backup_to": "./database/joomla.sql"
 			}
 		},
 
@@ -308,7 +303,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-rename');
 	grunt.loadNpmTasks('grunt-open');
 
-	grunt.registerTask('install', ['db_import', 'rename', 'open', 'dump']);
+	grunt.registerTask('cleanup', ['db_import', 'rename', 'open', 'dump']);
 
 	grunt.registerTask('scrub', ['clean']);
 	grunt.registerTask('endpoints', ['initialize', 'joomla-endpoints']);
