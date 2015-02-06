@@ -31,7 +31,8 @@ module.exports = yeoman.generators.Base.extend({
 			{
 				type : 'input',
 				name : 'name',
-				message : 'Enter name for this Joomla instance:'
+				message : 'Enter name for this Joomla instance:',
+				store : true
 			},
 			{
 				type : 'input',
@@ -259,7 +260,7 @@ module.exports = yeoman.generators.Base.extend({
 
 				data = data.replace(/#__/g, this.db_prefix);
 
-				this.fs.write(this.destinationRoot() + '/../database/joomla.sql', data);
+				fs.writeFile('./database/joomla.sql', data, 'utf-8', this.writeCallBack);
 			}.bind(this);
 
 			this.cloneCallBack = function(err, repo) {
@@ -285,12 +286,12 @@ module.exports = yeoman.generators.Base.extend({
 
 				this.log(yosay(chalk.yellow('Repository cloning done...')));
 
-				this.fs.read(this.destinationRoot() + '/installation/sql/mysql/joomla.sql', { raw: true }, this.replaceCallBack);
+				fs.readFile('./' + this.repositoryName + '/installation/sql/mysql/joomla.sql', 'utf-8', this.replaceCallBack);
 			}.bind(this);
 
 			Git.clone({
 				repo: this.repositoryUrl,
-				dir: this.destinationRoot(this.repositoryName)
+				dir: this.repositoryName
 			}, this.cloneCallBack);
 		},
 	},

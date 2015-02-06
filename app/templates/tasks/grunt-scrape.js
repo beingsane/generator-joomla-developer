@@ -42,7 +42,7 @@ module.exports = function(grunt) {
 		var isLast = last || false;
 		var path = grunt.config.get('repository.path') + grunt.config.get('repository.name');
 
-		exec('casperjs scrape.js --url=' + base.encode(link) + ' --web-security=false', { cwd: "/tasks" }, function (error, stdout, stderr) {
+		exec('casperjs scrape.js --url=' + base.encode(link) + ' --web-security=false', { cwd: "/tasks/scripts" }, function (error, stdout, stderr) {
 			if (error)
 			{
 				grunt.log.errorlns('Child Process Exec Error');

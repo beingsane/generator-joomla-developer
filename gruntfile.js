@@ -1,8 +1,6 @@
 'use strict'
 
 module.exports = function(grunt) {
-	require('load-grunt-tasks')(grunt);
-	require('time-grunt')(grunt);
 
 	grunt.initConfig({
 		db_import: {
@@ -12,10 +10,10 @@ module.exports = function(grunt) {
 			"local": {
 				"options": {
 					"title": "Local DB",
-					"database": grunt.config.get(db_database),
-					"user": grunt.config.get(db_user),
-					"pass": grunt.config.get(db_password),
-					"host": grunt.config.get(db_host),
+					"database": grunt.config.get('db_database'),
+					"user": grunt.config.get('db_user'),
+					"pass": grunt.config.get('db_password'),
+					"host": grunt.config.get('db_host'),
 					"backup_to": "./database/joomla.sql"
 				}
 			}
@@ -23,8 +21,8 @@ module.exports = function(grunt) {
 
 		rename: {
 			move: {
-				src: grunt.config.get('path') + '/' + grunt.config.get('repositoryName') + '/installation/',
-				dest: grunt.config.get('path') + '/database/installation/'
+				src: './' + grunt.config.get('repositoryName') + '/installation/',
+				dest: './database/'
 			}
 		},
 
@@ -40,6 +38,10 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-rename');
 	grunt.loadNpmTasks('grunt-open');
 
-	grunt.registerTask('install', ['db_import', 'rename', 'open']);
+	grunt.registerTask('dump', 'Utility to dump variables for troubleshooting purposes.', function() {
+		grunt.log.writeln('yeoman root');
+	});
+	
+	grunt.registerTask('install', ['db_import', 'rename', 'open', 'dump']);
 	grunt.registerTask('default', ['open']);
 }
