@@ -139,7 +139,7 @@ module.exports = yeoman.generators.Base.extend({
 
 
 
-			props.path = this.destinationRoot().replace(/\\/g, "\\\\");
+			props.path = this.destinationRoot().replace(/\\/g, "\\");
 			props.packageName = props.name.replace(/\s+/g, '-').toLowerCase();
 
 			this.website = props.website;
@@ -204,16 +204,6 @@ module.exports = yeoman.generators.Base.extend({
 				this.destinationPath('build/index.html')
 			);
 
-			this.fs.copyTpl(
-				this.templatePath('_configuration.php'),
-				this.destinationPath(this.repositoryName + '/configuration.php'),
-				params
-			);
-
-			this.fs.copy(
-				this.templatePath('_htaccess.txt'),
-				this.destinationPath(this.repositoryName + '/.htaccess')
-			);
 		},
 
 		projectfiles: function () {
@@ -228,6 +218,10 @@ module.exports = yeoman.generators.Base.extend({
 		},
 
 		clone: function() {
+
+			var params = this.config.getAll();
+
+			console.log(params);
 
 			this.log(yosay(	chalk.yellow('Cloning Joomla CMS Repository')));
 
@@ -265,7 +259,7 @@ module.exports = yeoman.generators.Base.extend({
 
 				data = data.replace(/#__/g, this.db_prefix);
 
-				fs.writeFile('./database/joomla.sql', data, 'utf-8', this.writeCallBack);
+				this.fs.write(this.destinationRoot() + '/../database/joomla.sql', data);
 			}.bind(this);
 
 			this.cloneCallBack = function(err, repo) {
@@ -276,9 +270,22 @@ module.exports = yeoman.generators.Base.extend({
 					return false
 				}
 
+				console.log(params);
+
+				this.fs.copyTpl(
+					this.templatePath('_configuration.php'),
+					this.destinationPath(this.repositoryName + '/configuration.php'),
+					params
+				);
+
+				this.fs.copy(
+					this.templatePath('_htaccess.txt'),
+					this.destinationPath(this.repositoryName + '/.htaccess')
+				);
+
 				this.log(yosay(chalk.yellow('Repository cloning done...')));
 
-				fs.readFile(this.repositoryName + '/installation/sql/mysql/joomla.sql', 'utf-8', this.replaceCallBack);
+				this.fs.read(this.destinationRoot() + '/installation/sql/mysql/joomla.sql', { raw: true }, this.replaceCallBack);
 			}.bind(this);
 
 			Git.clone({

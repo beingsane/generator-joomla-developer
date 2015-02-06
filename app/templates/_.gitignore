@@ -48,7 +48,13 @@ composer.lock
 /tests/acceptance.suite.yml
 codecept.phar
  
+# Joomla
+/administrator/cache/*
+/cache/*
+/tmp/*
+/logs/*
+
 # Never ignore
 !.gitignore
 !index.html
-!index.php 
+!index.php
