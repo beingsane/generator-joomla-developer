@@ -231,20 +231,22 @@ module.exports = function(grunt) {
 		},
 
 		db_import: {
-			options: {
-				"title": "Local DB",
-				"database": grunt.config.get('database.options.database'),
-				"user": grunt.config.get('database.options.user'),
-				"pass": grunt.config.get('database.options.password'),
-				"host": grunt.config.get('database.options.host'),
-				"backup_to": "./database/joomla.sql"
+			"localhost" : {
+				"options": {
+					"title": "Local DB",
+					"database": "<%= db_database %>",
+					"user": "<%= db_user %>",
+					"pass": "<%= db_password %>",
+					"host": "<%= db_host %>",
+					"backup_to": "<%= path %>/database/joomla.sql",
+				}
 			}
 		},
 
 		rename: {
 			move: {
-				src: grunt.config.get('repository.path') + grunt.config.get('repository.name') + '/installation/',
-				dest: grunt.config.get('repository.path') + '/database/installation/'
+				src: '<%= path %>/' + grunt.config.get('repository.name') + '/installation/',
+				dest: '<%= path %>/database/installation/'
 			}
 		},
 
