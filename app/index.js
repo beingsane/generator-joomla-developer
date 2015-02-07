@@ -8,9 +8,12 @@ var Git = require('git-tools');
 var md5 = require('MD5');
 var path = require('path');
 var random = require('random-ext');
-var childProcess = require('child_process');
+var cp = require('child_process');
 var phantomjs = require('phantomjs');
 var fs = require('fs');
+var async = require('async');
+var open = require('open');
+var rimraf = require('rimraf');
 var Download = require('download');
 var progress = require('download-status');
 var binPath = phantomjs.path;
@@ -22,21 +25,6 @@ module.exports = yeoman.generators.Base.extend({
 
 		this.pkg = require('../package.json');
 
-		this.on('dependenciesInstalled', function() {
-			this.log(yosay(chalk.yellow('Run post grunt tasks...')));
-			this.npmInstall();
-			this.spawnCommand('grunt', ['cleanup'], function(err, stdout, stderr) {
-
-				if (err)
-				{
-					this.log(chalk.red(err));
-					return false;
-				}
-
-
-				this.log(yosay(chalk.yellow('Finished!')));
-			});
-		}.bind(this));
 	},
 
 	prompting: function () {
@@ -195,72 +183,108 @@ module.exports = yeoman.generators.Base.extend({
 	writing: {
 
 		app: function () {
-
+			
+			var done = this.async();
 			var params = this.config.getAll();
+			
+			var ioFileOperations = function(src, dest, tpl)
+			{
 
-			this.fs.copyTpl(
-				this.templatePath('_package.json'),
-				this.destinationPath('package.json'),
-				params
-			);
-
-			this.fs.copy(
-				this.templatePath('_bower.json'),
-				this.destinationPath('bower.json')
-			);
-
-			this.fs.copyTpl(
-				this.templatePath('_gruntfile.js'),
-				this.destinationPath('Gruntfile.js'),
-				params
-			);
-
-			this.fs.copy(
-				this.templatePath('tasks/**/*'),
-				this.destinationPath('tasks/')
-			);
-
-			this.fs.copy(
-				this.templatePath('index.html'),
-				this.destinationPath('database/index.html')
-			);
-
-			this.fs.copy(
-				this.templatePath('index.html'),
-				this.destinationPath('build/index.html')
-			);
-
-		},
-
-		projectfiles: function () {
-			this.fs.copy(
-				this.templatePath('editorconfig'),
-				this.destinationPath('.editorconfig')
-			);
-			this.fs.copy(
-				this.templatePath('jshintrc'),
-				this.destinationPath('.jshintrc')
-			);
+				if (tpl)
+				{
+					this.fs.copyTpl(
+						this.templatePath(src),
+						this.destinationPath(dest), 
+						params
+					);
+				}
+				else
+				{
+					this.fs.copy(
+						this.templatePath(src), 
+						this.destinationPath(dest)
+					);	
+				}
+				
+			}.bind(this);;
+			
+			async.series([
+					ioFileOperations('_package.json', 'package.json', true),
+					ioFileOperations('_bower.json', 'bower.json', true),
+					ioFileOperations('_gruntfile.js', 'gruntfile.js', true),
+					ioFileOperations('tasks/**/*', 'tasks/', false),
+					ioFileOperations('index.html', 'database/index.html', false),
+					ioFileOperations('index.html', 'build/index.html', false),
+					ioFileOperations('editorconfig', '.editorconfig', false),
+					ioFileOperations('jshintrc', '.jshintrc', false),
+					ioFileOperations('_configuration.php', this.repositoryName + '/configuration.php', true),
+					ioFileOperations('_htaccess.txt', this.repositoryName + '/.htaccess', false)
+				]);
+			
+			done();
 		},
 
 		clone: function() {
 
+			//var done = this.async();
+			
 			var params = this.config.getAll();
 
 			this.log(yosay(	chalk.yellow('Acquiring Joomla CMS files')));
-
-			this.writeCallBack = function(err) {
-
+			
+			this.finished = function() {
+				this.log(yosay(chalk.yellow('Finished!')));
+				
+				open(this.config.get('url') + '/administrator');
+				
+			}.bind(this);
+			
+			this.createUserCallBack = function() {
+				
+				this.log(yosay(chalk.yellow('Administrator\'s Account Created')));
+				
+				// Create Admin session 
+				
+				this.finished();
+				
+			}.bind(this);
+			
+			this.deleteInstallationDirectoryCallBack = function() {
+				
+				this.log(yosay(chalk.yellow('Installation Folder Removed')));
+				
+				// Create Admin Account
+				
+				this.createUserCallBack();
+			}.bind(this);
+			
+			this.importCallBack = function(err) {
+				
 				if (err)
 				{
 					this.log(err);
 					return false;
 					//done(err);
 				}
+				
+				this.log(yosay(chalk.yellow('Database import complete')));
 
-				this.log(yosay(chalk.yellow('Running GruntJs tasks to finalize')));
+				rimraf(this.destinationRoot() + '/' + this.repositoryRoot + '/installation/', this.deleteInstallationDirectoryCallBack);
+				
+			}.bind(this);
 
-				//done();
+			this.writeCallBack = function(err) {
+
+				if (err)
+				{
+					this.log(err);
+					return false;f
+					//done(err);
+				}
+
+				this.log(yosay(chalk.yellow('Running database script...')));
+
+				cp.exec('mysql --user=' + params.db_user + ' --password=' + params.db_password + ' ' + params.db_database + ' < ' + this.destinationRoot() + '/database/joomla.sql', this.importCallBack);
 
 			}.bind(this);
 
@@ -331,6 +355,7 @@ module.exports = yeoman.generators.Base.extend({
 					if (err) {
 						throw err;
 						return false
+						//done(err);
 					}
 
 					this.log(yosay(chalk.yellow('Joomla Files downloaded successfully!')));
@@ -345,11 +370,7 @@ module.exports = yeoman.generators.Base.extend({
 
 	install: function() {
 		this.installDependencies({
-			skipInstall: this.options['skip-install'],
-			callback: function()
-			{
-			this.emit('dependenciesInstalled');
-			}.bind(this)
+			skipInstall: this.options['skip-install']
 		});
 	}
 });
