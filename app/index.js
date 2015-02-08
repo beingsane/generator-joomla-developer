@@ -10,12 +10,14 @@ var path = require('path');
 var random = require('random-ext');
 var cp = require('child_process');
 var phantomjs = require('phantomjs');
+var base = require('js-base64').Base64;
 var fs = require('fs');
 var async = require('async');
 var open = require('open');
 var rimraf = require('rimraf');
 var Download = require('download');
 var progress = require('download-status');
+var mysql = require('mysql');
 var binPath = phantomjs.path;
 
 module.exports = yeoman.generators.Base.extend({
@@ -46,6 +48,18 @@ module.exports = yeoman.generators.Base.extend({
 				name : 'version',
 				message : 'Enter version for this Joomla instance:',
 				"default": '0.1.0'
+			},
+			{
+				type : 'input',
+				name : 'websiteEmail',
+				message : 'Enter administrator\'s email for this Joomla instance:',
+				store: true
+			},
+			{
+				type : 'input',
+				name : 'websitePassword',
+				message : 'Enter administrator\'s password for this Joomla instance:',
+				store: true
 			},
 			{
 				type : 'input',
@@ -155,6 +169,9 @@ module.exports = yeoman.generators.Base.extend({
 			props.path = this.destinationRoot().replace(/\\/g, "\\\\").replace(/\s/g,"\ ");
 			props.packageName = props.name.replace(/\s+/g, '-').toLowerCase();
 
+			this.websiteEmail = props.websiteEmail;
+			this.websitePassword = props.websitePassword;
+			
 			this.website = props.website;
 			this.path = props.path;
 			this.repositoryUrl = props.repositoryUrl;
@@ -218,7 +235,8 @@ module.exports = yeoman.generators.Base.extend({
 					ioFileOperations('editorconfig', '.editorconfig', false),
 					ioFileOperations('jshintrc', '.jshintrc', false),
 					ioFileOperations('_configuration.php', this.repositoryName + '/configuration.php', true),
-					ioFileOperations('_htaccess.txt', this.repositoryName + '/.htaccess', false)
+					ioFileOperations('_htaccess.txt', this.repositoryName + '/.htaccess', false),
+					ioFileOperations('README.md', this.repositoryName + '/README.md', false)
 				]);
 			
 			done();
@@ -239,11 +257,53 @@ module.exports = yeoman.generators.Base.extend({
 				
 			}.bind(this);
 			
-			this.createUserCallBack = function() {
+			this.createUserCallBack = function(error, stdout, stderr) {
+				
+				if (error)
+				{
+					console.log(error);
+					return false;
+				}
 				
 				this.log(yosay(chalk.yellow('Administrator\'s Account Created')));
 				
-				// Create Admin session 
+				var connection = mysql.createConnection({
+					host: this.db_host,
+					user: this.db_user,
+					password: this.db_password,
+					database: this.db_database
+				});
+					 
+				connection.connect();
+					
+				function activateUser(db_prefix)
+				{
+					connection.query('UPDATE `' + db_prefix + 'users` SET block=0,activation="" WHERE id=1', function(err, rows, fields) {
+						if (err)
+						{
+							throw err;
+						}
+					});
+				};
+				
+				function updateUserGroup(db_prefix)
+				{
+					connection.query('UPDATE `' + db_prefix + 'user_usergroup_map` SET group_id=8 WHERE user_id=1', function(err, rows, fields) {
+						if (err)
+						{
+							throw err;
+						}
+					});
+				}
+				
+				async.series(
+					[
+						activateUser(this.db_prefix),
+						updateUserGroup(this.db_prefix)
+					]
+				);
+				
+				connection.end();
 				
 				this.finished();
 				
@@ -253,9 +313,8 @@ module.exports = yeoman.generators.Base.extend({
 				
 				this.log(yosay(chalk.yellow('Installation Folder Removed')));
 				
-				// Create Admin Account
-				
-				this.createUserCallBack();
+				cp.exec('casperjs installation.js --password=' + base.encode(this.websitePassword) + ' --email=' + this.websiteEmail, { cwd: this.templatePath("tasks/scripts") }, this.createUserCallBack);
+
 			}.bind(this);
 			
 			this.importCallBack = function(err) {

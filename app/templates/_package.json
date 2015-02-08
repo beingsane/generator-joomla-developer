@@ -6,6 +6,10 @@
 		"name": "Brian Bolli",
 		"email": "brian.bolli@arctg.com"
 	},
+	"repository": {
+		"type": "git",
+		"url": "<%= repositoryUrl %>"
+	},
 	"dependencies": {
 		"grunt": "^0.4.5",
 		"grunt-contrib-clean": "^0.6.0",
