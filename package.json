@@ -67,6 +67,7 @@
     "mysql": "^2.5.4",
     "node-async": "0.0.1",
     "open": "0.0.5",
+    "rimraf": "^2.2.8",
     "time-grunt": "^1.0.0"
   },
   "peerDependencies": {

@@ -82,7 +82,7 @@ module.exports = yeoman.generators.Base.extend({
 			{
 				type : 'confirm',
 				name : 'repositoryExisting',
-				message : 'Enter Git Repository URL Joomla Repository you wish to clone for your development instance:',
+				message : 'Is there already a Joomla CMS code base in the above repository:',
 				"default": false,
 				store : true
 			},
@@ -166,12 +166,12 @@ module.exports = yeoman.generators.Base.extend({
 			props.packages = [];
 			props.submodules = [];
 
-			props.path = this.destinationRoot().replace(/\\/g, "\\\\").replace(/\s/g,"\ ");
+			props.path = this.destinationRoot().replace(/\\/g, "\\\\").replace(" ","\\ ");
 			props.packageName = props.name.replace(/\s+/g, '-').toLowerCase();
 
 			this.websiteEmail = props.websiteEmail;
 			this.websitePassword = props.websitePassword;
-			
+
 			this.website = props.website;
 			this.path = props.path;
 			this.repositoryUrl = props.repositoryUrl;
@@ -200,10 +200,10 @@ module.exports = yeoman.generators.Base.extend({
 	writing: {
 
 		app: function () {
-			
+
 			var done = this.async();
 			var params = this.config.getAll();
-			
+
 			var ioFileOperations = function(src, dest, tpl)
 			{
 
@@ -211,20 +211,20 @@ module.exports = yeoman.generators.Base.extend({
 				{
 					this.fs.copyTpl(
 						this.templatePath(src),
-						this.destinationPath(dest), 
+						this.destinationPath(dest),
 						params
 					);
 				}
 				else
 				{
 					this.fs.copy(
-						this.templatePath(src), 
+						this.templatePath(src),
 						this.destinationPath(dest)
-					);	
+					);
 				}
-				
+
 			}.bind(this);;
-			
+
 			async.series([
 					ioFileOperations('_package.json', 'package.json', true),
 					ioFileOperations('_bower.json', 'bower.json', true),
@@ -238,44 +238,44 @@ module.exports = yeoman.generators.Base.extend({
 					ioFileOperations('_htaccess.txt', this.repositoryName + '/.htaccess', false),
 					ioFileOperations('README.md', this.repositoryName + '/README.md', false)
 				]);
-			
+
 			done();
 		},
 
 		clone: function() {
 
 			//var done = this.async();
-			
+
 			var params = this.config.getAll();
 
 			this.log(yosay(	chalk.yellow('Acquiring Joomla CMS files')));
-			
+
 			this.finished = function() {
 				this.log(yosay(chalk.yellow('Finished!')));
-				
+
 				open(this.config.get('url') + '/administrator');
-				
+
 			}.bind(this);
-			
+
 			this.createUserCallBack = function(error, stdout, stderr) {
-				
+
 				if (error)
 				{
 					console.log(error);
 					return false;
 				}
-				
+
 				this.log(yosay(chalk.yellow('Administrator\'s Account Created')));
-				
+
 				var connection = mysql.createConnection({
 					host: this.db_host,
 					user: this.db_user,
 					password: this.db_password,
 					database: this.db_database
 				});
-					 
+
 				connection.connect();
-					
+
 				function activateUser(db_prefix)
 				{
 					connection.query('UPDATE `' + db_prefix + 'users` SET block=0,activation="" WHERE id=1', function(err, rows, fields) {
@@ -285,7 +285,7 @@ module.exports = yeoman.generators.Base.extend({
 						}
 					});
 				};
-				
+
 				function updateUserGroup(db_prefix)
 				{
 					connection.query('UPDATE `' + db_prefix + 'user_usergroup_map` SET group_id=8 WHERE user_id=1', function(err, rows, fields) {
@@ -295,41 +295,41 @@ module.exports = yeoman.generators.Base.extend({
 						}
 					});
 				}
-				
+
 				async.series(
 					[
 						activateUser(this.db_prefix),
 						updateUserGroup(this.db_prefix)
 					]
 				);
-				
+
 				connection.end();
-				
+
 				this.finished();
-				
+
 			}.bind(this);
-			
+
 			this.deleteInstallationDirectoryCallBack = function() {
-				
+
 				this.log(yosay(chalk.yellow('Installation Folder Removed')));
-				
+
 				cp.exec('casperjs installation.js --password=' + base.encode(this.websitePassword) + ' --email=' + this.websiteEmail, { cwd: this.templatePath("tasks/scripts") }, this.createUserCallBack);
 
 			}.bind(this);
-			
+
 			this.importCallBack = function(err) {
-				
+
 				if (err)
 				{
 					this.log(err);
 					return false;
 					//done(err);
 				}
-				
+
 				this.log(yosay(chalk.yellow('Database import complete')));
 
 				rimraf(this.destinationRoot() + '/' + this.repositoryRoot + '/installation/', this.deleteInstallationDirectoryCallBack);
-				
+
 			}.bind(this);
 
 			this.writeCallBack = function(err) {
@@ -342,8 +342,9 @@ module.exports = yeoman.generators.Base.extend({
 				}
 
 				this.log(yosay(chalk.yellow('Running database script...')));
+				console.log(this.destinationRoot() + '/database/joomla.sql');
 
-				cp.exec('mysql --user=' + params.db_user + ' --password=' + params.db_password + ' ' + params.db_database + ' < ' + this.destinationRoot() + '/database/joomla.sql', this.importCallBack);
+				cp.exec('mysql --user=' + params.db_user + ' --password=' + params.db_password + ' ' + params.db_database + ' < ' + params.path + '/database/joomla.sql', this.importCallBack);
 
 			}.bind(this);
 
