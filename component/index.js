@@ -53,7 +53,8 @@ module.exports = yeoman.generators.Base.extend({
 					camelcase: this.camelcase,
 					languagefile: true,
 					languagecode: this.languagecode || this.config.get('languagecode'),
-					rootPath: this.config.get('projectRoot') || 'joomla',
+					rootPath: this.config.get('repositoryName') || 'joomla-cms',
+					updateserver: false,
 					media: {
 						css: true,
 						js: true,
@@ -78,14 +79,14 @@ module.exports = yeoman.generators.Base.extend({
 						bare: false,
 						standard: {
 							listview: {
-								camelcase: 'Widgets',
-								lowercase: 'widgets',
-								uppercase: 'WIDGETS'
+								camelcase: 'Auctions',
+								lowercase: 'auctions',
+								uppercase: 'AUCTIONS'
 							},
 							detailview:{
-								camelcase: 'Widget',
-								lowercase: 'widget',
-								uppercase: 'WIDGET'
+								camelcase: 'Auction',
+								lowercase: 'auction',
+								uppercase: 'AUCTION'
 							},
 						}
 					}
@@ -302,7 +303,7 @@ module.exports = yeoman.generators.Base.extend({
 			}
 
 			// Generate Site component files
-			
+
 			console.log('GENERATING SITE FILES');
 			console.log(params.rootPath);
 			this.fs.copyTpl(
@@ -346,49 +347,49 @@ module.exports = yeoman.generators.Base.extend({
 				params
 			);
 			console.log('detail view controller');
-			
+
 			this.fs.copyTpl(
 				this.templatePath('_site_model_detailview.php'),
 				this.destinationPath(params.rootPath + '/components/com_' + params.component + '/models/' + params.views.standard.detailview.lowercase + '.php'),
 				params
 			);
 			console.log('detail view model');
-			
+
 			this.fs.copyTpl(
 				this.templatePath('_site_form_detailview.xml'),
 				this.destinationPath(params.rootPath + '/components/com_' + params.component + '/models/forms/' + params.views.standard.detailview.lowercase + '.xml'),
 				params
 			);
 			console.log('detail view class');
-			
+
 			this.fs.copyTpl(
 				this.templatePath('_site_view_detailview.php'),
 				this.destinationPath(params.rootPath + '/components/com_' + params.component + '/views/' + params.views.standard.detailview.lowercase + '/view.html.php'),
 				params
 			);
 			console.log('detail view php');
-			
+
 			this.fs.copyTpl(
 				this.templatePath('_site_view_detailview_edit.php'),
 				this.destinationPath(params.rootPath + '/components/com_' + params.component + '/views/' + params.views.standard.detailview.lowercase + '/tmpl/edit.php'),
 				params
 			);
 			console.log('detail view edit php');
-			
+
 			this.fs.copyTpl(
 				this.templatePath('_site_view_detailview_default.php'),
 				this.destinationPath(params.rootPath + '/components/com_' + params.component + '/views/' + params.views.standard.detailview.lowercase + '/tmpl/default.php'),
 				params
 			);
 			console.log('detail view default php');
-			
+
 			this.fs.copyTpl(
 				this.templatePath('_site_view_detailview_default.xml'),
 				this.destinationPath(params.rootPath + '/components/com_' + params.component + '/views/' + params.views.standard.detailview.lowercase + '/tmpl/default.xml'),
 				params
 			);
 			console.log('detail view default XML');
-			
+
 			// Template admin language files
 			if (params.languagefile === true && typeof params.languagecode !== "undefined")
 			{
@@ -399,7 +400,7 @@ module.exports = yeoman.generators.Base.extend({
 				);
 			}
 			console.log('site language ini');
-			
+
 			if (params.db.fields.categories)
 			{
 				this.fs.copyTpl(
@@ -407,45 +408,45 @@ module.exports = yeoman.generators.Base.extend({
 					this.destinationPath(params.rootPath + '/components/com_' + params.component + '/models/categories.php'),
 					params
 				);
-				
+
 				this.fs.copyTpl(
 					this.templatePath('_site_model_category.php'),
 					this.destinationPath(params.rootPath + '/components/com_' + params.component + '/models/category.php'),
 					params
 				);
-				
+
 				this.fs.copyTpl(
 					this.templatePath('index.html'),
 					this.destinationPath(params.rootPath + '/components/com_' + params.component + '/views/categories/index.html')
 				);
-				
+
 				this.fs.copyTpl(
 					this.templatePath('index.html'),
 					this.destinationPath(params.rootPath + '/components/com_' + params.component + '/views/category/index.html')
 				);
-				
+
 				this.fs.copyTpl(
 					this.templatePath('index.html'),
 					this.destinationPath(params.rootPath + '/components/com_' + params.component + '/views/categories/tmpl/index.html')
 				);
-				
+
 				this.fs.copyTpl(
 					this.templatePath('index.html'),
 					this.destinationPath(params.rootPath + '/components/com_' + params.component + '/views/category/tmpl/index.html')
 				);
-				
+
 				this.fs.copyTpl(
 					this.templatePath('_site_view_categories.php'),
 					this.destinationPath(params.rootPath + '/components/com_' + params.component + '/views/categories/view.html.php'),
 					params
 				);
-				
+
 				this.fs.copyTpl(
 					this.templatePath('_site_view_category.php'),
 					this.destinationPath(params.rootPath + '/components/com_' + params.component + '/views/category/view.html.php'),
 					params
 				);
-				
+
 				this.fs.copyTpl(
 					this.templatePath('_site_view_category_feed.php'),
 					this.destinationPath(params.rootPath + '/components/com_' + params.component + '/views/category/view.feed.php'),
@@ -457,43 +458,43 @@ module.exports = yeoman.generators.Base.extend({
 					this.destinationPath(params.rootPath + '/components/com_' + params.component + '/views/categories/tmpl/default.php'),
 					params
 				);
-				
+
 				this.fs.copyTpl(
 					this.templatePath('_site_view_categories_default_items.php'),
 					this.destinationPath(params.rootPath + '/components/com_' + params.component + '/views/categories/tmpl/default_items.php'),
 					params
 				);
-				
+
 				this.fs.copyTpl(
 					this.templatePath('_site_view_categories_default.xml'),
 					this.destinationPath(params.rootPath + '/components/com_' + params.component + '/views/categories/tmpl/default.xml'),
 					params
 				);
-				
+
 				this.fs.copyTpl(
 					this.templatePath('_site_view_category.php'),
 					this.destinationPath(params.rootPath + '/components/com_' + params.component + '/views/category/view.html.php'),
 					params
 				);
-				
+
 				this.fs.copyTpl(
 					this.templatePath('_site_view_category_default.php'),
 					this.destinationPath(params.rootPath + '/components/com_' + params.component + '/views/category/tmpl/default.php'),
 					params
 				);
-				
+
 				this.fs.copyTpl(
 					this.templatePath('_site_view_category_default_items.php'),
 					this.destinationPath(params.rootPath + '/components/com_' + params.component + '/views/category/tmpl/default_items.php'),
 					params
 				);
-				
+
 				this.fs.copyTpl(
 					this.templatePath('_site_view_category_default_children.php'),
 					this.destinationPath(params.rootPath + '/components/com_' + params.component + '/views/category/tmpl/default_children.php'),
 					params
 				);
-				
+
 				this.fs.copyTpl(
 					this.templatePath('_site_view_category_default.xml'),
 					this.destinationPath(params.rootPath + '/components/com_' + params.component + '/views/category/tmpl/default.xml'),
