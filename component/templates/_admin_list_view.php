@@ -16,7 +16,7 @@ defined('_JEXEC') or die;
  * @subpackage  com_<%= component %>
  * @since       1.5
  */
-class <%= camelcase %>View<%= views.standard.listview.lowercase.camelcase %> extends JViewLegacy
+class <%= camelcase %>View<%= views.standard.listview.camelcase %> extends JViewLegacy
 {
 	protected $items;
 	protected $pagination;
@@ -33,7 +33,7 @@ class <%= camelcase %>View<%= views.standard.listview.lowercase.camelcase %> ext
 		$this->items		= $this->get('Items');
 		$this->pagination	= $this->get('Pagination');
 
-		WeblinksHelper::addSubmenu('weblinks');
+		<%= camelcase %>Helper::addSubmenu('<%= views.standard.listview.lowercase %>');
 
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
@@ -67,11 +67,11 @@ class <%= camelcase %>View<%= views.standard.listview.lowercase.camelcase %> ext
 		<% if (db.fields.categories) { %>if (count($user->getAuthorisedCategories('com_<%= component %>', 'core.create')) > 0)<% } else { %>
 		if ($canDo->get('core.create'))<% } %>
 		{
-			JToolbarHelper::addNew('<% views.standard.listview.lowercase.lowercase %>.add');
+			JToolbarHelper::addNew('<%= views.standard.detailview.lowercase %>.add');
 		}
 		if ($canDo->get('core.edit'))
 		{
-			JToolbarHelper::editList('<% views.standard.listview.lowercase.lowercase %>.edit');
+			JToolbarHelper::editList('<%= views.standard.detailview.lowercase %>.edit');
 		}
 		if ($canDo->get('core.edit.state')) {
 

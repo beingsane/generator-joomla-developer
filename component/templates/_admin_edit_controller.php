@@ -47,7 +47,7 @@ class <%= camelcase %>Controller<%= views.standard.detailview.camelcase %> exten
 		{
 			return $allow;
 		}
-		}%> } else { %>
+		<% } else { %>
 			return parent::allowAdd($data);
 		<% } %>
 	}
@@ -82,7 +82,7 @@ class <%= camelcase %>Controller<%= views.standard.detailview.camelcase %> exten
 		{
 			// Since there is no asset tracking, revert to the component permissions.
 			return parent::allowEdit($data, $key);
-		}%> } else { %>
+		}<% } else { %>
 			return parent::allowEdit($data, $key);
 		<% } %>
 	}

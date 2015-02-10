@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `#__<%= component %>_<%= views.standard.detailview.lo
   `params` text NOT NULL,<% } %><% if (db.fields.urls) { %>
   `urls` text NOT NULL,<% } %><% if (db.fields.images) { %>
   `images` text NOT NULL,<% } %>
-  `language` char(7) NOT NULL DEFAULT '',<% } %><% if (db.fields.timestampt) { %>
+  `language` char(7) NOT NULL DEFAULT '',<% } %><% if (db.fields.timestamp) { %>
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `created_by` int(10) unsigned NOT NULL DEFAULT '0',
   `created_by_alias` varchar(255) NOT NULL DEFAULT '',

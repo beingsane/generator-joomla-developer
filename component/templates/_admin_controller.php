@@ -21,7 +21,7 @@ class <%= camelcase %>Controller extends JControllerLegacy
 	 * @var		string	The default view.
 	 * @since   1.6
 	 */
-	protected $default_view = '<%= views.standard.listview.lowercase %>s';
+	protected $default_view = '<%= views.standard.listview.lowercase %>';
 
 	/**
 	 * Method to display a view.
@@ -34,19 +34,18 @@ class <%= camelcase %>Controller extends JControllerLegacy
 	 */
 	public function display($cachable = false, $urlparams = false)
 	{
-		require_once JPATH_COMPONENT.'/helpers/<%= component %>.php';
 
-		$view   = $this->input->get('view', '<%= views.standard.listview.lowercase %>s');
+		$view   = $this->input->get('view', '<%= views.standard.listview.lowercase %>');
 		$layout = $this->input->get('layout', 'default');
 		$id     = $this->input->getInt('id');
 
 		// Check for edit form.
-		if ($view == '<%= views.standard.listview.lowercase %>' && $layout == 'edit' && !$this->checkEditId('com_<%= component %>.edit.<%= views.standard.listview.lowercase %>', $id)) {
+		if ($view == '<%= views.standard.detailview.lowercase %>' && $layout == 'edit' && !$this->checkEditId('com_<%= component %>.edit.<%= views.standard.detailview.lowercase %>', $id)) {
 
 			// Somehow the person just went to the form - we don't allow that.
 			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));
 			$this->setMessage($this->getError(), 'error');
-			$this->setRedirect(JRoute::_('index.php?option=com_<%= component %>&view=<%= views.standard.listview.lowercase %>s', false));
+			$this->setRedirect(JRoute::_('index.php?option=com_<%= component %>&view=<%= views.standard.listview.lowercase %>', false));
 
 			return false;
 		}

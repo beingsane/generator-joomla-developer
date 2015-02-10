@@ -139,7 +139,7 @@ class <%= camelcase %>Model<%= views.standard.listview.camelcase %> extends JMod
 				'a.language'<% } %>
 			)
 		);
-		$query->from($db->quoteName('#_<%= component %>_<%= views.standard.detailview.lowercase %>') . ' AS a');
+		$query->from($db->quoteName('#__<%= component %>_<%= views.standard.detailview.lowercase %>') . ' AS a');
 		<% if (db.fields.language) { %>
 		// Join over the language
 		$query->select('l.title AS language_title')

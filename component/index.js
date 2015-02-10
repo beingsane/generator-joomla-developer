@@ -55,6 +55,7 @@ module.exports = yeoman.generators.Base.extend({
 					languagecode: this.languagecode || this.config.get('languagecode'),
 					rootPath: this.config.get('repositoryName') || 'joomla-cms',
 					updateserver: false,
+					icon: false,
 					media: {
 						css: true,
 						js: true,
@@ -288,14 +289,14 @@ module.exports = yeoman.generators.Base.extend({
 			{
 
 				this.fs.copyTpl(
-					this.templatePath('_language.ini'),
+					this.templatePath('_admin_language.ini'),
 					this.destinationPath(params.rootPath + '/administrator/language/' + params.languagecode + '/' + params.languagecode + '.com_' + params.component + '.ini'),
 					params
 				);
 
 
 				this.fs.copyTpl(
-					this.templatePath('_language.sys.ini'),
+					this.templatePath('_admin_language.sys.ini'),
 					this.destinationPath(params.rootPath + '/administrator/language/' + params.languagecode + '/' + params.languagecode + '.com_' + params.component + '.sys.ini'),
 					params
 				);
@@ -353,44 +354,37 @@ module.exports = yeoman.generators.Base.extend({
 				this.destinationPath(params.rootPath + '/components/com_' + params.component + '/models/' + params.views.standard.detailview.lowercase + '.php'),
 				params
 			);
-			console.log('detail view model');
 
 			this.fs.copyTpl(
 				this.templatePath('_site_form_detailview.xml'),
 				this.destinationPath(params.rootPath + '/components/com_' + params.component + '/models/forms/' + params.views.standard.detailview.lowercase + '.xml'),
 				params
 			);
-			console.log('detail view class');
 
 			this.fs.copyTpl(
 				this.templatePath('_site_view_detailview.php'),
 				this.destinationPath(params.rootPath + '/components/com_' + params.component + '/views/' + params.views.standard.detailview.lowercase + '/view.html.php'),
 				params
 			);
-			console.log('detail view php');
 
 			this.fs.copyTpl(
 				this.templatePath('_site_view_detailview_edit.php'),
 				this.destinationPath(params.rootPath + '/components/com_' + params.component + '/views/' + params.views.standard.detailview.lowercase + '/tmpl/edit.php'),
 				params
 			);
-			console.log('detail view edit php');
-
+			
 			this.fs.copyTpl(
 				this.templatePath('_site_view_detailview_default.php'),
 				this.destinationPath(params.rootPath + '/components/com_' + params.component + '/views/' + params.views.standard.detailview.lowercase + '/tmpl/default.php'),
 				params
 			);
-			console.log('detail view default php');
 
 			this.fs.copyTpl(
 				this.templatePath('_site_view_detailview_default.xml'),
 				this.destinationPath(params.rootPath + '/components/com_' + params.component + '/views/' + params.views.standard.detailview.lowercase + '/tmpl/default.xml'),
 				params
 			);
-			console.log('detail view default XML');
 
-			// Template admin language files
 			if (params.languagefile === true && typeof params.languagecode !== "undefined")
 			{
 				this.fs.copyTpl(
@@ -399,7 +393,6 @@ module.exports = yeoman.generators.Base.extend({
 					params
 				);
 			}
-			console.log('site language ini');
 
 			if (params.db.fields.categories)
 			{

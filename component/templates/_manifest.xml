@@ -19,7 +19,7 @@
 		<sql>
 			<file driver="mysql" charset="utf8" folder="sql">sql/uninstall.mysql.utf8.sql</file>
 		</sql>
-	</uninstall><% } %><% if (languagefiles) { %>
+	</uninstall><% } %><% if (languagefile) { %>
 	<languages folder="site">
 		<language tag="en-GB">language/en-GB/en-GB.com_<%= component %>.ini</language>
 	</languages><% } %>
@@ -41,10 +41,10 @@
 		<folder>views</folder>
 	</files>
 	
-	<administrator>
+	<administration>
 		<menu <% if (icon) { %>img="components/com_<%= component %>/<%= icon.filename %>-16.png"<% } %>>COM_<%= uppercase %></menu><% if (views.standard.listview) { %>
 		<submenu>
-			<menu link="option=com_<%= component %>">COM_<%= views.standard.listview.uppercase</menu>
+			<menu link="option=com_<%= component %>">COM_<%= views.standard.listview.uppercase %></menu>
 			<% if (db.fields.categories) { %><menu link="option=com_users">Users</menu><% } %>
 		</submenu><% } %>
 		<files folder="admin">
@@ -61,11 +61,11 @@
 			<folder>tables</folder>
 			<folder>views</folder>
 		</files><% if (languagefile === true) { %>
-		<languages>
+		<languages folder="admin">
 			<language tag="<%= languagecode %>"><%= languagecode %>.com_<%= component %>.ini</language>
 			<language tag="<%= languagecode %>"><%= languagecode %>.com_<%= component %>.ini.sys</language>
 		</languages><% } %>
-	</administrator>
+	</administration>
 	<% if (updateserver) { %>
 	<updateservers>
 		<server type="extension" priority="1" name="Extension Update Site">http://jsitepoint.com/update/components/com_alpha/extension.xml</server> <!-- useful for single extensions -->
