@@ -18,26 +18,26 @@ JHtml::_('formbehavior.chosen', 'select');
 <script type="text/javascript">
 	Joomla.submitbutton = function(task)
 	{
-		if (task == 'weblink.cancel' || document.formvalidator.isValid(document.id('weblink-form'))) {
-			<?php echo $this->form->getField('description')->save(); ?>
-			Joomla.submitform(task, document.getElementById('weblink-form'));
+		if (task == '<%= views.standard.detailview.lowercase %>.cancel' || document.formvalidator.isValid(document.id('<%= views.standard.detailview.lowercase %>-form'))) {<% if (db.fields.description) { %>
+			<?php echo $this->form->getField('description')->save(); ?><% } %>
+			Joomla.submitform(task, document.getElementById('<%= views.standard.detailview.lowercase %>-form'));
 		}
 	}
 </script>
 
-<form action="<?php echo JRoute::_('index.php?option=com_weblinks&layout=edit&id=' . (int) $this->item->id); ?>" method="post" name="adminForm" id="weblink-form" class="form-validate">
+<form action="<?php echo JRoute::_('index.php?option=com_<%= views.standard.detailview.lowercase %>s&layout=edit&id=' . (int) $this->item->id); ?>" method="post" name="adminForm" id="<%= views.standard.detailview.lowercase %>-form" class="form-validate">
 
 	<?php echo JLayoutHelper::render('joomla.edit.title_alias', $this); ?>
 
 	<div class="form-horizontal">
 		<?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'details')); ?>
 
-		<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'details', empty($this->item->id) ? JText::_('COM_WEBLINKS_NEW_WEBLINK', true) : JText::_('COM_WEBLINKS_EDIT_WEBLINK', true)); ?>
+		<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'details', empty($this->item->id) ? JText::_('COM_<%= uppercase %>_NEW_<%= views.standard.detailview.uppercase %>', true) : JText::_('COM_<%= uppercase %>_EDIT_<%= views.standard.detailview.uppercase %>', true)); ?>
 		<div class="row-fluid">
 			<div class="span9">
-				<div class="form-vertical">
-					<?php echo $this->form->getControlGroup('url'); ?>
-					<?php echo $this->form->getControlGroup('description'); ?>
+				<div class="form-vertical"><% if (db.fields.url) { %>
+					<?php echo $this->form->getControlGroup('url'); ?><% } %><% if (db.fields.description) { %>
+					<?php echo $this->form->getControlGroup('description'); ?><% } %>
 				</div>
 			</div>
 			<div class="span3">

@@ -154,7 +154,8 @@ class <%= camelcase %>Table<%= views.standard.detailview.camelcase %> extends JT
 	->select($this->_db->quoteName('id'))
 	->from($this->_db->quoteName('#__<%= component %>_<%= views.standard.detailview.lowercase %>'))
 	->where($this->_db->quoteName('title') . ' = ' . $this->_db->quote($this->title))<% if (db.fields.category) { %>
-	->where($this->_db->quoteName('catid') . ' = ' . (int) $this->catid);<% } %>
+	->where($this->_db->quoteName('catid') . ' = ' . (int) $this->catid)<% } %>;
+	
 	$this->_db->setQuery($query);
 
 	$xid = (int) $this->_db->loadResult();

@@ -69,6 +69,7 @@ module.exports = yeoman.generators.Base.extend({
 							timestamp: true,
 							urls: true,
 							metadata: true,
+							description: true,
 							params: true,
 							images: true,
 							language: true,

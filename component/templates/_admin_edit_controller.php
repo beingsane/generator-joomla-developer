@@ -15,7 +15,7 @@ defined('_JEXEC') or die;
  * @package     Joomla.Administrator
  * @subpackage  com_<%= component %>
  */
-class <%= camelcase %>Controller<%= views.standard.detailview.camelcase %> extends JControllerLegacy
+class <%= camelcase %>Controller<%= views.standard.detailview.camelcase %> extends JControllerForm
 {
 	/**
 	 * Method override to check if you can add a new record.
