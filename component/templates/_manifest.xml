@@ -44,8 +44,9 @@
 	<administration>
 		<menu <% if (icon) { %>img="components/com_<%= component %>/<%= icon.filename %>-16.png"<% } %>>COM_<%= uppercase %></menu><% if (views.standard.listview) { %>
 		<submenu>
-			<menu link="option=com_<%= component %>">COM_<%= views.standard.listview.uppercase %></menu>
-			<% if (db.fields.categories) { %><menu link="option=com_users">Users</menu><% } %>
+			<menu link="option=com_<%= component %>">COM_<%= uppercase %>_<%= views.standard.listview.uppercase %></menu>
+			<% if (db.fields.categories) { %><menu link="option=com_categories&amp;extension=com_<%= component %>"
+				view="categories" img="class:<%= component %>-cat" alt="<%= views.standard.listview.camelcase %>/Categories">com_<%= component %>_categories</menu><% } %>
 		</submenu><% } %>
 		<files folder="admin">
 			<filename>access.xml</filename>
@@ -63,7 +64,7 @@
 		</files><% if (languagefile === true) { %>
 		<languages folder="admin">
 			<language tag="<%= languagecode %>"><%= languagecode %>.com_<%= component %>.ini</language>
-			<language tag="<%= languagecode %>"><%= languagecode %>.com_<%= component %>.ini.sys</language>
+			<language tag="<%= languagecode %>"><%= languagecode %>.com_<%= component %>.sys.ini</language>
 		</languages><% } %>
 	</administration>
 	<% if (updateserver) { %>

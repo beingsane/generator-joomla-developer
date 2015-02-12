@@ -6,6 +6,32 @@
  * @copyright	<%= copyright %>
  * @license		<%= license %>
  */
+<%
+var jsonEncode = [];
+if (db.fields.params)
+{
+	jsonEncode.push('params');
+}
+
+if (db.fields.metadata)
+{
+	jsonEncode.push('metadata');
+}
+
+if (db.fields.images)
+{
+	jsonEncode.push('images');
+}
+
+if (jsonEncode.length > 1)
+{
+	jsonEncode = jsonEncode.join("','");
+}
+else 
+{
+	jsonEncode = false;
+}
+%>
 
 defined('_JEXEC') or die;
 
@@ -17,7 +43,15 @@ defined('_JEXEC') or die;
  * @since       1.5
  */
 class <%= camelcase %>Table<%= views.standard.detailview.camelcase %> extends JTable
-{
+{<% if (jsonEncode) { %>
+	/**
+	 * Ensure the params, metadata and images are json encoded in the bind method
+	 *
+	 * @var    array
+	 * @since  3.3
+	 */
+	protected $_jsonEncode = array('<%= jsonEncode %>');
+<% } %>
 	/**
 	 * Constructor
 	 *
@@ -31,43 +65,6 @@ class <%= camelcase %>Table<%= views.standard.detailview.camelcase %> extends JT
 	}
 
 	/**
-	 * Overloaded bind function to pre-process the params.
-	 *
-	 * @param   mixed  $array   An associative array or object to bind to the JTable instance.
-	 * @param   mixed  $ignore  An optional array or space separated list of properties to ignore while binding.
-	 *
-	 * @return  boolean  True on success.
-	 *
-	 * @see     JTable:bind
-	 * @since   1.5
-	 */
-	public function bind($array, $ignore = '')
-	{<% if (db.fields.params) { %>
-	if (isset($array['params']) && is_array($array['params']))
-	{
-		$registry = new JRegistry;
-		$registry->loadArray($array['params']);
-		$array['params'] = (string) $registry;
-	}<% } %>
-	<% if (db.fields.metadata) { %>
-	if (isset($array['metadata']) && is_array($array['metadata']))
-	{
-		$registry = new JRegistry;
-		$registry->loadArray($array['metadata']);
-		$array['metadata'] = (string) $registry;
-	}<% } %>
-
-	<% if (db.fields.images) { %>
-	if (isset($array['images']) && is_array($array['images']))
-	{
-		$registry = new JRegistry;
-		$registry->loadArray($array['images']);
-		$array['images'] = (string) $registry;
-	}<% } %>
-	return parent::bind($array, $ignore);
-	}
-
-	/**
 	 * Overload the store method for the Weblinks table.
 	 *
 	 * @param   boolean	Toggle whether null values should be updated.
@@ -76,58 +73,56 @@ class <%= camelcase %>Table<%= views.standard.detailview.camelcase %> extends JT
 	 */
 	public function store($updateNulls = false)
 	{<% if (db.fields.timestamps) { %>
-		$date	= JFactory::getDate();
-		$user	= JFactory::getUser();
-
-		if ($this->id)
-		{
-			// Existing item
-			$this->modified		= $date->toSql();
-			$this->modified_by	= $user->get('id');
-		}
-		else
-		{
-			// New weblink. A weblink created and created_by field can be set by the user,
-			// so we don't touch either of these if they are set.
-			if (!(int) $this->created)
+			$date	= JFactory::getDate();
+			$user	= JFactory::getUser();
+	
+			if ($this->id)
 			{
-			$this->created = $date->toSql();
+				// Existing item
+				$this->modified		= $date->toSql();
+				$this->modified_by	= $user->get('id');
 			}
-			if (empty($this->created_by))
+			else
 			{
-				$this->created_by = $user->get('id');
+				// New weblink. A weblink created and created_by field can be set by the user,
+				// so we don't touch either of these if they are set.
+				if (!(int) $this->created)
+				{
+				$this->created = $date->toSql();
+				}
+				if (empty($this->created_by))
+				{
+					$this->created_by = $user->get('id');
+				}
+			}<% } %>
+	
+			<% if (db.fields.publish) { %>
+			// Set publish_up to null date if not set
+			if (!$this->publish_up)
+			{
+			$this->publish_up = $this->_db->getNullDate();
 			}
-		}<% } %>
-
-		<% if (db.fields.publish) { %>
-		// Set publish_up to null date if not set
-		if (!$this->publish_up)
-		{
-		$this->publish_up = $this->_db->getNullDate();
-		}
-
-		// Set publish_down to null date if not set
-		if (!$this->publish_down)
-		{
-		$this->publish_down = $this->_db->getNullDate();
-		}<% } %>
-		<% if (db.fields.alias) {  %>
-		// Verify that the alias is unique
-			$table = JTable::getInstance('<%= views.standard.detailview.lowercase %>', '<%= camelcase %>Table');
-
-		if ($table->load(array('alias' => $this->alias<% if (db.fields.categories) { %>, 'catid' => $this->catid)<% } %>) && ($table->id != $this->id || $this->id == 0))
+	
+			// Set publish_down to null date if not set
+			if (!$this->publish_down)
 			{
-			$this->setError(JText::_('COM_<%= uppercase %>_ERROR_UNIQUE_ALIAS'));
-			return false;
-		}<% } %>
-		<% if (db.fields.url) { %>
-			// Convert IDN urls to punycode
-		$this->url = JStringPunycode::urlToPunycode($this->url);<% } %>
-
-		return parent::store($updateNulls);
+			$this->publish_down = $this->_db->getNullDate();
+			}<% } %>
+			<% if (db.fields.alias) {  %>
+			// Verify that the alias is unique
+				$table = JTable::getInstance('<%= views.standard.detailview.lowercase %>', '<%= camelcase %>Table');
+	
+			if ($table->load(array('alias' => $this->alias<% if (db.fields.categories) { %>, 'catid' => $this->catid)<% } %>) && ($table->id != $this->id || $this->id == 0))
+				{
+				$this->setError(JText::_('COM_<%= uppercase %>_ERROR_UNIQUE_ALIAS'));
+				return false;
+			}<% } %>
+			<% if (db.fields.url) { %>
+				// Convert IDN urls to punycode
+			$this->url = JStringPunycode::urlToPunycode($this->url);<% } %>
+	
+			return parent::store($updateNulls);
 	}
-
-	//PROLBEM METHOD START
 
 	/**
 	 * Overloaded check method to ensure data integrity.
@@ -136,81 +131,74 @@ class <%= camelcase %>Table<%= views.standard.detailview.camelcase %> extends JT
 	 */
 	public function check()
 	{<% if (db.fields.url) { %>
-	if (JFilterInput::checkAttribute(array ('href', $this->url)))
-	{
-		$this->setError(JText::_('COM_<%= uppercase %>_ERR_TABLES_PROVIDE_URL'));
-		return false;
-	}<% } %>
-
-	// check for valid name
-	if (trim($this->title) == '')
-	{
-		$this->setError(JText::_('COM_<%= uppercase %>_ERR_TABLES_TITLE'));
-		return false;
-	}
-
-	// Check for existing name
-	$query = $this->_db->getQuery(true)
-	->select($this->_db->quoteName('id'))
-	->from($this->_db->quoteName('#__<%= component %>_<%= views.standard.detailview.lowercase %>'))
-	->where($this->_db->quoteName('title') . ' = ' . $this->_db->quote($this->title))<% if (db.fields.category) { %>
-	->where($this->_db->quoteName('catid') . ' = ' . (int) $this->catid)<% } %>;
-	
-	$this->_db->setQuery($query);
-
-	$xid = (int) $this->_db->loadResult();
-	if ($xid && $xid != (int) $this->id)
-	{
-		$this->setError(JText::_('COM_<%= uppercase %>_ERR_TABLES_NAME'));
-		return false;
-	}
-	<% if (db.fields.alias) {  %>
-	if (empty($this->alias))
-	{
-		$this->alias = $this->title;
-	}
-	$this->alias = JApplication::stringURLSafe($this->alias);
-	if (trim(str_replace('-', '', $this->alias)) == '')
-	{
-		$this->alias = JFactory::getDate()->format("Y-m-d-H-i-s");
-	}<% } %>
-
-	<% if (db.fields.publish) {  %>
-	// Check the publish down date is not earlier than publish up.
-	if ($this->publish_down > $this->_db->getNullDate() && $this->publish_down < $this->publish_up)
-	{
-		$this->setError(JText::_('JGLOBAL_START_PUBLISH_AFTER_FINISH'));
-		return false;
-	}<% } %>
-	<% if (db.fields.metadata) {  %>
-	// clean up keywords -- eliminate extra spaces between phrases
-	// and cr (\r) and lf (\n) characters from string
-	if (!empty($this->metakey))
-	{
-		// only process if not empty
-		$bad_characters = array("\n", "\r", "\"", "<", ">"); // array of characters to remove
-		$after_clean = JString::str_ireplace($bad_characters, "", $this->metakey); // remove bad characters
-		$keys = explode(',', $after_clean); // create array using commas as delimiter
-		$clean_keys = array();
-
-		foreach ($keys as $key)
+		if (JFilterInput::checkAttribute(array ('href', $this->url)))
 		{
-			if (trim($key)) {  // ignore blank keywords
-				$clean_keys[] = trim($key);
-			}
+			$this->setError(JText::_('COM_<%= uppercase %>_ERR_TABLES_PROVIDE_URL'));
+			return false;
+		}<% } %>
+	
+		// check for valid name
+		if (trim($this->title) == '')
+		{
+			$this->setError(JText::_('COM_<%= uppercase %>_ERR_TABLES_TITLE'));
+			return false;
 		}
-		$this->metakey = implode(", ", $clean_keys); // put array back together delimited by ", "
-	}<% } %>
-
-	return true;
+	
+		// Check for existing name
+		$query = $this->_db->getQuery(true)
+			->select($this->_db->quoteName('id'))
+			->from($this->_db->quoteName('#__<%= component %>_<%= views.standard.detailview.lowercase %>'))
+			->where($this->_db->quoteName('title') . ' = ' . $this->_db->quote($this->title))<% if (db.fields.category) { %>
+			->where($this->_db->quoteName('catid') . ' = ' . (int) $this->catid)<% } %>;
+		
+		$this->_db->setQuery($query);
+	
+		$xid = (int) $this->_db->loadResult();
+		if ($xid && $xid != (int) $this->id)
+		{
+			$this->setError(JText::_('COM_<%= uppercase %>_ERR_TABLES_NAME'));
+			return false;
+		}
+		<% if (db.fields.alias) {  %>
+		if (empty($this->alias))
+		{
+			$this->alias = $this->title;
+		}
+		$this->alias = JApplication::stringURLSafe($this->alias);
+		if (trim(str_replace('-', '', $this->alias)) == '')
+		{
+			$this->alias = JFactory::getDate()->format("Y-m-d-H-i-s");
+		}<% } %>
+	
+		<% if (db.fields.publish) {  %>
+		// Check the publish down date is not earlier than publish up.
+		if ($this->publish_down > $this->_db->getNullDate() && $this->publish_down < $this->publish_up)
+		{
+			$this->setError(JText::_('JGLOBAL_START_PUBLISH_AFTER_FINISH'));
+			return false;
+		}<% } %>
+		<% if (db.fields.metadata) {  %>
+		// clean up keywords -- eliminate extra spaces between phrases
+		// and cr (\r) and lf (\n) characters from string
+		if (!empty($this->metakey))
+		{
+			// only process if not empty
+			$bad_characters = array("\n", "\r", "\"", "<", ">"); // array of characters to remove
+			$after_clean = JString::str_ireplace($bad_characters, "", $this->metakey); // remove bad characters
+			$keys = explode(',', $after_clean); // create array using commas as delimiter
+			$clean_keys = array();
+	
+			foreach ($keys as $key)
+			{
+				if (trim($key)) {  // ignore blank keywords
+					$clean_keys[] = trim($key);
+				}
+			}
+			$this->metakey = implode(", ", $clean_keys); // put array back together delimited by ", "
+		}<% } %>
+	
+		return true;
 	}
-
-
-	//PROLBEM METHOD END
-
-
-
-
 
 	<% if (db.fields.publish) { %>
 	/**

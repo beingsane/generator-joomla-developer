@@ -25,7 +25,7 @@ JHtml::_('formbehavior.chosen', 'select');
 	}
 </script>
 
-<form action="<?php echo JRoute::_('index.php?option=com_<%= views.standard.detailview.lowercase %>s&layout=edit&id=' . (int) $this->item->id); ?>" method="post" name="adminForm" id="<%= views.standard.detailview.lowercase %>-form" class="form-validate">
+<form action="<?php echo JRoute::_('index.php?option=com_<%= component %>&layout=edit&id=' . (int) $this->item->id); ?>" method="post" name="adminForm" id="<%= views.standard.detailview.lowercase %>-form" class="form-validate">
 
 	<?php echo JLayoutHelper::render('joomla.edit.title_alias', $this); ?>
 

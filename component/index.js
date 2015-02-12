@@ -24,11 +24,30 @@ module.exports = yeoman.generators.Base.extend({
 				name : 'camelcase',
 				message : 'What is name of the new component using CamelCase formatting?',
 				store : true
+			},
+			{
+				type : 'input',
+				name : 'listview',
+				message : 'What is the formal name of list view including spaces and capitalizing first letter of each word?',
+				store : true
+			},
+			{
+				type : 'input',
+				name : 'detailview',
+				message : 'What is the formal name of edit view including spaces and capitalizing first letter of each word?',
+				store : true
 			}
 		];
 
 		this.prompt(prompts, function (props) {
-			this.camelcase = props.camelcase;
+			this.component_formal = props.camelcase;
+			this.listview_formal = props.listview;
+			this.detailview_formal = props.detailview;
+			
+			this.camelcase = props.camelcase.replace(/\s+/g, '');
+			this.listview = props.listview.replace(/\s+/g, '');
+			this.detailview = props.detailview.replace(/\s+/g, '');			
+			
 			done();
 		}.bind(this));
 	},
@@ -38,8 +57,13 @@ module.exports = yeoman.generators.Base.extend({
 
 			var months = ['January', 'February', 'March', 'April','May','June','July','August','September','October','November','December'];
 			var date = new Date();
-
+			
 			var params = {
+					formal: {
+						component: this.component_formal,
+						listview: this.listview_formal,
+						detailview: this.detailview_formal
+					},
 					component: this.camelcase.toLowerCase(),
 					author: this.author || this.config.get('author'),
 					created: months[date.getMonth()] + ' ' + date.getFullYear(),
@@ -74,25 +98,34 @@ module.exports = yeoman.generators.Base.extend({
 							images: true,
 							language: true,
 							tags: true,
-							versions: true
+							versions: true,
+							ordering: true
 						}
 					},
 					views: {
 						bare: false,
-						standard: {
-							listview: {
-								camelcase: 'Auctions',
-								lowercase: 'auctions',
-								uppercase: 'AUCTIONS'
-							},
-							detailview:{
-								camelcase: 'Auction',
-								lowercase: 'auction',
-								uppercase: 'AUCTION'
-							},
-						}
+						standard: false
 					}
 				};
+			
+			
+			
+			// false logic place holder, in future implement logic to check if needed
+			if (true)
+			{
+				params.views.standard = {
+					listview: {
+						camelcase: this.listview,
+						lowercase: this.listview.toLowerCase(),
+						uppercase: this.listview.toUpperCase()
+					},
+					detailview:{
+						camelcase: this.detailview,
+						lowercase: this.detailview.toLowerCase(),
+						uppercase: this.detailview.toUpperCase()
+					},
+				}
+			}
 
 			var components = this.config.get('components');
 			components.push(params);
@@ -305,50 +338,46 @@ module.exports = yeoman.generators.Base.extend({
 			}
 
 			// Generate Site component files
-
-			console.log('GENERATING SITE FILES');
-			console.log(params.rootPath);
 			this.fs.copyTpl(
 				this.templatePath('index.html'),
 				this.destinationPath(params.rootPath + '/components/com_' + params.component + '/index.html')
 			);
-			console.log('generated 1 of 7 index.html file...');
+
 			this.fs.copyTpl(
 				this.templatePath('index.html'),
 				this.destinationPath(params.rootPath + '/components/com_' + params.component + '/controllers/index.html')
 			);
-			console.log('generated 2 of 7 index.html file...');
+
 			this.fs.copyTpl(
 				this.templatePath('index.html'),
 				this.destinationPath(params.rootPath + '/components/com_' + params.component + '/models/index.html')
 			);
-			console.log('generated 3 of 7 index.html file...');
+
 			this.fs.copyTpl(
 				this.templatePath('index.html'),
 				this.destinationPath(params.rootPath + '/components/com_' + params.component + '/models/forms/index.html')
 			);
-			console.log('generated 4 of 7 index.html file...');
+
 			this.fs.copyTpl(
 				this.templatePath('index.html'),
 				this.destinationPath(params.rootPath + '/components/com_' + params.component + '/views/index.html')
 			);
-			console.log('generated 5 of 7 index.html file...');
+
 			this.fs.copyTpl(
 				this.templatePath('index.html'),
 				this.destinationPath(params.rootPath + '/components/com_' + params.component + '/views/' + params.views.standard.detailview.lowercase + '/index.html')
 			);
-			console.log('generated 6 of 7 index.html file...');
+
 			this.fs.copyTpl(
 				this.templatePath('index.html'),
 				this.destinationPath(params.rootPath + '/components/com_' + params.component + '/index.html')
 			);
-			console.log('generated 7 of 7 index.html file...');
+
 			this.fs.copyTpl(
 				this.templatePath('_site_controller_detailview.php'),
 				this.destinationPath(params.rootPath + '/components/com_' + params.component + '/controllers/' + params.views.standard.detailview.lowercase + '.php'),
 				params
 			);
-			console.log('detail view controller');
 
 			this.fs.copyTpl(
 				this.templatePath('_site_model_detailview.php'),

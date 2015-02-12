@@ -37,5 +37,4 @@ CREATE TABLE IF NOT EXISTS `#__<%= component %>_<%= views.standard.detailview.lo
   KEY `idx_featured_catid` (`featured`<% if (db.fields.categories) { %>,`catid`<% } %>),<% } %><% if (db.fields.language) { %>
   KEY `idx_language` (`language`),<% } %>
   KEY `idx_xreference` (`xreference`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;

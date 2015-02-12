@@ -101,10 +101,10 @@ class <%= camelcase %>Controller<%= views.standard.detailview.camelcase %> exten
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 	
 		// Set the model
-		$model = $this->getModel('Newsfeed', '', array());
+		$model = $this->getModel('<%= views.standard.detailview.camelcase %>', '', array());
 	
 		// Preset the redirect
-		$this->setRedirect(JRoute::_('index.php?option=com_newsfeeds&view=<%= views.standard.listview.lowercase %>' . $this->getRedirectToListAppend(), false));
+		$this->setRedirect(JRoute::_('index.php?option=com_<%= component %>&view=<%= views.standard.listview.lowercase %>' . $this->getRedirectToListAppend(), false));
 	
 		return parent::batch($model);
 	}
