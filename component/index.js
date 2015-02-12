@@ -43,11 +43,11 @@ module.exports = yeoman.generators.Base.extend({
 			this.component_formal = props.camelcase;
 			this.listview_formal = props.listview;
 			this.detailview_formal = props.detailview;
-			
+
 			this.camelcase = props.camelcase.replace(/\s+/g, '');
 			this.listview = props.listview.replace(/\s+/g, '');
-			this.detailview = props.detailview.replace(/\s+/g, '');			
-			
+			this.detailview = props.detailview.replace(/\s+/g, '');
+
 			done();
 		}.bind(this));
 	},
@@ -57,7 +57,7 @@ module.exports = yeoman.generators.Base.extend({
 
 			var months = ['January', 'February', 'March', 'April','May','June','July','August','September','October','November','December'];
 			var date = new Date();
-			
+
 			var params = {
 					formal: {
 						component: this.component_formal,
@@ -107,9 +107,9 @@ module.exports = yeoman.generators.Base.extend({
 						standard: false
 					}
 				};
-			
-			
-			
+
+
+
 			// false logic place holder, in future implement logic to check if needed
 			if (true)
 			{
@@ -402,7 +402,7 @@ module.exports = yeoman.generators.Base.extend({
 				this.destinationPath(params.rootPath + '/components/com_' + params.component + '/views/' + params.views.standard.detailview.lowercase + '/tmpl/edit.php'),
 				params
 			);
-			
+
 			this.fs.copyTpl(
 				this.templatePath('_site_view_detailview_default.php'),
 				this.destinationPath(params.rootPath + '/components/com_' + params.component + '/views/' + params.views.standard.detailview.lowercase + '/tmpl/default.php'),
