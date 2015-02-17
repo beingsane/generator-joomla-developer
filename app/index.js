@@ -173,6 +173,7 @@ module.exports = yeoman.generators.Base.extend({
 			this.websitePassword = props.websitePassword;
 
 			this.website = props.website;
+			this.url = props.url;
 			this.path = props.path;
 			this.repositoryUrl = props.repositoryUrl;
 			this.repositoryName = props.repositoryName;
@@ -257,11 +258,11 @@ module.exports = yeoman.generators.Base.extend({
 
 			}.bind(this);
 
-			this.createUserCallBack = function(error, stdout, stderr) {
+			this.createUserCallBack = function(err, stdout, stderr) {
 
-				if (error)
+				if (err)
 				{
-					console.log(error);
+					console.log(err);
 					return false;
 				}
 
@@ -281,7 +282,8 @@ module.exports = yeoman.generators.Base.extend({
 					connection.query('UPDATE `' + db_prefix + 'users` SET block=0,activation="" WHERE id=1', function(err, rows, fields) {
 						if (err)
 						{
-							throw err;
+							console.log(err);
+							return false;
 						}
 					});
 				};
@@ -291,7 +293,8 @@ module.exports = yeoman.generators.Base.extend({
 					connection.query('UPDATE `' + db_prefix + 'user_usergroup_map` SET group_id=8 WHERE user_id=1', function(err, rows, fields) {
 						if (err)
 						{
-							throw err;
+							console.log(err);
+							return false;
 						}
 					});
 				}
@@ -309,11 +312,60 @@ module.exports = yeoman.generators.Base.extend({
 
 			}.bind(this);
 
-			this.deleteInstallationDirectoryCallBack = function() {
+			this.updateUserRegistrationSettingCallback = function() {
+
+				this.log(yosay(chalk.yellow('User Self Registration Setting Adjusted')));
+
+				cp.exec('casperjs installation.js --password=' + base.encode(this.websitePassword) + ' --email=' + this.websiteEmail + ' --url=' + this.url, { cwd: this.templatePath("tasks/scripts") }, this.createUserCallBack);
+
+			}.bind(this);
+
+			this.deleteInstallationDirectoryCallBack = function(err) {
+
+				if (err)
+				{
+					console.log(err);
+					return false;
+				}
 
 				this.log(yosay(chalk.yellow('Installation Folder Removed')));
 
-				cp.exec('casperjs installation.js --password=' + base.encode(this.websitePassword) + ' --email=' + this.websiteEmail, { cwd: this.templatePath("tasks/scripts") }, this.createUserCallBack);
+				var connection = mysql.createConnection({
+					host: this.db_host,
+					user: this.db_user,
+					password: this.db_password,
+					database: this.db_database
+				});
+
+				connection.connect();
+
+				connection.query('SELECT extension_id, params FROM `' + this.db_prefix + 'extensions` WHERE name="com_users"', function(err, rows, fields) {
+					if (err)
+					{
+						console.log(err);
+						return false;
+					}
+
+					var userParams = JSON.parse(rows[0].params);
+					userParams.allowUserRegistration = '1';
+					userParams = JSON.stringify(userParams);
+					var extension_id = rows[0].extension_id;
+
+					connection.query("UPDATE `" + this.db_prefix + "extensions` SET params='" + userParams + "' WHERE extension_id=" + extension_id, function(err, rows, fields) {
+
+						if (err)
+						{
+							console.log(err);
+							return false;
+						}
+
+						connection.end();
+
+						this.updateUserRegistrationSettingCallback();
+
+					}.bind(this));
+
+				}.bind(this));
 
 			}.bind(this);
 
@@ -321,9 +373,8 @@ module.exports = yeoman.generators.Base.extend({
 
 				if (err)
 				{
-					this.log(err);
+					console.log(err);
 					return false;
-					//done(err);
 				}
 
 				this.log(yosay(chalk.yellow('Database import complete')));
@@ -336,13 +387,12 @@ module.exports = yeoman.generators.Base.extend({
 
 				if (err)
 				{
-					this.log(err);
-					return false;f
+					console.log(err);
+					return false;
 					//done(err);
 				}
 
 				this.log(yosay(chalk.yellow('Running database script...')));
-				console.log(this.destinationRoot() + '/database/joomla.sql');
 
 				cp.exec('mysql --user=' + params.db_user + ' --password=' + params.db_password + ' ' + params.db_database + ' < ' + params.path + '/database/joomla.sql', this.importCallBack);
 
@@ -353,7 +403,7 @@ module.exports = yeoman.generators.Base.extend({
 
 				if (err)
 				{
-					this.log(err);
+					console.log(err);
 					return false;
 					//done(err);
 				}
@@ -368,7 +418,7 @@ module.exports = yeoman.generators.Base.extend({
 
 				if (err)
 				{
-					this.log(err);
+					console.log(err);
 					return false;
 					//done(err);
 				}
@@ -405,15 +455,14 @@ module.exports = yeoman.generators.Base.extend({
 			{
 
 				var download = new Download({ extract: true, strip: 1, mode: '755' })
-					.get(this.repositoryUrl.replace('.git','') + '/archive/master.zip')
+					.get('https://github.com/joomla/joomla-cms/archive/master.zip')
 					.dest(this.destinationPath(this.repositoryName))
-					.use(progress()
-				);
+					.use(progress());
 
 				download.run(function (err, files, stream) {
 
 					if (err) {
-						throw err;
+						console.log(err);
 						return false
 						//done(err);
 					}

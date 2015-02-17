@@ -153,6 +153,11 @@ module.exports = yeoman.generators.Base.extend({
 			components.push(params);
 			this.config.set('components', components);
 
+
+			var mvcPaths = this.fs.readJSON('./configurations/config.json');
+
+			console.log(mvcPaths);
+
 			async.series([
 				ioFileOperations('_manifest.xml', params.rootPath + '/administrator/components/com_' + params.component + '/' + params.component + '.xml', true),
 				ioFileOperations('_admin_component.php', params.rootPath + '/administrator/components/com_' + params.component + '/' + params.component + '.php', true),
