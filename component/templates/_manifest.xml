@@ -40,13 +40,14 @@
 		<folder>models</folder>
 		<folder>views</folder>
 	</files>
-	
+
 	<administration>
-		<menu <% if (icon) { %>img="components/com_<%= component %>/<%= icon.filename %>-16.png"<% } %>>COM_<%= uppercase %></menu><% if (views.standard.listview) { %>
+		<menu <% if (icon) { %>img="components/com_<%= component %>/<%= icon.filename %>-16.png"<% } %>>COM_<%= uppercase %></menu><% if (views.standard.length > 0) { %>
 		<submenu>
-			<menu link="option=com_<%= component %>">COM_<%= uppercase %>_<%= views.standard.listview.uppercase %></menu>
-			<% if (db.fields.categories) { %><menu link="option=com_categories&amp;extension=com_<%= component %>"
-				view="categories" img="class:<%= component %>-cat" alt="<%= views.standard.listview.camelcase %>/Categories">com_<%= component %>_categories</menu><% } %>
+			<% for (var i = 0; i < views.standard.length; i++) { %>
+			<menu link="option=com_<%= component %>">COM_<%= uppercase %>_<%= views.standard[i].listview.uppercase %></menu>
+			<% } if (db.fields.categories) { %><menu link="option=com_categories&amp;extension=com_<%= component %>"
+				view="categories" img="class:<%= component %>-cat" alt="<%= camelcase %>/Categories">com_<%= component %>_categories</menu><% } %>
 		</submenu><% } %>
 		<files folder="admin">
 			<filename>access.xml</filename>

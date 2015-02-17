@@ -15,7 +15,7 @@ defined('_JEXEC') or die;
  * @package     Joomla.Administrator
  * @subpackage  com_<%= component %>
  */
-class <%= camelcase %>Controller<%= views.standard.detailview.camelcase %> extends JControllerForm
+class <%= camelcase %>Controller<%= views.standard[index].detailview.camelcase %> extends JControllerForm
 {
 	/**
 	 * Method override to check if you can add a new record.
@@ -31,13 +31,13 @@ class <%= camelcase %>Controller<%= views.standard.detailview.camelcase %> exten
 		$user = JFactory::getUser();
 		$categoryId = JArrayHelper::getValue($data, 'catid', $this->input->getInt('filter_category_id'), 'int');
 		$allow = null;
-	
+
 		if ($categoryId)
 		{
 			// If the category has been passed in the URL check it.
 			$allow = $user->authorise('core.create', $this->option . '.category.' . $categoryId);
 		}
-	
+
 		if ($allow === null)
 		{
 			// In the absence of better information, revert to the component permissions.
@@ -51,7 +51,7 @@ class <%= camelcase %>Controller<%= views.standard.detailview.camelcase %> exten
 			return parent::allowAdd($data);
 		<% } %>
 	}
-	
+
 	/**
 	 * Method to check if you can edit a record.
 	 *
@@ -67,12 +67,12 @@ class <%= camelcase %>Controller<%= views.standard.detailview.camelcase %> exten
 		$user = JFactory::getUser();
 		$recordId = (int) isset($data[$key]) ? $data[$key] : 0;
 		$categoryId = 0;
-	
+
 		if ($recordId)
 		{
 			$categoryId = (int) $this->getModel()->getItem($recordId)->catid;
 		}
-	
+
 		if ($categoryId)
 		{
 			// The category has been set. Check the category permissions.
@@ -86,7 +86,7 @@ class <%= camelcase %>Controller<%= views.standard.detailview.camelcase %> exten
 			return parent::allowEdit($data, $key);
 		<% } %>
 	}
-	
+
 	/**
 	 * Method to run batch operations.
 	 *
@@ -99,16 +99,16 @@ class <%= camelcase %>Controller<%= views.standard.detailview.camelcase %> exten
 	public function batch($model = null)
 	{
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
-	
+
 		// Set the model
-		$model = $this->getModel('<%= views.standard.detailview.camelcase %>', '', array());
-	
+		$model = $this->getModel('<%= views.standard[index].detailview.camelcase %>', '', array());
+
 		// Preset the redirect
-		$this->setRedirect(JRoute::_('index.php?option=com_<%= component %>&view=<%= views.standard.listview.lowercase %>' . $this->getRedirectToListAppend(), false));
-	
+		$this->setRedirect(JRoute::_('index.php?option=com_<%= component %>&view=<%= views.standard[index].listview.lowercase %>' . $this->getRedirectToListAppend(), false));
+
 		return parent::batch($model);
 	}
-	
+
 	/**
 	 * Function that allows child controller access to model data after the data has been saved.
 	 *
@@ -121,6 +121,6 @@ class <%= camelcase %>Controller<%= views.standard.detailview.camelcase %> exten
 	 */
 	protected function postSaveHook(JModelLegacy $model, $validData = array())
 	{
-	
+
 	}
 }

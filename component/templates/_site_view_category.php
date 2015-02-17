@@ -30,14 +30,14 @@ class <%= camelcase %>ViewCategory extends JViewCategory
 		parent::commonCategoryDisplay();
 
 		// Prepare the data.
-		// Compute the <%= views.standard.detailview.lowercase %> slug & link url.
+		// Compute the <%= views.standard[index].detailview.lowercase %> slug & link url.
 		foreach ($this->items as $item)
 		{
 			$item->slug = $item->alias ? ($item->id . ':' . $item->alias) : $item->id;
 
 			if ($item->params->get('count_clicks', $this->params->get('count_clicks')) == 1)
 			{
-				$item->link = JRoute::_('index.php?option=com_<%= component %>&task=<%= views.standard.detailview.lowercase %>.go&id=' . $item->id);
+				$item->link = JRoute::_('index.php?option=com_<%= component %>&task=<%= views.standard[index].detailview.lowercase %>.go&id=' . $item->id);
 			}
 			else
 			{

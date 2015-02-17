@@ -64,7 +64,7 @@ class <%= camelcase %>ModelCategory extends JModelList
 	protected $_category = null;
 
 	/**
-	 * The list of other <%= views.standard.detailview.lowercase %> categories.
+	 * The list of other <%= views.standard[index].detailview.lowercase %> categories.
 	 *
 	 * @access    protected
 	 * @var        array
@@ -92,7 +92,7 @@ class <%= camelcase %>ModelCategory extends JModelList
 			}
 			// Get the tags
 			$item->tags = new JHelperTags;
-			$item->tags->getItemTags('com_<%= component %>.<%= views.standard.detailview.lowercase %>', $item->id);
+			$item->tags->getItemTags('com_<%= component %>.<%= views.standard[index].detailview.lowercase %>', $item->id);
 		}
 
 		return $items;
@@ -154,7 +154,7 @@ class <%= camelcase %>ModelCategory extends JModelList
 		$nullDate = $db->quote($db->getNullDate());
 		$date = JFactory::getDate();
 		$nowDate = $db->quote($date->toSql());
-		
+
 		if ($this->getState('filter.publish_date'))
 		{
 			$query->where('(a.publish_up = ' . $nullDate . ' OR a.publish_up <= ' . $nowDate . ')')

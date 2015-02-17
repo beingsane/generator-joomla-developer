@@ -16,7 +16,7 @@ defined('_JEXEC') or die;
  * @subpackage  com<%= component %>
  * @since       1.6
  */
-class <%= camelcase %>Model<%= views.standard.listview.camelcase %> extends JModelList
+class <%= camelcase %>Model<%= views.standard[index].listview.camelcase %> extends JModelList
 {
 	/**
 	 * Constructor.
@@ -139,7 +139,7 @@ class <%= camelcase %>Model<%= views.standard.listview.camelcase %> extends JMod
 				'a.language'<% } %>
 			)
 		);
-		$query->from($db->quoteName('#__<%= component %>_<%= views.standard.detailview.lowercase %>') . ' AS a');
+		$query->from($db->quoteName('#__<%= component %>_<%= views.standard[index].detailview.lowercase %>') . ' AS a');
 		<% if (db.fields.language) { %>
 		// Join over the language
 		$query->select('l.title AS language_title')

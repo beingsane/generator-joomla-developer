@@ -27,28 +27,24 @@ module.exports = yeoman.generators.Base.extend({
 				store : true
 			},
 			{
-				type : 'input',
-				name : 'listview',
-				message : 'What is the formal name of list view including spaces and capitalizing first letter of each word?',
-				store : true
-			},
-			{
-				type : 'input',
-				name : 'detailview',
-				message : 'What is the formal name of edit view including spaces and capitalizing first letter of each word?',
-				store : true
+				type : 'confirm',
+				name : 'configJson',
+				message : 'User config.json to build MVC paths?',
+				store : true,
+				"default": true
 			}
 		];
 
 		this.prompt(prompts, function (props) {
 			this.component_formal = props.camelcase;
-			this.listview_formal = props.listview;
-			this.detailview_formal = props.detailview;
+			//this.listview_formal = props.listview;
+			//this.detailview_formal = props.detailview;
 
 			this.camelcase = props.camelcase.replace(/\s+/g, '');
-			this.listview = props.listview.replace(/\s+/g, '');
-			this.detailview = props.detailview.replace(/\s+/g, '');
+			//this.listview = props.listview.replace(/\s+/g, '');
+			//this.detailview = props.detailview.replace(/\s+/g, '');
 
+			this.configJson = props.configJson;
 			done();
 		}.bind(this));
 	},
@@ -64,8 +60,8 @@ module.exports = yeoman.generators.Base.extend({
 			var params = {
 					formal: {
 						component: this.component_formal,
-						listview: this.listview_formal,
-						detailview: this.detailview_formal
+						listview: null,
+						detailview: null
 					},
 					component: this.camelcase.toLowerCase(),
 					author: this.author || this.config.get('author'),
@@ -106,27 +102,14 @@ module.exports = yeoman.generators.Base.extend({
 						}
 					},
 					views: {
-						bare: false,
-						standard: false
-					}
+						bare: (this.configJson) ? false : true,
+						standard: (this.configJson) ? this.fs.readJSON(this.templatePath('configurations/config.json')) : []
+					},
+					submenu: [],
+					default_view: false
 				};
 
-			// false logic place holder, in future implement logic to check if needed
-			if (true)
-			{
-				params.views.standard = {
-					listview: {
-						camelcase: this.listview,
-						lowercase: this.listview.toLowerCase(),
-						uppercase: this.listview.toUpperCase()
-					},
-					detailview:{
-						camelcase: this.detailview,
-						lowercase: this.detailview.toLowerCase(),
-						uppercase: this.detailview.toUpperCase()
-					},
-				}
-			}
+			var jsonConfig = false;
 
 			var ioFileOperations = function(template, destination, useParams)
 			{
@@ -142,8 +125,8 @@ module.exports = yeoman.generators.Base.extend({
 				else
 				{
 					this.fs.copyTpl(
-							this.templatePath(template),
-							this.destinationPath(destination)
+						this.templatePath(template),
+						this.destinationPath(destination)
 					);
 				}
 
@@ -153,10 +136,7 @@ module.exports = yeoman.generators.Base.extend({
 			components.push(params);
 			this.config.set('components', components);
 
-
-			var mvcPaths = this.fs.readJSON('./configurations/config.json');
-
-			console.log(mvcPaths);
+			console.log(params.views.standard[0].listview.uppercase);
 
 			async.series([
 				ioFileOperations('_manifest.xml', params.rootPath + '/administrator/components/com_' + params.component + '/' + params.component + '.xml', true),
@@ -171,8 +151,7 @@ module.exports = yeoman.generators.Base.extend({
 				ioFileOperations('index.html', params.rootPath + '/administrator/components/com_' + params.component + '/models/index.html'),
 				ioFileOperations('index.html', params.rootPath + '/administrator/components/com_' + params.component + '/models/forms/index.html'),
 				ioFileOperations('index.html', params.rootPath + '/administrator/components/com_' + params.component + '/views/index.html'),
-				ioFileOperations('index.html', params.rootPath + '/administrator/components/com_' + params.component + '/views/' +  params.views.standard.listview.lowercase + '/index.html', true),
-				ioFileOperations('index.html', params.rootPath + '/components/com_' + params.component + '/index.html', true),
+				ioFileOperations('index.html', params.rootPath + '/components/com_' + params.component + '/index.html'),
 				ioFileOperations('index.html', params.rootPath + '/components/com_' + params.component + '/controllers/index.html'),
 				ioFileOperations('index.html', params.rootPath + '/components/com_' + params.component + '/models/index.html'),
 				ioFileOperations('index.html', params.rootPath + '/components/com_' + params.component + '/models/forms/index.html'),
@@ -180,42 +159,80 @@ module.exports = yeoman.generators.Base.extend({
 				ioFileOperations('index.html', params.rootPath + '/components/com_' + params.component + '/index.html')
 			]);
 
-			// List View Files
-			async.series([
-				ioFileOperations('_admin_list_controller.php', params.rootPath + '/administrator/components/com_' + params.component + '/controllers/' + params.views.standard.listview.lowercase + '.php', true),
-				ioFileOperations('_admin_list_model.php', params.rootPath + '/administrator/components/com_' + params.component + '/models/' + params.views.standard.listview.lowercase + '.php', true),
-				ioFileOperations('_admin_list_view.php', params.rootPath + '/administrator/components/com_' + params.component + '/views/' +  params.views.standard.listview.lowercase + '/view.html.php', true),
-				ioFileOperations('_admin_list_default.php', params.rootPath + '/administrator/components/com_' + params.component + '/views/' + params.views.standard.listview.lowercase + '/tmpl/default.php', true),
-				ioFileOperations('_admin_list_default_batch.php', params.rootPath + '/administrator/components/com_' + params.component + '/views/' + params.views.standard.listview.lowercase + '/tmpl/default_batch.php', true),
-				ioFileOperations('index.html', params.rootPath + '/administrator/components/com_' + params.component + '/views/' + params.views.standard.listview.lowercase + '/tmpl/index.html')
-			]);
+			if (params.views.standard.length > 0)
+			{
 
-			// Detail View Files
-			async.series([
-				ioFileOperations('_admin_edit_controller.php', params.rootPath + '/administrator/components/com_' + params.component + '/controllers/' + params.views.standard.detailview.lowercase + '.php', true),
-				ioFileOperations('_admin_edit_model.php', params.rootPath + '/administrator/components/com_' + params.component + '/models/' + params.views.standard.detailview.lowercase + '.php', true),
-				ioFileOperations('_form.xml', params.rootPath + '/administrator/components/com_' + params.component + '/models/forms/' + params.views.standard.detailview.lowercase + '.xml', true),
-				ioFileOperations('_install.mysql.utf8.sql', params.rootPath + '/administrator/components/com_' + params.component + '/sql/install.mysql.utf8.sql', true),
-				ioFileOperations('_uninstall.mysql.utf8.sql', params.rootPath + '/administrator/components/com_' + params.component + '/sql/uninstall.mysql.utf8.sql', true),
-				ioFileOperations('_table.php', params.rootPath + '/administrator/components/com_' + params.component + '/tables/' + params.views.standard.detailview.lowercase + '.php', true),
-				ioFileOperations('_admin_edit_view.php', params.rootPath + '/administrator/components/com_' + params.component + '/views/' + params.views.standard.detailview.lowercase + '/view.html.php', true),
-				ioFileOperations('_admin_edit.php', params.rootPath + '/administrator/components/com_' + params.component + '/views/' + params.views.standard.detailview.lowercase + '/tmpl/edit.php', true),
-				ioFileOperations('_admin_edit_params.php', params.rootPath + '/administrator/components/com_' + params.component + '/views/' + params.views.standard.detailview.lowercase + '/tmpl/edit_params.php', true),
-				ioFileOperations('_admin_edit_metadata.php', params.rootPath + '/administrator/components/com_' + params.component + '/views/' + params.views.standard.detailview.lowercase + '/tmpl/edit_metadata.php', true),
-				ioFileOperations('_site_controller_detailview.php', params.rootPath + '/components/com_' + params.component + '/controllers/' + params.views.standard.detailview.lowercase + '.php', true),
-				ioFileOperations('_site_model_detailview.php', params.rootPath + '/components/com_' + params.component + '/models/' + params.views.standard.detailview.lowercase + '.php', true),
-				ioFileOperations('_site_form_detailview.xml', params.rootPath + '/components/com_' + params.component + '/models/forms/' + params.views.standard.detailview.lowercase + '.xml', true),
-				ioFileOperations('_site_view_detailview.php', params.rootPath + '/components/com_' + params.component + '/views/' + params.views.standard.detailview.lowercase + '/view.html.php', true),
-				ioFileOperations('_site_view_detailview_edit.php', params.rootPath + '/components/com_' + params.component + '/views/' + params.views.standard.detailview.lowercase + '/tmpl/edit.php', true),
-				ioFileOperations('_site_view_detailview_default.php', params.rootPath + '/components/com_' + params.component + '/views/' + params.views.standard.detailview.lowercase + '/tmpl/default.php', true),
-				ioFileOperations('_site_view_detailview_default.xml', params.rootPath + '/components/com_' + params.component + '/views/' + params.views.standard.detailview.lowercase + '/tmpl/default.xml', true),
-				ioFileOperations('index.html', params.rootPath + '/administrator/components/com_' + params.component + '/sql/index.html'),
-				ioFileOperations('index.html', params.rootPath + '/administrator/components/com_' + params.component + '/tables/index.html'),
-				ioFileOperations('index.html', params.rootPath + '/administrator/components/com_' + params.component + '/views/' + params.views.standard.detailview.lowercase + '/index.html'),
-				ioFileOperations('index.html', params.rootPath + '/administrator/components/com_' + params.component + '/views/' + params.views.standard.detailview.lowercase + '/tmpl/index.html'),
-				ioFileOperations('index.html', params.rootPath + '/components/com_' + params.component + '/views/' + params.views.standard.detailview.lowercase + '/index.html')
-			]);
+				for (var i = 0; i < params.views.standard.length; i++)
+				{
+					params.index = i;
 
+
+					// List View Files
+					async.series([
+						ioFileOperations('_admin_list_controller.php', params.rootPath + '/administrator/components/com_' + params.component + '/controllers/' + params.views.standard[i].listview.lowercase + '.php', true),
+						ioFileOperations('_admin_list_model.php', params.rootPath + '/administrator/components/com_' + params.component + '/models/' + params.views.standard[i].listview.lowercase + '.php', true),
+						ioFileOperations('_admin_list_view.php', params.rootPath + '/administrator/components/com_' + params.component + '/views/' +  params.views.standard[i].listview.lowercase + '/view.html.php', true),
+						ioFileOperations('_admin_list_default.php', params.rootPath + '/administrator/components/com_' + params.component + '/views/' + params.views.standard[i].listview.lowercase + '/tmpl/default.php', true),
+						ioFileOperations('_admin_list_default_batch.php', params.rootPath + '/administrator/components/com_' + params.component + '/views/' + params.views.standard[i].listview.lowercase + '/tmpl/default_batch.php', true),
+						ioFileOperations('index.html', params.rootPath + '/administrator/components/com_' + params.component + '/views/' +  params.views.standard[i].listview.lowercase + '/index.html'),
+						ioFileOperations('index.html', params.rootPath + '/administrator/components/com_' + params.component + '/views/' + params.views.standard[i].listview.lowercase + '/tmpl/index.html')
+					]);
+
+					// Detail View Files
+					async.series([
+						ioFileOperations('_admin_edit_controller.php', params.rootPath + '/administrator/components/com_' + params.component + '/controllers/' + params.views.standard[i].detailview.lowercase + '.php', true),
+						ioFileOperations('_admin_edit_model.php', params.rootPath + '/administrator/components/com_' + params.component + '/models/' + params.views.standard[i].detailview.lowercase + '.php', true),
+						ioFileOperations('_form.xml', params.rootPath + '/administrator/components/com_' + params.component + '/models/forms/' + params.views.standard[i].detailview.lowercase + '.xml', true),
+						ioFileOperations('_install.mysql.utf8.sql', params.rootPath + '/administrator/components/com_' + params.component + '/sql/install.mysql.utf8.sql', true),
+						ioFileOperations('_uninstall.mysql.utf8.sql', params.rootPath + '/administrator/components/com_' + params.component + '/sql/uninstall.mysql.utf8.sql', true),
+						ioFileOperations('_table.php', params.rootPath + '/administrator/components/com_' + params.component + '/tables/' + params.views.standard[i].detailview.lowercase + '.php', true),
+						ioFileOperations('_admin_edit_view.php', params.rootPath + '/administrator/components/com_' + params.component + '/views/' + params.views.standard[i].detailview.lowercase + '/view.html.php', true),
+						ioFileOperations('_admin_edit.php', params.rootPath + '/administrator/components/com_' + params.component + '/views/' + params.views.standard[i].detailview.lowercase + '/tmpl/edit.php', true),
+						ioFileOperations('_admin_edit_params.php', params.rootPath + '/administrator/components/com_' + params.component + '/views/' + params.views.standard[i].detailview.lowercase + '/tmpl/edit_params.php', true),
+						ioFileOperations('_admin_edit_metadata.php', params.rootPath + '/administrator/components/com_' + params.component + '/views/' + params.views.standard[i].detailview.lowercase + '/tmpl/edit_metadata.php', true),
+						ioFileOperations('_site_controller_detailview.php', params.rootPath + '/components/com_' + params.component + '/controllers/' + params.views.standard[i].detailview.lowercase + '.php', true),
+						ioFileOperations('_site_model_detailview.php', params.rootPath + '/components/com_' + params.component + '/models/' + params.views.standard[i].detailview.lowercase + '.php', true),
+						ioFileOperations('_site_form_detailview.xml', params.rootPath + '/components/com_' + params.component + '/models/forms/' + params.views.standard[i].detailview.lowercase + '.xml', true),
+						ioFileOperations('_site_view_detailview.php', params.rootPath + '/components/com_' + params.component + '/views/' + params.views.standard[i].detailview.lowercase + '/view.html.php', true),
+						ioFileOperations('_site_view_detailview_edit.php', params.rootPath + '/components/com_' + params.component + '/views/' + params.views.standard[i].detailview.lowercase + '/tmpl/edit.php', true),
+						ioFileOperations('_site_view_detailview_default.php', params.rootPath + '/components/com_' + params.component + '/views/' + params.views.standard[i].detailview.lowercase + '/tmpl/default.php', true),
+						ioFileOperations('_site_view_detailview_default.xml', params.rootPath + '/components/com_' + params.component + '/views/' + params.views.standard[i].detailview.lowercase + '/tmpl/default.xml', true),
+						ioFileOperations('index.html', params.rootPath + '/administrator/components/com_' + params.component + '/sql/index.html'),
+						ioFileOperations('index.html', params.rootPath + '/administrator/components/com_' + params.component + '/tables/index.html'),
+						ioFileOperations('index.html', params.rootPath + '/administrator/components/com_' + params.component + '/views/' + params.views.standard[i].detailview.lowercase + '/index.html'),
+						ioFileOperations('index.html', params.rootPath + '/administrator/components/com_' + params.component + '/views/' + params.views.standard[i].detailview.lowercase + '/tmpl/index.html'),
+						ioFileOperations('index.html', params.rootPath + '/components/com_' + params.component + '/views/' + params.views.standard[i].detailview.lowercase + '/index.html')
+					]);
+
+					if (params.db.fields.categories)
+					{
+						async.series([
+							ioFileOperations('_site_model_categories.php', params.rootPath + '/components/com_' + params.component + '/models/categories.php', true),
+							ioFileOperations('_site_model_category.php', params.rootPath + '/components/com_' + params.component + '/models/category.php', true),
+							ioFileOperations('_site_view_categories.php', params.rootPath + '/components/com_' + params.component + '/views/categories/view.html.php', true),
+							ioFileOperations('_site_view_category.php', params.rootPath + '/components/com_' + params.component + '/views/category/view.html.php', true),
+							ioFileOperations('_site_view_category_feed.php', params.rootPath + '/components/com_' + params.component + '/views/category/view.feed.php', true),
+							ioFileOperations('_site_view_categories_default.php', params.rootPath + '/components/com_' + params.component + '/views/categories/tmpl/default.php', true),
+							ioFileOperations('_site_view_categories_default_items.php', params.rootPath + '/components/com_' + params.component + '/views/categories/tmpl/default_items.php', true),
+							ioFileOperations('_site_view_categories_default.xml', params.rootPath + '/components/com_' + params.component + '/views/categories/tmpl/default.xml', true),
+							ioFileOperations('_site_view_category.php', params.rootPath + '/components/com_' + params.component + '/views/category/view.html.php', true),
+							ioFileOperations('_site_view_category_default.php', params.rootPath + '/components/com_' + params.component + '/views/category/tmpl/default.php', true),
+							ioFileOperations('_site_view_category_default_items.php', params.rootPath + '/components/com_' + params.component + '/views/category/tmpl/default_items.php', true),
+							ioFileOperations('_site_view_category_default_children.php', params.rootPath + '/components/com_' + params.component + '/views/category/tmpl/default_children.php', true),
+							ioFileOperations('_site_view_category_default.xml', params.rootPath + '/components/com_' + params.component + '/views/category/tmpl/default.xml', true),
+							ioFileOperations('index.html', params.rootPath + '/components/com_' + params.component + '/views/categories/index.html'),
+							ioFileOperations('index.html', params.rootPath + '/components/com_' + params.component + '/views/category/index.html'),
+							ioFileOperations('index.html', params.rootPath + '/components/com_' + params.component + '/views/categories/tmpl/index.html'),
+							ioFileOperations('index.html', params.rootPath + '/components/com_' + params.component + '/views/category/tmpl/index.html')
+						]);
+
+					}
+
+				}
+
+			}
+
+			// Need to cycle through views to generate required language definitions
 			// Template admin language files
 			if (params.languagefile === true && typeof params.languagecode !== "undefined")
 			{
@@ -230,30 +247,6 @@ module.exports = yeoman.generators.Base.extend({
 				async.series([
 					ioFileOperations('_site_language.ini', params.rootPath + '/language/' + params.languagecode + '/' + params.languagecode + '.com_' + params.component + '.ini', true)
 				]);
-			}
-
-			if (params.db.fields.categories)
-			{
-				async.series([
-					ioFileOperations('_site_model_categories.php', params.rootPath + '/components/com_' + params.component + '/models/categories.php', true),
-					ioFileOperations('_site_model_category.php', params.rootPath + '/components/com_' + params.component + '/models/category.php', true),
-					ioFileOperations('_site_view_categories.php', params.rootPath + '/components/com_' + params.component + '/views/categories/view.html.php', true),
-					ioFileOperations('_site_view_category.php', params.rootPath + '/components/com_' + params.component + '/views/category/view.html.php', true),
-					ioFileOperations('_site_view_category_feed.php', params.rootPath + '/components/com_' + params.component + '/views/category/view.feed.php', true),
-					ioFileOperations('_site_view_categories_default.php', params.rootPath + '/components/com_' + params.component + '/views/categories/tmpl/default.php', true),
-					ioFileOperations('_site_view_categories_default_items.php', params.rootPath + '/components/com_' + params.component + '/views/categories/tmpl/default_items.php', true),
-					ioFileOperations('_site_view_categories_default.xml', params.rootPath + '/components/com_' + params.component + '/views/categories/tmpl/default.xml', true),
-					ioFileOperations('_site_view_category.php', params.rootPath + '/components/com_' + params.component + '/views/category/view.html.php', true),
-					ioFileOperations('_site_view_category_default.php', params.rootPath + '/components/com_' + params.component + '/views/category/tmpl/default.php', true),
-					ioFileOperations('_site_view_category_default_items.php', params.rootPath + '/components/com_' + params.component + '/views/category/tmpl/default_items.php', true),
-					ioFileOperations('_site_view_category_default_children.php', params.rootPath + '/components/com_' + params.component + '/views/category/tmpl/default_children.php', true),
-					ioFileOperations('_site_view_category_default.xml', params.rootPath + '/components/com_' + params.component + '/views/category/tmpl/default.xml', true),
-					ioFileOperations('index.html', params.rootPath + '/components/com_' + params.component + '/views/categories/index.html'),
-					ioFileOperations('index.html', params.rootPath + '/components/com_' + params.component + '/views/category/index.html'),
-					ioFileOperations('index.html', params.rootPath + '/components/com_' + params.component + '/views/categories/tmpl/index.html', true),
-					ioFileOperations('index.html', params.rootPath + '/components/com_' + params.component + '/views/category/tmpl/index.html', true)
-				]);
-
 			}
 
 			// Generate Media component files

@@ -16,7 +16,7 @@ defined('_JEXEC') or die;
  * @subpackage  com_<%= component %>
  * @since       1.5
  */
-class <%= camelcase %>View<%= views.standard.detailview.camelcase %> extends JViewLegacy
+class <%= camelcase %>View<%= views.standard[index].detailview.camelcase %> extends JViewLegacy
 {
 	protected $form;
 	protected $item;
@@ -32,7 +32,7 @@ class <%= camelcase %>View<%= views.standard.detailview.camelcase %> extends JVi
 		$this->item        = $this->get('Item');
 		$this->form        = $this->get('Form');
 		$this->return_page = $this->get('ReturnPage');
-		
+
 		if (empty($this->item->id))
 		{
 			$authorised = ($user->authorise('core.create', 'com_<%= component %>')<% if (db.fields.categories) { %> || (count($user->getAuthorisedCategories('com_<%= component %>', 'core.create'))))<% } %>;
@@ -50,16 +50,16 @@ class <%= camelcase %>View<%= views.standard.detailview.camelcase %> extends JVi
 				$tpl = 'default';
 			}
 			else
-			{	
+			{
 				JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));
 				return false;
-			}	
+			}
 		}
 		else
 		{
 			$tpl = 'edit';
 		}
-		
+
 		if (!empty($this->item))
 		{
 			$this->form->bind($this->item);
@@ -101,11 +101,11 @@ class <%= camelcase %>View<%= views.standard.detailview.camelcase %> extends JVi
 
 		if (empty($this->item->id))
 		{
-			$head = JText::_('COM_<%= uppercase %>_FORM_SUBMIT_<%= views.standard.detailview.uppercase %>');
+			$head = JText::_('COM_<%= uppercase %>_FORM_SUBMIT_<%= views.standard[index].detailview.uppercase %>');
 		}
 		else
 		{
-			$head = JText::_('COM_<%= uppercase %>_FORM_EDIT_<%= views.standard.detailview.uppercase %>');
+			$head = JText::_('COM_<%= uppercase %>_FORM_EDIT_<%= views.standard[index].detailview.uppercase %>');
 		}
 
 		if ($menu)

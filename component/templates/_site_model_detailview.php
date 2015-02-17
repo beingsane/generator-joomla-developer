@@ -18,7 +18,7 @@ JTable::addIncludePath(JPATH_COMPONENT_ADMINISTRATOR . '/tables');
  * @subpackage  com_<%= camelcase %>
  * @since       1.5
  */
-class <%= camelcase %>Model<%= views.standard.detailview.camelcase %> extends JModelItem
+class <%= camelcase %>Model<%= views.standard[index].detailview.camelcase %> extends JModelItem
 {
 	/**
 	 * Model context string.
@@ -26,7 +26,7 @@ class <%= camelcase %>Model<%= views.standard.detailview.camelcase %> extends JM
 	 * @access	protected
 	 * @var		string
 	 */
-	protected $_context = 'com_<%= camelcase %>.<%= views.standard.detailview.lowercase %>';
+	protected $_context = 'com_<%= camelcase %>.<%= views.standard[index].detailview.lowercase %>';
 
 	/**
 	 * Method to auto-populate the model state.
@@ -42,7 +42,7 @@ class <%= camelcase %>Model<%= views.standard.detailview.camelcase %> extends JM
 
 		// Load the object state.
 		$id	= $app->input->getInt('id');
-		$this->setState('<%= views.standard.detailview.lowercase %>.id', $id);
+		$this->setState('<%= views.standard[index].detailview.lowercase %>.id', $id);
 
 		// Load the parameters.
 		$this->setState('params', $params);
@@ -63,11 +63,11 @@ class <%= camelcase %>Model<%= views.standard.detailview.camelcase %> extends JM
 
 			if (empty($id))
 			{
-				$id = $this->getState('<%= views.standard.detailview.lowercase %>.id');
+				$id = $this->getState('<%= views.standard[index].detailview.lowercase %>.id');
 			}
 
 			// Get a level row instance.
-			$table = JTable::getInstance('<%= views.standard.detailview.camelcase %>', '<%= camelcase %>Table');
+			$table = JTable::getInstance('<%= views.standard[index].detailview.camelcase %>', '<%= camelcase %>Table');
 
 			// Attempt to load the row.
 			if ($table->load($id))
@@ -103,7 +103,7 @@ class <%= camelcase %>Model<%= views.standard.detailview.camelcase %> extends JM
 	 * @return	JTable	A database object
 	 * @since	1.6
 	 */
-	public function getTable($type = '<%= views.standard.detailview.camelcase %>', $prefix = '<%= camelcase %>Table', $config = array())
+	public function getTable($type = '<%= views.standard[index].detailview.camelcase %>', $prefix = '<%= camelcase %>Table', $config = array())
 	{
 		return JTable::getInstance($type, $prefix, $config);
 	}
@@ -122,8 +122,8 @@ class <%= camelcase %>Model<%= views.standard.detailview.camelcase %> extends JM
 			$id = $this->getState('<%= camelcase %>.id');
 		}
 
-		$<%= views.standard.detailview.lowercase %> = $this->getTable();
-		return $<%= views.standard.detailview.lowercase %>->hit($id);
+		$<%= views.standard[index].detailview.lowercase %> = $this->getTable();
+		return $<%= views.standard[index].detailview.lowercase %>->hit($id);
 	}<% } %>
 }
 

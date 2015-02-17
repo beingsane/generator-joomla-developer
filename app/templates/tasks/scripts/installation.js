@@ -10,10 +10,6 @@ var password = Base64.decode(casper.cli.raw.get('password'));
 var url = casper.cli.raw.get('url');
 var email = casper.cli.raw.get('email');
 
-console.log(password);
-console.log(email);
-var url = casper.cli.raw.get('url');
-
 function errorEvent(e) {
 	this.echo('CasperJS Script Error');
 	this.echo(e);

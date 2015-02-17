@@ -18,21 +18,21 @@ JHtml::_('formbehavior.chosen', 'select');
 <script type="text/javascript">
 	Joomla.submitbutton = function(task)
 	{
-		if (task == '<%= views.standard.detailview.lowercase %>.cancel' || document.formvalidator.isValid(document.id('<%= views.standard.detailview.lowercase %>-form'))) {<% if (db.fields.description) { %>
+		if (task == '<%= views.standard[index].detailview.lowercase %>.cancel' || document.formvalidator.isValid(document.id('<%= views.standard[index].detailview.lowercase %>-form'))) {<% if (db.fields.description) { %>
 			<?php echo $this->form->getField('description')->save(); ?><% } %>
-			Joomla.submitform(task, document.getElementById('<%= views.standard.detailview.lowercase %>-form'));
+			Joomla.submitform(task, document.getElementById('<%= views.standard[index].detailview.lowercase %>-form'));
 		}
 	}
 </script>
 
-<form action="<?php echo JRoute::_('index.php?option=com_<%= component %>&layout=edit&id=' . (int) $this->item->id); ?>" method="post" name="adminForm" id="<%= views.standard.detailview.lowercase %>-form" class="form-validate">
+<form action="<?php echo JRoute::_('index.php?option=com_<%= component %>&layout=edit&id=' . (int) $this->item->id); ?>" method="post" name="adminForm" id="<%= views.standard[index].detailview.lowercase %>-form" class="form-validate">
 
 	<?php echo JLayoutHelper::render('joomla.edit.title_alias', $this); ?>
 
 	<div class="form-horizontal">
 		<?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'details')); ?>
 
-		<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'details', empty($this->item->id) ? JText::_('COM_<%= uppercase %>_NEW_<%= views.standard.detailview.uppercase %>', true) : JText::_('COM_<%= uppercase %>_EDIT_<%= views.standard.detailview.uppercase %>', true)); ?>
+		<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'details', empty($this->item->id) ? JText::_('COM_<%= uppercase %>_NEW_<%= views.standard[index].detailview.uppercase %>', true) : JText::_('COM_<%= uppercase %>_EDIT_<%= views.standard[index].detailview.uppercase %>', true)); ?>
 		<div class="row-fluid">
 			<div class="span9">
 				<div class="form-vertical"><% if (db.fields.url) { %>

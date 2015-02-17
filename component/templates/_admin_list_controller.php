@@ -15,7 +15,7 @@ defined('_JEXEC') or die;
  * @package     Joomla.Administrator
  * @subpackage  com_<%= component %>
  */
-class <%= camelcase %>Controller<%= views.standard.listview.camelcase %> extends JControllerAdmin
+class <%= camelcase %>Controller<%= views.standard[index].listview.camelcase %> extends JControllerAdmin
 {
 	/**
 	 * Method to get a model object, loading it if required.
@@ -28,12 +28,12 @@ class <%= camelcase %>Controller<%= views.standard.listview.camelcase %> extends
 	 *
 	 * @since   1.6
 	 */
-	public function getModel($name = '<%= views.standard.listview.camelcase %>', $prefix = '<%= camelcase %>Model', $config = array('ignore_request' => true))
+	public function getModel($name = '<%= views.standard[index].listview.camelcase %>', $prefix = '<%= camelcase %>Model', $config = array('ignore_request' => true))
 	{
 		$model = parent::getModel($name, $prefix, $config);
 		return $model;
 	}
-	
+
 	/**
 	 * Function that allows child controller access to model data
 	 * after the item has been deleted.

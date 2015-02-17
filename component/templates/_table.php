@@ -27,7 +27,7 @@ if (jsonEncode.length > 1)
 {
 	jsonEncode = jsonEncode.join("','");
 }
-else 
+else
 {
 	jsonEncode = false;
 }
@@ -42,7 +42,7 @@ defined('_JEXEC') or die;
  * @subpackage  com_<%= component %>
  * @since       1.5
  */
-class <%= camelcase %>Table<%= views.standard.detailview.camelcase %> extends JTable
+class <%= camelcase %>Table<%= views.standard[index].detailview.camelcase %> extends JTable
 {<% if (jsonEncode) { %>
 	/**
 	 * Ensure the params, metadata and images are json encoded in the bind method
@@ -59,9 +59,9 @@ class <%= camelcase %>Table<%= views.standard.detailview.camelcase %> extends JT
 	 */
 	public function __construct(&$db)
 	{
-		parent::__construct('#__<%= component %>_<%= views.standard.detailview.lowercase %>', 'id', $db);<% if (db.fields.tags) { %>
-		JTableObserverTags::createObserver($this, array('typeAlias' => 'com_<%= component %>.<%= views.standard.detailview.lowercase %>'));
-		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_<%= component %>.<%= views.standard.detailview.lowercase %>'));<% } %>
+		parent::__construct('#__<%= component %>_<%= views.standard[index].detailview.lowercase %>', 'id', $db);<% if (db.fields.tags) { %>
+		JTableObserverTags::createObserver($this, array('typeAlias' => 'com_<%= component %>.<%= views.standard[index].detailview.lowercase %>'));
+		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_<%= component %>.<%= views.standard[index].detailview.lowercase %>'));<% } %>
 	}
 
 	/**
@@ -75,7 +75,7 @@ class <%= camelcase %>Table<%= views.standard.detailview.camelcase %> extends JT
 	{<% if (db.fields.timestamps) { %>
 			$date	= JFactory::getDate();
 			$user	= JFactory::getUser();
-	
+
 			if ($this->id)
 			{
 				// Existing item
@@ -95,14 +95,14 @@ class <%= camelcase %>Table<%= views.standard.detailview.camelcase %> extends JT
 					$this->created_by = $user->get('id');
 				}
 			}<% } %>
-	
+
 			<% if (db.fields.publish) { %>
 			// Set publish_up to null date if not set
 			if (!$this->publish_up)
 			{
 			$this->publish_up = $this->_db->getNullDate();
 			}
-	
+
 			// Set publish_down to null date if not set
 			if (!$this->publish_down)
 			{
@@ -110,8 +110,8 @@ class <%= camelcase %>Table<%= views.standard.detailview.camelcase %> extends JT
 			}<% } %>
 			<% if (db.fields.alias) {  %>
 			// Verify that the alias is unique
-				$table = JTable::getInstance('<%= views.standard.detailview.lowercase %>', '<%= camelcase %>Table');
-	
+				$table = JTable::getInstance('<%= views.standard[index].detailview.lowercase %>', '<%= camelcase %>Table');
+
 			if ($table->load(array('alias' => $this->alias<% if (db.fields.categories) { %>, 'catid' => $this->catid)<% } %>) && ($table->id != $this->id || $this->id == 0))
 				{
 				$this->setError(JText::_('COM_<%= uppercase %>_ERROR_UNIQUE_ALIAS'));
@@ -120,7 +120,7 @@ class <%= camelcase %>Table<%= views.standard.detailview.camelcase %> extends JT
 			<% if (db.fields.url) { %>
 				// Convert IDN urls to punycode
 			$this->url = JStringPunycode::urlToPunycode($this->url);<% } %>
-	
+
 			return parent::store($updateNulls);
 	}
 
@@ -136,23 +136,23 @@ class <%= camelcase %>Table<%= views.standard.detailview.camelcase %> extends JT
 			$this->setError(JText::_('COM_<%= uppercase %>_ERR_TABLES_PROVIDE_URL'));
 			return false;
 		}<% } %>
-	
+
 		// check for valid name
 		if (trim($this->title) == '')
 		{
 			$this->setError(JText::_('COM_<%= uppercase %>_ERR_TABLES_TITLE'));
 			return false;
 		}
-	
+
 		// Check for existing name
 		$query = $this->_db->getQuery(true)
 			->select($this->_db->quoteName('id'))
-			->from($this->_db->quoteName('#__<%= component %>_<%= views.standard.detailview.lowercase %>'))
+			->from($this->_db->quoteName('#__<%= component %>_<%= views.standard[index].detailview.lowercase %>'))
 			->where($this->_db->quoteName('title') . ' = ' . $this->_db->quote($this->title))<% if (db.fields.category) { %>
 			->where($this->_db->quoteName('catid') . ' = ' . (int) $this->catid)<% } %>;
-		
+
 		$this->_db->setQuery($query);
-	
+
 		$xid = (int) $this->_db->loadResult();
 		if ($xid && $xid != (int) $this->id)
 		{
@@ -169,7 +169,7 @@ class <%= camelcase %>Table<%= views.standard.detailview.camelcase %> extends JT
 		{
 			$this->alias = JFactory::getDate()->format("Y-m-d-H-i-s");
 		}<% } %>
-	
+
 		<% if (db.fields.publish) {  %>
 		// Check the publish down date is not earlier than publish up.
 		if ($this->publish_down > $this->_db->getNullDate() && $this->publish_down < $this->publish_up)
@@ -187,7 +187,7 @@ class <%= camelcase %>Table<%= views.standard.detailview.camelcase %> extends JT
 			$after_clean = JString::str_ireplace($bad_characters, "", $this->metakey); // remove bad characters
 			$keys = explode(',', $after_clean); // create array using commas as delimiter
 			$clean_keys = array();
-	
+
 			foreach ($keys as $key)
 			{
 				if (trim($key)) {  // ignore blank keywords
@@ -196,7 +196,7 @@ class <%= camelcase %>Table<%= views.standard.detailview.camelcase %> extends JT
 			}
 			$this->metakey = implode(", ", $clean_keys); // put array back together delimited by ", "
 		}<% } %>
-	
+
 		return true;
 	}
 

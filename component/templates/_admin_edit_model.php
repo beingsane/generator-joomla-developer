@@ -16,7 +16,7 @@ defined('_JEXEC') or die;
  * @subpackage  com_<%= component %>
  * @since       1.5
  */
-class <%= camelcase %>Model<%= views.standard.detailview.camelcase %> extends JModelAdmin
+class <%= camelcase %>Model<%= views.standard[index].detailview.camelcase %> extends JModelAdmin
 {
 
 	/**
@@ -25,7 +25,7 @@ class <%= camelcase %>Model<%= views.standard.detailview.camelcase %> extends JM
 	 * @var      string
 	 * @since    3.2
 	 */
-	public $typeAlias = 'com_<%= component %>.<%= views.standard.detailview.lowercase %>';
+	public $typeAlias = 'com_<%= component %>.<%= views.standard[index].detailview.lowercase %>';
 
 	/**
 	 * The prefix to use with controller messages.
@@ -99,7 +99,7 @@ class <%= camelcase %>Model<%= views.standard.detailview.camelcase %> extends JM
 	 *
 	 * @since   1.6
 	 */
-	public function getTable($type = '<%= views.standard.detailview.camelcase %>', $prefix = '<%= camelcase %>Table', $config = array())
+	public function getTable($type = '<%= views.standard[index].detailview.camelcase %>', $prefix = '<%= camelcase %>Table', $config = array())
 	{
 		return JTable::getInstance($type, $prefix, $config);
 	}
@@ -117,7 +117,7 @@ class <%= camelcase %>Model<%= views.standard.detailview.camelcase %> extends JM
 	public function getForm($data = array(), $loadData = true)
 	{
 		// Get the form.
-		$form = $this->loadForm('com_<%= component %>.<%= views.standard.detailview.lowercase %>', '<%= views.standard.detailview.lowercase %>', array('control' => 'jform', 'load_data' => $loadData));
+		$form = $this->loadForm('com_<%= component %>.<%= views.standard[index].detailview.lowercase %>', '<%= views.standard[index].detailview.lowercase %>', array('control' => 'jform', 'load_data' => $loadData));
 
 		if (empty($form))
 		{
@@ -125,7 +125,7 @@ class <%= camelcase %>Model<%= views.standard.detailview.camelcase %> extends JM
 		}
 		<% if (db.fields.categories) { %>
 		// Determine correct permissions to check.
-		if ($this->getState('<%= views.standard.detailview.lowercase %>.id'))
+		if ($this->getState('<%= views.standard[index].detailview.lowercase %>.id'))
 		{
 			// Existing record. Can only edit in selected categories.
 			$form->setFieldAttribute('catid', 'action', 'core.edit');
@@ -166,21 +166,21 @@ class <%= camelcase %>Model<%= views.standard.detailview.camelcase %> extends JM
 	protected function loadFormData()
 	{
 		// Check the session for previously entered form data.
-		$data = JFactory::getApplication()->getUserState('com_<%= component %>.edit.<%= views.standard.detailview.lowercase %>.data', array());
+		$data = JFactory::getApplication()->getUserState('com_<%= component %>.edit.<%= views.standard[index].detailview.lowercase %>.data', array());
 
 		if (empty($data))
 		{
 			$data = $this->getItem();
 			<% if (db.fields.categories) { %>
 			// Prime some default values.
-			if ($this->getState('<%= views.standard.detailview.lowercase %>.id') == 0)
+			if ($this->getState('<%= views.standard[index].detailview.lowercase %>.id') == 0)
 			{
 				$app = JFactory::getApplication();
-				$data->set('catid', $app->input->get('catid', $app->getUserState('com_<%= component %>.<%= views.standard.detailview.lowercase %>s.filter.category_id'), 'int'));
+				$data->set('catid', $app->input->get('catid', $app->getUserState('com_<%= component %>.<%= views.standard[index].detailview.lowercase %>s.filter.category_id'), 'int'));
 			}<% } %>
 		}
 
-		$this->preprocessData('com_<%= component %>.<%= views.standard.detailview.lowercase %>', $data);
+		$this->preprocessData('com_<%= component %>.<%= views.standard[index].detailview.lowercase %>', $data);
 
 		return $data;
 	}
@@ -211,7 +211,7 @@ class <%= camelcase %>Model<%= views.standard.detailview.camelcase %> extends JM
 			if (!empty($item->id))
 			{
 				$item->tags = new JHelperTags;
-				$item->tags->getTagIds($item->id, 'com_<%= component %>.<%= views.standard.detailview.lowercase %>');
+				$item->tags->getTagIds($item->id, 'com_<%= component %>.<%= views.standard[index].detailview.lowercase %>');
 				$item->metadata['tags'] = $item->tags;
 			}<% } %>
 		}
@@ -251,7 +251,7 @@ class <%= camelcase %>Model<%= views.standard.detailview.camelcase %> extends JM
 				$db = JFactory::getDbo();
 				$query = $db->getQuery(true)
 					->select('MAX(ordering)')
-					->from($db->quoteName('#__<%= component %>_<%= views.standard.detailview.lowercase %>'));
+					->from($db->quoteName('#__<%= component %>_<%= views.standard[index].detailview.lowercase %>'));
 
 				$db->setQuery($query);
 				$max = $db->loadResult();

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form>
 	<fieldset addfieldpath="/administrator/components/com_categories/models/fields">
-		
+
 		<field
 			name="id"
 			type="hidden"
@@ -15,7 +15,7 @@
 			id="contenthistory"
 			name="contenthistory"
 			type="contenthistory"
-			data-typeAlias="com_<%= component %>.<%= views.standard.detailview.lowercase %>"
+			data-typeAlias="com_<%= component %>.<%= views.standard[index].detailview.lowercase %>"
 			label="JTOOLBAR_VERSIONS"
 		/><% } %>
 

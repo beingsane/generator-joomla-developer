@@ -27,14 +27,18 @@ class <%= camelcase %>Helper extends JHelperContent
 	 *
 	 * @since   1.6
 	 */
-	public static function addSubmenu($vName = '<%= views.standard.listview.lowercase %>')
+	public static function addSubmenu($vName = '<%= views.standard[0].listview.lowercase %>')
 	{
-		JHtmlSidebar::addEntry(
-			JText::_('COM_<%= uppercase %>_SUBMENU_<%= views.standard.listview.uppercase %>'),
-			'index.php?option=com_<%= component %>&view=<%= views.standard.listview.lowercase %>',
-			$vName == '<%= views.standard.listview.lowercase %>'
-		);
-		<% if (db.fields.categories) { %>
+		<% if (views.standard.length > 0) {
+			for (var i = 0; i < views.standard.length; i++) { %>
+			JHtmlSidebar::addEntry(
+				JText::_('COM_<%= uppercase %>_SUBMENU_<%= views.standard[i].listview.uppercase %>'),
+				'index.php?option=com_<%= component %>&view=<%= views.standard[i].listview.lowercase %>',
+				$vName == '<%= views.standard[i].listview.lowercase %>'
+			);
+			<%}
+		}
+		if (db.fields.categories) { %>
 		JHtmlSidebar::addEntry(
 			JText::_('COM_<%= uppercase %>_SUBMENU_CATEGORIES'),
 			'index.php?option=com_categories&extension=com_<%= component %>',

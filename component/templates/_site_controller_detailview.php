@@ -14,12 +14,12 @@ defined('_JEXEC') or die;
  * @subpackage  com_<%= component %>
  * @since       1.5
  */
-class <%= camelcase %>Controller<%= views.standard.detailview.camelcase %> extends JControllerForm
+class <%= camelcase %>Controller<%= views.standard[index].detailview.camelcase %> extends JControllerForm
 {
 	/**
 	 * @since   1.6
 	 */
-	protected $view_item = '<%= views.standard.detailview.lowercase %>';
+	protected $view_item = '<%= views.standard[index].detailview.lowercase %>';
 
 	/**
 	 * @since   1.6
@@ -53,9 +53,9 @@ class <%= camelcase %>Controller<%= views.standard.detailview.camelcase %> exten
 	 * Method override to check if you can add a new record.
 	 *
 	 * @param   array  $data  An array of input data.
-	 * 
+	 *
 	 * @return  boolean
-	 * 
+	 *
 	 * @since   1.6
 	 */
 	protected function allowAdd($data = array())
@@ -88,7 +88,7 @@ class <%= camelcase %>Controller<%= views.standard.detailview.camelcase %> exten
 	 * @param   string  $key   The name of the key for the primary key.
 	 *
 	 * @return  boolean
-	 * 
+	 *
 	 * @since   1.6
 	 */
 	protected function allowEdit($data = array(), $key = 'id')
@@ -119,7 +119,7 @@ class <%= camelcase %>Controller<%= views.standard.detailview.camelcase %> exten
 	 * @param   string  $key  The name of the primary key of the URL variable.
 	 *
 	 * @return  boolean  True if access level checks pass, false otherwise.
-	 * 
+	 *
 	 * @since   1.6
 	 */
 	public function cancel($key = 'w_id')
@@ -137,7 +137,7 @@ class <%= camelcase %>Controller<%= views.standard.detailview.camelcase %> exten
 	 * @param   string  $urlVar  The name of the URL variable if different from the primary key (sometimes required to avoid router collisions).
 	 *
 	 * @return  boolean  True if access level check and checkout passes, false otherwise.
-	 * 
+	 *
 	 * @since   1.6
 	 */
 	public function edit($key = null, $urlVar = 'w_id')
@@ -155,7 +155,7 @@ class <%= camelcase %>Controller<%= views.standard.detailview.camelcase %> exten
 	 * @param   array   $config  Configuration array for model. Optional.
 	 *
 	 * @return  object  The model.
-	 * 
+	 *
 	 * @since   1.5
 	 */
 	public function getModel($name = 'form', $prefix = '', $config = array('ignore_request' => true))
@@ -172,7 +172,7 @@ class <%= camelcase %>Controller<%= views.standard.detailview.camelcase %> exten
 	 * @param   string   $urlVar    The name of the URL variable for the id.
 	 *
 	 * @return  string  The arguments to append to the redirect URL.
-	 * 
+	 *
 	 * @since   1.6
 	 */
 	protected function getRedirectToItemAppend($recordId = null, $urlVar = null)
@@ -200,7 +200,7 @@ class <%= camelcase %>Controller<%= views.standard.detailview.camelcase %> exten
 	 * If a "return" variable has been passed in the request
 	 *
 	 * @return  string  The return URL.
-	 * 
+	 *
 	 * @since   1.6
 	 */
 	protected function getReturnPage()
@@ -238,7 +238,7 @@ class <%= camelcase %>Controller<%= views.standard.detailview.camelcase %> exten
 	 * @param   string  $urlVar  The name of the URL variable if different from the primary key (sometimes required to avoid router collisions).
 	 *
 	 * @return  boolean  True if successful, false otherwise.
-	 * 
+	 *
 	 * @since   1.6
 	 */
 	public function save($key = null, $urlVar = 'w_id')
@@ -258,7 +258,7 @@ class <%= camelcase %>Controller<%= views.standard.detailview.camelcase %> exten
 	 * Go to a weblink
 	 *
 	 * @return  void
-	 * 
+	 *
 	 * @since   1.6
 	 */
 	public function go()
@@ -267,7 +267,7 @@ class <%= camelcase %>Controller<%= views.standard.detailview.camelcase %> exten
 		$id = $this->input->getInt('id');
 
 		// Get the model, requiring published items
-		$modelLink	= $this->getModel('<%= views.standard.detailview.camelcase %>', '', array('ignore_request' => true));
+		$modelLink	= $this->getModel('<%= views.standard[index].detailview.camelcase %>', '', array('ignore_request' => true));
 		$modelLink->setState('filter.published', 1);
 
 		// Get the item
@@ -276,7 +276,7 @@ class <%= camelcase %>Controller<%= views.standard.detailview.camelcase %> exten
 		// Make sure the item was found.
 		if (empty($link))
 		{
-			return JError::raiseWarning(404, JText::_('COM_<%= uppercase %>_ERROR_<%= views.standard.detailview.uppercase %>_NOT_FOUND'));
+			return JError::raiseWarning(404, JText::_('COM_<%= uppercase %>_ERROR_<%= views.standard[index].detailview.uppercase %>_NOT_FOUND'));
 		}
 
 		// Check whether item access level allows access.
@@ -298,7 +298,7 @@ class <%= camelcase %>Controller<%= views.standard.detailview.camelcase %> exten
 		// Make sure the category was found.
 		if (empty($category))
 		{
-			return JError::raiseWarning(404, JText::_('COM_<%= uppercase %>_ERROR_<%= views.standard.detailview.uppercase %>_NOT_FOUND'));
+			return JError::raiseWarning(404, JText::_('COM_<%= uppercase %>_ERROR_<%= views.standard[index].detailview.uppercase %>_NOT_FOUND'));
 		}
 
 		// Check whether item access level allows access.
@@ -316,7 +316,7 @@ class <%= camelcase %>Controller<%= views.standard.detailview.camelcase %> exten
 		}
 		else
 		{
-			return JError::raiseWarning(404, JText::_('COM_<%= uppercase %>_ERROR_<%= views.standard.detailview.uppercase %>_URL_INVALID'));
+			return JError::raiseWarning(404, JText::_('COM_<%= uppercase %>_ERROR_<%= views.standard[index].detailview.uppercase %>_URL_INVALID'));
 		}
 	}
 }

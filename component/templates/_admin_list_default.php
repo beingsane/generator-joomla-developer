@@ -23,8 +23,8 @@ $canOrder	= $user->authorise('core.edit.state', <% if (db.fields.categories) { %
 $saveOrder	= $listOrder == 'a.ordering';
 if ($saveOrder)
 {
-	$saveOrderingUrl = 'index.php?option=com_<%= component %>&task=<%= views.standard.listview.lowercase %>.saveOrderAjax&tmpl=component';
-	JHtml::_('sortablelist.sortable', '<% views.standard.detailview.lowercase %>List', 'adminForm', strtolower($listDirn), $saveOrderingUrl);
+	$saveOrderingUrl = 'index.php?option=com_<%= component %>&task=<%= views.standard[index].listview.lowercase %>.saveOrderAjax&tmpl=component';
+	JHtml::_('sortablelist.sortable', '<% views.standard[index].detailview.lowercase %>List', 'adminForm', strtolower($listDirn), $saveOrderingUrl);
 }
 $sortFields = $this->getSortFields();
 ?>
@@ -45,7 +45,7 @@ $sortFields = $this->getSortFields();
 		Joomla.tableOrdering(order, dirn, '');
 	}
 </script>
-<form action="<?php echo JRoute::_('index.php?option=com_<%= component %>&view=<%= views.standard.listview.lowercase %>'); ?>" method="post" name="adminForm" id="adminForm">
+<form action="<?php echo JRoute::_('index.php?option=com_<%= component %>&view=<%= views.standard[index].listview.lowercase %>'); ?>" method="post" name="adminForm" id="adminForm">
 <?php if (!empty( $this->sidebar)) : ?>
 	<div id="j-sidebar-container" class="span2">
 		<?php echo $this->sidebar; ?>
@@ -159,11 +159,11 @@ $sortFields = $this->getSortFields();
 							<?php echo JHtml::_('grid.id', $i, $item->id); ?>
 						</td><% if (db.fields.publish) { %>
 						<td class="center">
-							<?php echo JHtml::_('jgrid.published', $item->state, $i, '<%= views.standard.listview.lowercase %>.', $canChange, 'cb', $item->publish_up, $item->publish_down); ?>
+							<?php echo JHtml::_('jgrid.published', $item->state, $i, '<%= views.standard[index].listview.lowercase %>.', $canChange, 'cb', $item->publish_up, $item->publish_down); ?>
 						</td><% } %>
 						<td class="nowrap has-context">
 							<?php if ($item->checked_out) : ?>
-								<?php echo JHtml::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, '<%= views.standard.listview.lowercase %>.', $canCheckin); ?>
+								<?php echo JHtml::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, '<%= views.standard[index].listview.lowercase %>.', $canCheckin); ?>
 							<?php endif; ?>
 							<?php if ($canEdit) : ?>
 								<a href="<?php echo JRoute::_('index.php?option=com_<%= component %>&task=weblink.edit&id='.(int) $item->id); ?>">

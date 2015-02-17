@@ -21,7 +21,7 @@ $params = $this->state->get('params');
 <script type="text/javascript">
 	Joomla.submitbutton = function(task)
 	{
-		if (task == '<%= views.standard.detailview.lowercase %>.cancel' || document.formvalidator.isValid(document.getElementById('adminForm')))
+		if (task == '<%= views.standard[index].detailview.lowercase %>.cancel' || document.formvalidator.isValid(document.getElementById('adminForm')))
 		{
 			<?php echo $this->form->getField('description')->save(); ?>
 			Joomla.submitform(task);
@@ -37,12 +37,12 @@ $params = $this->state->get('params');
 	<form action="<?php echo JRoute::_('index.php?option=com_<%= component %>&view=form&w_id='.(int) $this->item->id); ?>" method="post" name="adminForm" id="adminForm" class="form-validate form-vertical">
 		<div class="btn-toolbar">
 			<div class="btn-group">
-				<button type="button" class="btn btn-primary" onclick="Joomla.submitbutton('<%= views.standard.detailview.lowercase %>.save')">
+				<button type="button" class="btn btn-primary" onclick="Joomla.submitbutton('<%= views.standard[index].detailview.lowercase %>.save')">
 					<span class="icon-ok"></span> <?php echo JText::_('JSAVE') ?>
 				</button>
 			</div>
 			<div class="btn-group">
-				<button type="button" class="btn" onclick="Joomla.submitbutton('<%= views.standard.detailview.lowercase %>.cancel')">
+				<button type="button" class="btn" onclick="Joomla.submitbutton('<%= views.standard[index].detailview.lowercase %>.cancel')">
 					<span class="icon-cancel"></span> <?php echo JText::_('JCANCEL') ?>
 				</button>
 			</div>
@@ -64,7 +64,7 @@ $params = $this->state->get('params');
 			<?php echo $this->form->renderField('version_note'); ?>
 		<?php endif; ?>
 
-		<?php if ($this->user->authorise('core.edit.state', 'com_<%= component %>.<%= views.standard.detailview.lowercase %>')) : ?>
+		<?php if ($this->user->authorise('core.edit.state', 'com_<%= component %>.<%= views.standard[index].detailview.lowercase %>')) : ?>
 			<?php echo $this->form->renderField('state'); ?>
 		<?php endif; ?>
 		<?php echo $this->form->renderField('language'); ?>

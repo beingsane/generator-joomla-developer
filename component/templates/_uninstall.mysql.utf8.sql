@@ -1,1 +1,1 @@
-DROP TABLE IF EXISTS `#__<%= component %>_<%= views.standard.detailview.lowercase %>`;
+DROP TABLE IF EXISTS `#__<%= component %>_<%= views.standard[index].detailview.lowercase %>`;
