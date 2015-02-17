@@ -20,8 +20,6 @@ casper.start(url + '/index.php?option=com_users&view=registration');
 
 casper.then(function() {
 
-	this.capture('reg-form.png');
-
 	this.fill('form#member-registration', {
 		'jform[name]': 'Website Administrator',
 		'jform[username]': 'webmaster',
