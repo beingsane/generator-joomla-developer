@@ -22,11 +22,10 @@
 		"grunt-contrib-uglify": "^0.7.0",
 		"grunt-contrib-watch": "^0.6.1",
 		"grunt-mysql-dump-import": "^1.0.1",
-		"grunt-open": "^0.2.3",
-		"grunt-rename": "^0.1.4",
 		"grunt-s3": "^0.2.0-alpha.3",
 		"grunt-azure": "^0.1.2",
-		"cross-spawn": "^0.2.3"
+		"grunt-sync": "^0.2.3",
+		"js-base64": "^2.1.7"
 	},
 	"devDependencies": {
 	},
