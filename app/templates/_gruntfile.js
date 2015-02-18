@@ -234,9 +234,9 @@ module.exports = function(grunt) {
 		sync: {
 			main: {
 				files: [{
-					cwd: grunt.config.get('repository.joomla'),
+					cwd: '<%= joomlaFolder %>',
 					src: ["**"],
-					dest: "/srv/development/www/" + grunt.config.get('repository.name') + ".arctg-build.cloudapp.net/public"
+					dest: "/srv/development/www/<%= repositoryName %>.arctg-build.cloudapp.net/public"
 				}],
 				verbose: true,
 				pretend: false,
