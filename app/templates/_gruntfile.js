@@ -16,6 +16,7 @@ module.exports = function(grunt) {
 		repository: {
 			path: '<%= path %>',
 			name: '<%= repositoryName %>',
+			joomla: '<%= joomlaFolder %>',
 			url: '<%= repositoryUrl %>'
 		},
 
@@ -230,29 +231,15 @@ module.exports = function(grunt) {
 			}
 		},
 
-		db_import: {
-			"localhost" : {
-				"options": {
-					"title": "Local DB",
-					"database": "<%= db_database %>",
-					"user": "<%= db_user %>",
-					"pass": "<%= db_password %>",
-					"host": "<%= db_host %>",
-					"backup_to": "<%= path %>/database/joomla.sql",
-				}
-			}
-		},
-
-		rename: {
-			move: {
-				src: '<%= path %>/' + grunt.config.get('repository.name') + '/installation/',
-				dest: '<%= path %>/database/installation/'
-			}
-		},
-
-		open: {
+		sync: {
 			main: {
-				path: grunt.config.get('url')
+				files: [{
+					cwd: grunt.config.get('repositoryName'),
+					src: ['**', '!.settings/', '!.git*'],
+					dest: '/srv/development/www/' + grunt.config.get('repository.name') + '.arctg-build.cloudapp.net/public'
+				}],
+				verbose: true,
+				updateAndDelete: true
 			}
 		}
 
@@ -304,6 +291,9 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-mysql-dump-import');
 	grunt.loadNpmTasks('grunt-rename');
 	grunt.loadNpmTasks('grunt-open');
+	grunt.loadNpmTasks('grunt-sync');
+
+	grunt.registerTask('update', ['sync']);
 
 	grunt.registerTask('cleanup', ['db_import', 'rename', 'open', 'dump']);
 

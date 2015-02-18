@@ -18,7 +18,7 @@ sftp-config.json
 # Eclipse
 .buildpath
 .project
-.settings
+/.settings/*
  
 # Netbeans (custom)
 .netbeans/*
@@ -30,6 +30,12 @@ sftp-config.json
 *.swp
 *~.nib
 *~
+
+# Node & NPM
+/node_modules/*
+
+# Bower
+/bower_components/*
  
 # Phing build script
 build.properties

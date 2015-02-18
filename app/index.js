@@ -75,6 +75,13 @@ module.exports = yeoman.generators.Base.extend({
 			},
 			{
 				type : 'input',
+				name : 'joomlaFolder',
+				message : 'Enter sub-folder name Joomla CMS files will be placed:',
+				store : true,
+				"default" : 'webroot'
+			},
+			{
+				type : 'input',
 				name : 'repositoryUrl',
 				message : 'Enter Git Repository URL for this Joomla development instance:',
 				store : true
@@ -176,8 +183,9 @@ module.exports = yeoman.generators.Base.extend({
 			this.url = props.url;
 			this.path = props.path;
 			this.repositoryUrl = props.repositoryUrl;
-			this.repositoryName = props.repositoryName;
+			this.joomlaFolder = props.repositoryName;
 			this.repositoryExisting = props.repositoryExisting;
+			this.joomlaFolder = props.joomlaFolder;
 			this.name = props.name;
 			this.version = props.version;
 
@@ -230,14 +238,15 @@ module.exports = yeoman.generators.Base.extend({
 					ioFileOperations('_package.json', 'package.json', true),
 					ioFileOperations('_bower.json', 'bower.json', true),
 					ioFileOperations('_gruntfile.js', 'gruntfile.js', true),
+					ioFileOperations('_.gitignore', '.gitignore'),
 					ioFileOperations('tasks/**/*', 'tasks/', false),
 					ioFileOperations('index.html', 'database/index.html', false),
 					ioFileOperations('index.html', 'build/index.html', false),
 					ioFileOperations('editorconfig', '.editorconfig', false),
 					ioFileOperations('jshintrc', '.jshintrc', false),
-					ioFileOperations('_configuration.php', this.repositoryName + '/configuration.php', true),
-					ioFileOperations('_htaccess.txt', this.repositoryName + '/.htaccess', false),
-					ioFileOperations('README.md', this.repositoryName + '/README.md', false)
+					ioFileOperations('_configuration.php', this.joomlaFolder + '/configuration.php', true),
+					ioFileOperations('_htaccess.txt', this.joomlaFolder + '/.htaccess', false),
+					ioFileOperations('README.md', this.joomlaFolder + '/README.md', false)
 				]);
 
 			done();
@@ -379,7 +388,7 @@ module.exports = yeoman.generators.Base.extend({
 
 				this.log(yosay(chalk.yellow('Database import complete')));
 
-				rimraf(this.destinationRoot() + '/' + this.repositoryRoot + '/installation/', this.deleteInstallationDirectoryCallBack);
+				rimraf(this.destinationRoot() + '/' + this.joomlaFolder + '/installation/', this.deleteInstallationDirectoryCallBack);
 
 			}.bind(this);
 
@@ -429,16 +438,16 @@ module.exports = yeoman.generators.Base.extend({
 
 				this.fs.copyTpl(
 					this.templatePath('_configuration.php'),
-					this.destinationPath(this.repositoryName + '/configuration.php'),
+					this.destinationPath(this.joomlaFolder + '/configuration.php'),
 					params
 				);
 
 				this.fs.copy(
 					this.templatePath('_htaccess.txt'),
-					this.destinationPath(this.repositoryName + '/.htaccess')
+					this.destinationPath(this.joomlaFolder + '/.htaccess')
 				);
 
-				fs.readFile('./' + this.repositoryName + '/installation/sql/mysql/joomla.sql', 'utf-8', this.replaceCallBack);
+				fs.readFile('./' + this.joomlaFolder + '/installation/sql/mysql/joomla.sql', 'utf-8', this.replaceCallBack);
 
 			}.bind(this);
 
@@ -447,7 +456,7 @@ module.exports = yeoman.generators.Base.extend({
 
 				Git.clone({
 					repo: this.repositoryUrl,
-					dir: this.repositoryName
+					dir: this.joomlaFolder
 				}, this.cloneCallBack);
 
 			}
@@ -456,7 +465,7 @@ module.exports = yeoman.generators.Base.extend({
 
 				var download = new Download({ extract: true, strip: 1, mode: '755' })
 					.get('https://github.com/joomla/joomla-cms/archive/master.zip')
-					.dest(this.destinationPath(this.repositoryName))
+					.dest(this.destinationPath(this.joomlaFolder))
 					.use(progress());
 
 				download.run(function (err, files, stream) {
