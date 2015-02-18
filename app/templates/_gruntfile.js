@@ -235,10 +235,11 @@ module.exports = function(grunt) {
 			main: {
 				files: [{
 					cwd: grunt.config.get('repository.joomla'),
-					src: ['**', '!.settings/', '!.git*'],
-					dest: '/srv/development/www/' + grunt.config.get('repository.name') + '.arctg-build.cloudapp.net/public'
+					src: ["**"],
+					dest: "/srv/development/www/" + grunt.config.get('repository.name') + ".arctg-build.cloudapp.net/public"
 				}],
 				verbose: true,
+				pretend: false,
 				updateAndDelete: true
 			}
 		}
@@ -271,9 +272,14 @@ module.exports = function(grunt) {
 	});
 
 	grunt.registerTask('initialize', 'Set default values for build server credentials and directories', function() {
-		var branch = grunt.option('branch') || 'master';
-		grunt.option('branch', branch);
-		grunt.log.writeln('Operating in ' + branch + ' branch...');
+		var joomla = grunt.config.get('repository.joomla');
+		var repo = grunt.config.get('repository.name');
+
+		console.log('Joomla Folder: ', joomla);
+		console.log('Repo Folder: ', repo);
+		console.log('Source: ', '/home/brian.bolli/git/' + repo + '/' + joomla + '/**');
+		console.log('Dest: ', '/srv/development/www/' + repo + '.arctg-build.cloudapp.net/public/');
+
 	});
 
 	grunt.loadTasks('./tasks');
@@ -293,7 +299,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-open');
 	grunt.loadNpmTasks('grunt-sync');
 
-	grunt.registerTask('update', ['sync']);
+	grunt.registerTask('update', ['initialize', 'sync']);
 
 	grunt.registerTask('cleanup', ['db_import', 'rename', 'open', 'dump']);
 
