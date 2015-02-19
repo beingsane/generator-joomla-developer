@@ -173,7 +173,7 @@ module.exports = yeoman.generators.Base.extend({
 			props.packages = [];
 			props.submodules = [];
 
-			props.path = this.destinationRoot().replace(/\\/g, "\\\\").replace(" ","\\ ");
+			props.path = this.destinationPath().replace(/\\/g, "\\\\").replace(" ","\\ ");
 			props.packageName = props.name.replace(/\s+/g, '-').toLowerCase();
 
 			this.websiteEmail = props.websiteEmail;
@@ -246,7 +246,7 @@ module.exports = yeoman.generators.Base.extend({
 					ioFileOperations('jshintrc', '.jshintrc', false),
 					ioFileOperations('_configuration.php', this.joomlaFolder + '/configuration.php', true),
 					ioFileOperations('_htaccess.txt', this.joomlaFolder + '/.htaccess', false),
-					ioFileOperations('README.md', this.joomlaFolder + '/README.md', false)
+					ioFileOperations('README.md', 'README.md', false)
 				]);
 
 			done();
@@ -254,14 +254,100 @@ module.exports = yeoman.generators.Base.extend({
 
 		clone: function() {
 
-			//var done = this.async();
-
 			var params = this.config.getAll();
 
 			this.log(yosay(	chalk.yellow('Acquiring Joomla CMS files')));
 
 			this.finished = function() {
-				this.log(yosay(chalk.yellow('Finished!')));
+
+				this.log(yosay(chalk.yellow('Initializing GIT repository and commiting initial code...')));
+
+				var initializeGitRepository = function()
+				{
+
+					cp.exec('git init', { cwd: this.path }, function(err, stdout, stderr) {
+
+						if (err)
+						{
+							throw err;
+						}
+
+						this.log('Initialized GIT repository...');
+
+					}.bind(this));
+
+				}.bind(this);
+
+				var addRemoteOrigin = function()
+				{
+					cp.exec('git remote add origin ' + this.repositoryUrl, { cwd: this.path }, function(err, stdout, stderr) {
+
+						if (err)
+						{
+							throw err;
+						}
+
+						this.log('Added remote origin...');
+
+					}.bind(this));
+
+				}.bind(this);
+
+				var commitReadMe = function()
+				{
+					cp.exec('git commit -m \'Initial commit with README.md\'', { cwd: this.path }, function(err, stdout, stderr) {
+
+						if (err)
+						{
+							throw err;
+						}
+
+						this.log('Committed README.md...');
+
+					}.bind(this));
+
+				}.bind(this);
+
+
+				var pushReadMe = function()
+				{
+					cp.exec('git push -u origin master', { cwd: this.path }, function(err, stdout, stderr) {
+
+						if (err)
+						{
+							throw err;
+						}
+
+						this.log('Pushed README.md to origin...');
+
+					}.bind(this));
+
+				}.bind(this);
+
+
+				var pushCodeBase = function()
+				{
+					cp.exec('git push --all', { cwd: this.path }, function(err, stdout, stderr) {
+
+						if (err)
+						{
+							throw err;
+						}
+
+					}.bind(this));
+
+					this.log('Pushed entire code package to repository...');
+
+				}.bind(this);
+
+				async.series([
+						//initializeGitRepository(),
+						//addRemoteOrigin(),
+						//commitReadMe(),
+						//pushReadMe(),
+						//pushCodeBase()
+					]);
+
 
 				open(this.config.get('url') + '/administrator');
 
@@ -286,32 +372,67 @@ module.exports = yeoman.generators.Base.extend({
 
 				connection.connect();
 
-				function activateUser(db_prefix)
+				var activateUser = function()
 				{
-					connection.query('UPDATE `' + db_prefix + 'users` SET block=0,activation="" WHERE id=1', function(err, rows, fields) {
+					connection.query('UPDATE `' + this.db_prefix + 'users` SET block=0,activation="" WHERE id=1', function(err, rows, fields) {
 						if (err)
 						{
 							console.log(err);
 							return false;
 						}
 					});
-				};
 
-				function updateUserGroup(db_prefix)
+				}.bind(this);
+
+				var updateUserGroup = function ()
 				{
-					connection.query('UPDATE `' + db_prefix + 'user_usergroup_map` SET group_id=8 WHERE user_id=1', function(err, rows, fields) {
+					connection.query('UPDATE `' + this.db_prefix + 'user_usergroup_map` SET group_id=8 WHERE user_id=1', function(err, rows, fields) {
 						if (err)
 						{
 							console.log(err);
 							return false;
 						}
 					});
-				}
+
+				}.bind(this);
+
+				var processTemplate = function(err, rows, fields) {
+
+					if (err)
+					{
+						console.log(err);
+						return false;
+					}
+
+					var values = {
+						prefix: this.db_prefix,
+						fields: rows[0]
+					};
+
+					console.log('Path: ', this.path);
+					console.log('Template Path: ', this.templatePath());
+					console.log('Destination Path: ', this.destinationPath());
+					console.log('Values: ', values);
+
+					this.fs.copyTpl(
+						this.templatePath('_superuser.sql'),
+						this.destinationPath('database/superuser.sql'),
+						values
+					);
+
+				}.bind(this);
+
+				var generateSuperUserScript = function()
+				{
+					connection.query('SELECT * FROM `' + this.db_prefix + 'users`', processTemplate);
+
+				}.bind(this);
 
 				async.series(
 					[
-						activateUser(this.db_prefix),
-						updateUserGroup(this.db_prefix)
+						activateUser(),
+						updateUserGroup(),
+						generateSuperUserScript()
 					]
 				);
 
@@ -482,8 +603,7 @@ module.exports = yeoman.generators.Base.extend({
 
 				}.bind(this));
 			}
-		},
-
+		}
 	},
 
 	install: function() {

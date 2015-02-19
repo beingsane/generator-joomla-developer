@@ -1,30 +1,79 @@
 'use-strict';
 
+var async = require('./async');
+
 module.exports = function(grunt) {
 
-	function remoteCallBack()
+	function initiliazeGitRepository()
 	{
+		exec('git init', { cwd: grunt.config.get('repository.path') }, function(err, stdout, stderr) {
+
+			if (err)
+			{
+				throw err;
+			}
+
+		});;
+	}
+
+	function addRemoteOrigin()
+	{
+		exec('git remote add origin ' + grunt.config.get('repository.url'), { cwd: grunt.config.get('repository.path') }, function(err, stdout, stderr) {
+
+			if (err)
+			{
+				throw err;
+			}
+		});
 
 	}
 
-	function initCallBack()
+	function commitReadMe()
 	{
-		if (error)
-		{
-			grunt.log.errorlns(error);
-			return false;
-		}
+		exec('git commit -m "Initial commit with README.md"', { cwd: grunt.config.get('repository.path') }, function(err, stdout, stderr) {
 
-		exec('git remote add origin ' + grunt.config.get('repositoryUrl'), { cwd: grunt.config.get('repositoryPath') }, remoteCallBack)
+			if (err)
+			{
+				throw err;
+			}
+		});
+
 	}
 
-	grunt.registerTask('grunt-git-init', 'Initialize new repository', function(origin, branch) {
-		var done = this.async();
+	function pushReadMe()
+	{
+		exec('git push -u origin master', { cwd: grunt.config.get('repository.path') }, function(err, stdout, stderr) {
 
-		var exec = require('child_process').exec;
-		var origin = origin || 'origin';
+			if (err)
+			{
+				throw err;
+			}
+		});
 
-		exec('git init', { cwd: grunt.config('repoPath') }, initCallBack);
+	}
+
+	function pushCodeBase()
+	{
+		exec('git push --all', { cwd: grunt.config.get('repository.path') }, function(err, stdout, stderr) {
+
+			if (err)
+			{
+				throw err;
+			}
+		});
+
+	}
+
+	grunt.registerTask('grunt-git-init', 'Initialize new repository', function() {
+
+		async.series([
+			initializeGitRepository(),
+			addRemoteOrigin(),
+			commitReadMe(),
+			pushReadMe(),
+			pushCodeBase()
+		]);
+
 	});
 
 };

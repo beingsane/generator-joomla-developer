@@ -284,7 +284,6 @@ module.exports = function(grunt) {
 
 	grunt.loadTasks('./tasks');
 
-	grunt.loadNpmTasks('grunt');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-csslint');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -295,8 +294,6 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-azure');
 	grunt.loadNpmTasks('grunt-s3');
 	grunt.loadNpmTasks('grunt-mysql-dump-import');
-	grunt.loadNpmTasks('grunt-rename');
-	grunt.loadNpmTasks('grunt-open');
 	grunt.loadNpmTasks('grunt-sync');
 
 	grunt.registerTask('update', ['initialize', 'sync']);
