@@ -38,11 +38,11 @@ module.exports = function(grunt) {
 	function executeCasper(alias, done, last)
 	{
 		var baseUrl = grunt.config.get('url');
-		var link = baseUrl + endpoints[alias];
+		var link = baseUrl + "/" + endpoints[alias];
 		var isLast = last || false;
-		var path = grunt.config.get('repository.path') + grunt.config.get('repository.name');
+		var path = grunt.config.get('repository.path') + "/" + grunt.config.get('repository.joomla');
 
-		exec('casperjs scrape.js --url=' + base.encode(link) + ' --web-security=false', { cwd: "/tasks/scripts" }, function (error, stdout, stderr) {
+		exec('casperjs scrape.js --url=' + base.encode(link) + ' --web-security=false', { cwd: grunt.config.get('repository.path') + "/tasks/scripts" }, function (error, stdout, stderr) {
 			if (error)
 			{
 				grunt.log.errorlns('Child Process Exec Error');
