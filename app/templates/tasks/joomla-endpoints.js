@@ -9,7 +9,7 @@ module.exports = function(grunt) {
 
 		db.connect();
 
-		db.query('SELECT alias, link FROM `' + grunt.config.get('database.prefix') + '_menu` WHERE published=1 AND menutype!="menu" AND alias!="root"', function(err, rows, fields) {
+		db.query('SELECT alias, link FROM `' + grunt.config.get('database.prefix') + 'menu` WHERE published=1 AND menutype!="menu" AND alias!="root"', function(err, rows, fields) {
 			if (err)
 			{
 				throw err;
