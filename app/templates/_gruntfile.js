@@ -298,6 +298,8 @@ module.exports = function(grunt) {
 
 	grunt.registerTask('update', ['initialize', 'sync']);
 
+	grunt.registerTask('jenkins', ['initialize']);
+
 	grunt.registerTask('cleanup', ['db_import', 'rename', 'open', 'dump']);
 
 	grunt.registerTask('scrub', ['clean']);
