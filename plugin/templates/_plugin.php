@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     Joomla.Plugin
- * @subpackage  <% type.charAt(0).toUpperCase() + type.slice(1) %>.joomla
+ * @subpackage  <% type.charAt(0).toUpperCase() + type.slice(1) %>.<%= formal %>
  *
  * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
@@ -13,7 +13,7 @@ defined('_JEXEC') or die;
  * <%= CamelCase %> <% type.charAt(0).toUpperCase() + type.slice(1) %> Plugin
  *
  * @package     Joomla.Plugin
- * @subpackage  <% type.charAt(0).toUpperCase() + type.slice(1) %>.joomla
+ * @subpackage  <% type.charAt(0).toUpperCase() + type.slice(1) %>.<%= formal %>
  * @since       1.6
  */
 class Plg<% type.charAt(0).toUpperCase() + type.slice(1) %><%= camelcase %> extends JPlugin
