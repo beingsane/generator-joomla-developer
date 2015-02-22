@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="plugin" version="3.3" method="upgrade" group="<%= type %>">
-	<name>mod_<%= plugin %></name>
+	<name>plg_<%= type %>_<%= plugin %></name>
 	<author><%= author %></author>
 	<creationDate><%= created %></creationDate>
 	<copyright><%= copyright %></copyright>
@@ -18,8 +18,8 @@
 	</files><% if (languagefile === true) { %>
 
 	<languages>
-		<language tag="<%= languagecode %>"><%= languagecode %>.plg_<%= type %>_<%= module %>.ini</language>
-		<language tag="<%= languagecode %>"><%= languagecode %>.plg_<%= type %>_<%= module %>.ini.sys</language>
+		<language tag="<%= languagecode %>"><%= languagecode %>.plg_<%= type %>_<%= plugin %>.ini</language>
+		<language tag="<%= languagecode %>"><%= languagecode %>.plg_<%= type %>_<%= plugin %>.ini.sys</language>
 	</languages><% } %>
 
 	<help key="JHELP_EXTENSIONS_MODULE_MANAGER_WRAPPER" />

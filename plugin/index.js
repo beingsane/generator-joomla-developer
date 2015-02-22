@@ -4,6 +4,17 @@ var chalk = require('chalk');
 var yosay = require('yosay');
 var path = require('path');
 
+Array.prototype.contains = function(k) {
+	for (var i = 0; i < this.length; i++)
+	{
+		if(this[i] === k)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 module.exports = yeoman.generators.Base.extend({
 
 	initializing: function () {
@@ -26,17 +37,73 @@ module.exports = yeoman.generators.Base.extend({
 				store : true
 			},
 			{
+				type : 'confirm',
+				name : 'languagefile',
+				message : 'Create language files for your plugin?',
+				"default" : true,
+				store : true
+			},
+			{
+				type : 'input',
+				name : 'languagecode',
+				message : 'Default language code to use?',
+				"default" : "en-GB",
+				store : true
+			},
+			{
 				type : 'list',
 				name : 'pluginType',
-				message : 'What type of plugin are you creating?',
+				message : 'What group is the plugin you are creating in?',
 				choices: ['Authentication','Captcha','Content','Editors','Editors-xtd','Finder','Quickicon','Search','System','Twofactorauth','User'],
 				store : true
+			},
+			{
+				type : 'checkbox',
+				name : 'includedMethods',
+				message : 'What events do you intent to subscribe too?',
+				choices: [
+					'onUserLogin',
+					'onUserLogout',
+					'onUserAuthenticate',
+					'onUserLoginFailure',
+					'onUserAfterLogin',
+					'onUserBeforeSave',
+					'onUserAfterSave',
+					'onUserBeforeDelete',
+					'onUserAfterDelete',
+					'onExtensionAfterInstall',
+					'onExtensionAfterUninstall',
+					'onExtensionAfterUpdate',
+					'onContentPrepare',
+					'onContentAfterTitle',
+					'onContentBeforeDisplay',
+					'onContentAfterDisplay',
+					'onContentBeforeSave',
+					'onContentAfterSave',
+					'onContentPrepareForm',
+					'onContentPrepareData',
+					'onContentBeforeDelete',
+					'onContentAfterDelete',
+					'onContentChangeState',
+					'onContentSearch',
+					'onContentSearchAreas',
+					'onCategoryChangeState',
+					'onValidateContact',
+					'onSubmitContact',
+					'onGetIcons'
+				],
+				checked: true,
+				store : false
 			}
 		];
 
 		this.prompt(prompts, function (props) {
-			this.camelcase = props.camelcase;
-			this.pluginType = props.pluginType;
+			this.formal = props.camelcase;
+			this.camelcase = props.camelcase.replace(/\s+/g, '');
+			this.pluginType = props.pluginType.toLowerCase();
+			this.includedMethods = props.includedMethods;
+			this.languagefile = props.languagefile;
+			this.languagecode = props.languagecode;
 			done();
 		}.bind(this));
 	},
@@ -47,8 +114,10 @@ module.exports = yeoman.generators.Base.extend({
 			var date = new Date();
 			
 			var params = {
+					formal: this.formal,
 					plugin: this.camelcase.toLowerCase(),
 					type: this.pluginType,
+					rootPath: this.config.get('joomlaFolder') || 'webroot',
 					author: this.author || this.config.get('author'),
 					created: months[date.getMonth()] + ' ' + date.getFullYear(),
 					copyright: this.copyright || this.config.get('copyright'),
@@ -59,42 +128,39 @@ module.exports = yeoman.generators.Base.extend({
 					description: this.description,
 					uppercase: this.camelcase.toUpperCase(),
 					camelcase: this.camelcase,
-					languagefile: false,
+					languagefile: this.languagefile,
 					languagecode: this.languagecode || this.config.get('languagecode'),
 					mediafolder: false,
 					triggers: {
-						onUserLogin: false,
-						onUserLogout: false,
-						onUserAuthenticate: false,
-						onUserLoginFailure: false,
-						onUserAfterLogin: false,
-						onUserBeforeSave: false,
-						onUserAfterSave: false,
-						onUserBeforeDelete: false,
-						onUserAfterDelete: false,
-						onExtensionAfterInstall: false,
-						onExtensionAfterUninstall: false,
-						onExtensionAfterUpdate: false,
-						onContentPrepare: false,
-						onContentAfterTitle: false,
-						onContentBeforeDisplay: false,
-						onContentAfterDisplay: false,
-						onContentBeforeSave: false,
-						onContentAfterSave: false,
-						onContentPrepareForm: false,
-						onContentPrepareData: false,
-						onContentBeforeDelete: false,
-						onContentAfterDelete: false,
-						onContentChangeState: false,
-						onContentSearch: false,
-						onContentSearchAreas: false,
-						onCategoryChangeState: false,
-						onValidateContact: false,
-						onSubmitContact: false,
-						onGetIcons: false
-						// MANY MORE TO ADD
-						
-						
+						onUserLogin: this.includedMethods.contains('onUserLogin') ? true : false,
+						onUserLogout: this.includedMethods.contains('onUserLogout') ? true : false,
+						onUserAuthenticate: this.includedMethods.contains('onUserAuthenticate') ? true : false,
+						onUserLoginFailure: this.includedMethods.contains('onUserLoginFailure') ? true : false,
+						onUserAfterLogin: this.includedMethods.contains('onUserAfterLogin') ? true : false,
+						onUserBeforeSave: this.includedMethods.contains('onUserBeforeSave') ? true : false,
+						onUserAfterSave: this.includedMethods.contains('onUserAfterSave') ? true : false,
+						onUserBeforeDelete: this.includedMethods.contains('onUserBeforeDelete') ? true : false,
+						onUserAfterDelete: this.includedMethods.contains('onUserAfterDelete') ? true : false,
+						onExtensionAfterInstall: this.includedMethods.contains('onExtensionAfterInstall') ? true : false,
+						onExtensionAfterUninstall: this.includedMethods.contains('onExtensionAfterUninstall') ? true : false,
+						onExtensionAfterUpdate: this.includedMethods.contains('onExtensionAfterUpdate') ? true : false,
+						onContentPrepare: this.includedMethods.contains('onContentPrepare') ? true : false,
+						onContentAfterTitle: this.includedMethods.contains('onContentAfterTitle') ? true : false,
+						onContentBeforeDisplay: this.includedMethods.contains('onContentBeforeDisplay') ? true : false,
+						onContentAfterDisplay: this.includedMethods.contains('onContentAfterDisplay') ? true : false,
+						onContentBeforeSave: this.includedMethods.contains('onContentBeforeSave') ? true : false,
+						onContentAfterSave: this.includedMethods.contains('onContentAfterSave') ? true : false,
+						onContentPrepareForm: this.includedMethods.contains('onContentPrepareForm') ? true : false,
+						onContentPrepareData: this.includedMethods.contains('onContentPrepareData') ? true : false,
+						onContentBeforeDelete: this.includedMethods.contains('onContentBeforeDelete') ? true : false,
+						onContentAfterDelete: this.includedMethods.contains('onContentAfterDelete') ? true : false,
+						onContentChangeState: this.includedMethods.contains('onContentChangeState') ? true : false,
+						onContentSearch: this.includedMethods.contains('onContentSearch') ? true : false,
+						onContentSearchAreas: this.includedMethods.contains('onContentSearchAreas') ? true : false,
+						onCategoryChangeState: this.includedMethods.contains('onCategoryChangeState') ? true : false,
+						onValidateContact: this.includedMethods.contains('onValidateContact') ? true : false,
+						onSubmitContact: this.includedMethods.contains('onSubmitContact') ? true : false,
+						onGetIcons: this.includedMethods.contains('onGetIcons') ? true : false
 					}
 				};
 				
@@ -104,13 +170,13 @@ module.exports = yeoman.generators.Base.extend({
 			
 			this.fs.copyTpl(
 				this.templatePath('_manifest.xml'),
-				this.destinationPath('joomla/plugins/' + params.type + '/' + params.plugin + '/' + params.plugin + '.xml'),
+				this.destinationPath(params.rootPath + '/plugins/' + params.type + '/' + params.plugin + '/' + params.plugin + '.xml'),
 				params
 			);
 
 			this.fs.copyTpl(
 					this.templatePath('_plugin.php'),
-					this.destinationPath('joomla/plugins/' + params.type + '/' + params.plugin + '/' + params.plugin + '.php'),
+					this.destinationPath(params.rootPath + '/plugins/' + params.type + '/' + params.plugin + '/' + params.plugin + '.php'),
 					params
 				);
 
@@ -119,13 +185,13 @@ module.exports = yeoman.generators.Base.extend({
 
 				this.fs.copyTpl(
 					this.templatePath('_language.ini'),
-					this.destinationPath('joomla/administrator/language/' + params.languagecode + '/' + params.languagecode + '.plg_' + params.type + '_' + params.plugin + '.ini'),
+					this.destinationPath(params.rootPath + '/administrator/language/' + params.languagecode + '/' + params.languagecode + '.plg_' + params.type + '_' + params.plugin + '.ini'),
 					params
 				);
 
 				this.fs.copyTpl(
 					this.templatePath('_language.sys.ini'),
-					this.destinationPath('joomla/administrator/language/' + params.languagecode + '/' + params.languagecode + '.plg_' + params.type + '_' + params.plugin + '.sys.ini'),
+					this.destinationPath(params.rootPath + '/administrator/language/' + params.languagecode + '/' + params.languagecode + '.plg_' + params.type + '_' + params.plugin + '.sys.ini'),
 					params
 				);
 
@@ -133,7 +199,7 @@ module.exports = yeoman.generators.Base.extend({
 
 			this.fs.copyTpl(
 				this.templatePath('index.html'),
-				this.destinationPath('joomla/plugins/plg_' + params.type + '_' + params.plugin + '/index.html')
+				this.destinationPath(params.rootPath + '/plugins/' + params.type + '/' + params.plugin + '/index.html')
 			);
 		}
 	},

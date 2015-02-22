@@ -16,13 +16,8 @@ defined('_JEXEC') or die;
  * @subpackage  Content.joomla
  * @since       1.6
  */
-class Plg<%= type %><%= camelcase %> extends JPlugin
+class Plg<% type.charAt(0).toUpperCase() + type.slice(1) %><%= camelcase %> extends JPlugin
 {
-
-	/**
-	 * USER EVENTS
-	 */
-
 
 	<% if (triggers.onUserLogin) { %>
 	/**
@@ -173,13 +168,6 @@ class Plg<%= type %><%= camelcase %> extends JPlugin
 		return true;
 	}<% } %>
 
-
-	/**
-	 * EXTENSIONS EVENTS
-	 */
-
-
-
 	<% if (triggers.onExtensionAfterInstall) { %>
 	/**
 	 * Handle post extension install update sites
@@ -223,15 +211,6 @@ class Plg<%= type %><%= camelcase %> extends JPlugin
 	public function onExtensionAfterUpdate($installer, $eid)
 	{
 	}<% } %>
-
-
-
-
-	/**
-	 * CONTENT EVENTS
-	 */
-
-
 
 	<% if (triggers.onContentPrepare) { %>
 	/**
@@ -485,14 +464,6 @@ class Plg<%= type %><%= camelcase %> extends JPlugin
 	{
 	}<% } %>
 
-
-
-
-	/**
-	 * CONTACT EVENTS
-	 */
-
-
 	<% if (triggers.onValidateContact) { %>
 	/**
 	 * This event is triggered after a contact form has been submitted. An example use
@@ -525,11 +496,6 @@ class Plg<%= type %><%= camelcase %> extends JPlugin
 	public function onSubmitContact(&$contact, &$data)
 	<% } %>
 
-
-	/**
-	 * QUICK ICONS EVENT
-	 */
-
 	<% if (triggers.onGetIcons) { %>
 	/**
 	 * This method is called when the Quick Icons module is constructing its set of
@@ -549,31 +515,4 @@ class Plg<%= type %><%= camelcase %> extends JPlugin
 	{
 	}
 	<% } %>
-
-	/**
-	 * FINDER EVENTS
-	 */
-
-
-
-	/**
-	 * CAPTCHA EVENTS
-	 */
-
-
-	/**
-	 * EDITORS EVENTS
-	 */
-
-
-	/**
-	 * SYSTEM EVENTS
-	 */
-
-
-
-
-
-
-
 }

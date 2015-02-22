@@ -76,7 +76,7 @@ module.exports = yeoman.generators.Base.extend({
 					camelcase: this.camelcase,
 					languagefile: true,
 					languagecode: this.languagecode || this.config.get('languagecode'),
-					rootPath: this.config.get('repositoryName') || 'joomla-cms',
+					rootPath: this.config.get('joomlaFolder') || 'webroot',
 					updateserver: false,
 					icon: false,
 					media: {
