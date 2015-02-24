@@ -101,6 +101,7 @@ module.exports = yeoman.generators.Base.extend({
 			this.formal = props.camelcase;
 			this.camelcase = props.camelcase.replace(/\s+/g, '');
 			this.pluginType = props.pluginType.toLowerCase();
+			this.formalType = this.pluginType.charAt(0).toUpperCase() + this.pluginType.slice(1)
 			this.includedMethods = props.includedMethods;
 			this.languagefile = props.languagefile;
 			this.languagecode = props.languagecode;
@@ -117,6 +118,7 @@ module.exports = yeoman.generators.Base.extend({
 					formal: this.formal,
 					plugin: this.camelcase.toLowerCase(),
 					type: this.pluginType,
+					formalType: this.formalType,
 					rootPath: this.config.get('joomlaFolder') || 'webroot',
 					author: this.author || this.config.get('author'),
 					created: months[date.getMonth()] + ' ' + date.getFullYear(),
