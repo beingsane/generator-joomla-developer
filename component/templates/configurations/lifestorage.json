@@ -1,0 +1,512 @@
+[
+	{
+		"listview": {
+			"formal" : "Facilities",
+			"camelcase": "Facilities",
+			"lowercase": "facilities",
+			"uppercase": "FACILITIES",
+			"default_view" : true
+		},
+		"detailview":{
+			"formal" : "Facility",
+			"camelcase": "Facility",
+			"lowercase": "facility",
+			"uppercase": "FACILITY",
+			"default_view" : false
+		},
+		"db": {
+			"fields": {
+				"categories": true,
+				"publish": true,
+				"timestamp": true,
+				"urls": true,
+				"metadata": true,
+				"description": true,
+				"params": true,
+				"images": true,
+				"language": true,
+				"tags": true,
+				"versions": true,
+				"ordering": true
+			}
+		},
+		"acl": false,
+		"submenu" : true
+	},
+	{
+		"listview": {
+			"formal": "Storage Types",
+			"camelcase": "StorageTypes",
+			"lowercase": "storagetypes",
+			"uppercase": "STORAGETYPES",
+			"default_view" : false
+		},
+		"detailview":{
+			"formal": "Storage Type",
+			"camelcase": "StorageType",
+			"lowercase": "storagetype",
+			"uppercase": "STORAGETYPE",
+			"default_view" : false
+		},
+		"db": {
+			"fields": {
+				"categories": true,
+				"publish": true,
+				"timestamp": true,
+				"urls": true,
+				"metadata": true,
+				"description": true,
+				"params": true,
+				"images": true,
+				"language": true,
+				"tags": true,
+				"versions": true,
+				"ordering": true
+			}
+		},
+		"acl": false,
+		"submenu" : true
+	},
+	{
+		"listview": {
+			"formal": "Features",
+			"camelcase": "Features",
+			"lowercase": "features",
+			"uppercase": "FEATURES",
+			"default_view" : false
+		},
+		"detailview":{
+			"formal": "Feature",
+			"camelcase": "Feature",
+			"lowercase": "feature",
+			"uppercase": "FEATURE",
+			"default_view" : false
+		},
+		"db": {
+			"fields": {
+				"categories": true,
+				"publish": true,
+				"timestamp": true,
+				"urls": true,
+				"metadata": true,
+				"description": true,
+				"params": true,
+				"images": true,
+				"language": true,
+				"tags": true,
+				"versions": true,
+				"ordering": true
+			}
+		},
+		"acl": false,
+		"submenu" : true
+	},
+	{
+		"listview": {
+			"formal": "Nearby Facilities",
+			"camelcase": "NearbyFacilities",
+			"lowercase": "nearbyfacilities",
+			"uppercase": "NEARBYFACILITIES",
+			"default_view" : false
+		},
+		"detailview":{
+			"formal": "Nearby Facility",
+			"camelcase": "NearbyFacility",
+			"lowercase": "nearbyfacility",
+			"uppercase": "NEARBYFACILITY",
+			"default_view" : false
+		},
+		"db": {
+			"fields": {
+				"categories": true,
+				"publish": true,
+				"timestamp": true,
+				"urls": true,
+				"metadata": true,
+				"description": true,
+				"params": true,
+				"images": true,
+				"language": true,
+				"tags": true,
+				"versions": true,
+				"ordering": true
+			}
+		},
+		"acl": false,
+		"submenu" : true
+	},
+	{
+		"listview": {
+			"formal": "Unit Inventories",
+			"camelcase": "UnitInventories",
+			"lowercase": "unitinventories",
+			"uppercase": "UNITINVENTORIES",
+			"default_view" : false
+		},
+		"detailview":{
+			"formal": "Unit Inventory",
+			"camelcase": "UnitInventory",
+			"lowercase": "unitinventory",
+			"uppercase": "UNITINVENTORY",
+			"default_view" : false
+		},
+		"db": {
+			"fields": {
+				"categories": true,
+				"publish": true,
+				"timestamp": true,
+				"urls": true,
+				"metadata": true,
+				"description": true,
+				"params": true,
+				"images": true,
+				"language": true,
+				"tags": true,
+				"versions": true,
+				"ordering": true
+			}
+		},
+		"acl": false,
+		"submenu" : true
+	},
+	{
+		"listview": {
+			"formal": "Incentives",
+			"camelcase": "Incentives",
+			"lowercase": "incentives",
+			"uppercase": "INCENTIVES",
+			"default_view" : false
+		},
+		"detailview":{
+			"formal": "Incentive",
+			"camelcase": "Incentive",
+			"lowercase": "incentive",
+			"uppercase": "INCENTIVE",
+			"default_view" : false
+		},
+		"db": {
+			"fields": {
+				"categories": true,
+				"publish": true,
+				"timestamp": true,
+				"urls": true,
+				"metadata": true,
+				"description": true,
+				"params": true,
+				"images": true,
+				"language": true,
+				"tags": true,
+				"versions": true,
+				"ordering": true
+			}
+		},
+		"acl": false,
+		"submenu" : true
+	},
+		{
+		"listview": {
+			"formal": "Online Reservations",
+			"camelcase": "OnlineReservations",
+			"lowercase": "onlinereservations",
+			"uppercase": "ONLINERESERVATIONS",
+			"default_view" : false
+		},
+		"detailview":{
+			"formal": "Online Reservation",
+			"camelcase": "OnlineReservation",
+			"lowercase": "onlinereservation",
+			"uppercase": "ONLINERESERVATION",
+			"default_view" : false
+		},
+		"db": {
+			"fields": {
+				"categories": true,
+				"publish": true,
+				"timestamp": true,
+				"urls": true,
+				"metadata": true,
+				"description": true,
+				"params": true,
+				"images": true,
+				"language": true,
+				"tags": true,
+				"versions": true,
+				"ordering": true
+			}
+		},
+		"acl": false,
+		"submenu" : true
+	},
+	{
+		"listview": {
+			"formal": "Online Rentals",
+			"camelcase": "OnlineRentals",
+			"lowercase": "onlinerentals",
+			"uppercase": "ONLINERENTALS",
+			"default_view" : false
+		},
+		"detailview":{
+			"formal": "Online Rental",
+			"camelcase": "OnlineRental",
+			"lowercase": "onlinerental",
+			"uppercase": "ONLINERENTAL",
+			"default_view" : false
+		},
+		"db": {
+			"fields": {
+				"categories": true,
+				"publish": true,
+				"timestamp": true,
+				"urls": true,
+				"metadata": true,
+				"description": true,
+				"params": true,
+				"images": true,
+				"language": true,
+				"tags": true,
+				"versions": true,
+				"ordering": true
+			}
+		},
+		"acl": false,
+		"submenu" : true
+	},
+	{
+		"listview": {
+			"formal": "Dynamic Numbers",
+			"camelcase": "DynamicNumbers",
+			"lowercase": "dynamicnumbers",
+			"uppercase": "DYNAMICNUMBERS",
+			"default_view" : false
+		},
+		"detailview":{
+			"formal": "Dynamic Number",
+			"camelcase": "DynamicNumber",
+			"lowercase": "dynamicnumber",
+			"uppercase": "DYNAMICNUMBER",
+			"default_view" : false
+		},
+		"db": {
+			"fields": {
+				"categories": true,
+				"publish": true,
+				"timestamp": true,
+				"urls": true,
+				"metadata": true,
+				"description": true,
+				"params": true,
+				"images": true,
+				"language": true,
+				"tags": true,
+				"versions": true,
+				"ordering": true
+			}
+		},
+		"acl": false,
+		"submenu" : true
+	},
+	{
+		"listview": {
+			"formal": "Facility Searches",
+			"camelcase": "FacilitySearches",
+			"lowercase": "facilitysearches",
+			"uppercase": "FACILITYSEARCHES",
+			"default_view" : false
+		},
+		"detailview":{
+			"formal": "Facility Search",
+			"camelcase": "FacilitySearch",
+			"lowercase": "facilitysearch",
+			"uppercase": "FACILITYSEARCH",
+			"default_view" : false
+		},
+		"db": {
+			"fields": {
+				"categories": true,
+				"publish": true,
+				"timestamp": true,
+				"urls": true,
+				"metadata": true,
+				"description": true,
+				"params": true,
+				"images": true,
+				"language": true,
+				"tags": true,
+				"versions": true,
+				"ordering": true
+			}
+		},
+		"acl": false,
+		"submenu" : true
+	},
+	{
+		"listview": {
+			"formal": "Facility Reviews",
+			"camelcase": "FacilityReviews",
+			"lowercase": "facilityreviews",
+			"uppercase": "FACILITYREVIEWS",
+			"default_view" : false
+		},
+		"detailview":{
+			"formal": "Facility Review",
+			"camelcase": "FacilityReview",
+			"lowercase": "facilityreview",
+			"uppercase": "FACILITYREVIEW",
+			"default_view" : false
+		},
+		"db": {
+			"fields": {
+				"categories": true,
+				"publish": true,
+				"timestamp": true,
+				"urls": true,
+				"metadata": true,
+				"description": true,
+				"params": true,
+				"images": true,
+				"language": true,
+				"tags": true,
+				"versions": true,
+				"ordering": true
+			}
+		},
+		"acl": false,
+		"submenu" : true
+	},
+	{
+		"listview": {
+			"formal": "Unit Display Groups",
+			"camelcase": "UnitDisplayGroups",
+			"lowercase": "unitdisplaygroups",
+			"uppercase": "UNITDISPLAYGROUPS",
+			"default_view" : false
+		},
+		"detailview":{
+			"formal": "Unit Display Group",
+			"camelcase": "UnitDisplayGroup",
+			"lowercase": "unitdisplaygroup",
+			"uppercase": "UNITDISPLAYGROUP",
+			"default_view" : false
+		},
+		"db": {
+			"fields": {
+				"categories": true,
+				"publish": true,
+				"timestamp": true,
+				"urls": true,
+				"metadata": true,
+				"description": true,
+				"params": true,
+				"images": true,
+				"language": true,
+				"tags": true,
+				"versions": true,
+				"ordering": true
+			}
+		},
+		"acl": false,
+		"submenu" : true
+	},
+	{
+		"listview": {
+			"formal": "Display Groups",
+			"camelcase": "DisplayGroups",
+			"lowercase": "displaygroups",
+			"uppercase": "DISPLAYGROUPS",
+			"default_view" : false
+		},
+		"detailview":{
+			"formal": "Display Group",
+			"camelcase": "DisplayGroup",
+			"lowercase": "displaygroup",
+			"uppercase": "DISPLAYGROUP",
+			"default_view" : false
+		},
+		"db": {
+			"fields": {
+				"categories": true,
+				"publish": true,
+				"timestamp": true,
+				"urls": true,
+				"metadata": true,
+				"description": true,
+				"params": true,
+				"images": true,
+				"language": true,
+				"tags": true,
+				"versions": true,
+				"ordering": true
+			}
+		},
+		"acl": false,
+		"submenu" : true
+	},
+	{
+		"listview": {
+			"formal": "Unit Features and Details",
+			"camelcase": "UnitFeaturesDetails",
+			"lowercase": "unitfeaturesdetails",
+			"uppercase": "UNITFEATURESDETAILS",
+			"default_view" : false
+		},
+		"detailview":{
+			"formal": "Unit Feature and Detail",
+			"camelcase": "UnitFeatureDetail",
+			"lowercase": "unitfeaturedetail",
+			"uppercase": "UNITFEATUREDETAIL",
+			"default_view" : false
+		},
+		"db": {
+			"fields": {
+				"categories": true,
+				"publish": true,
+				"timestamp": true,
+				"urls": true,
+				"metadata": true,
+				"description": true,
+				"params": true,
+				"images": true,
+				"language": true,
+				"tags": true,
+				"versions": true,
+				"ordering": true
+			}
+		},
+		"acl": false,
+		"submenu" : true
+	},
+	{
+		"listview": {
+			"formal": "Communications",
+			"camelcase": "Communications",
+			"lowercase": "communications",
+			"uppercase": "COMMUNICATIONS",
+			"default_view" : false
+		},
+		"detailview":{
+			"formal": "Communication",
+			"camelcase": "Communication",
+			"lowercase": "communication",
+			"uppercase": "COMMUNICATION",
+			"default_view" : false
+		},
+		"db": {
+			"fields": {
+				"categories": true,
+				"publish": true,
+				"timestamp": true,
+				"urls": true,
+				"metadata": true,
+				"description": true,
+				"params": true,
+				"images": true,
+				"language": true,
+				"tags": true,
+				"versions": true,
+				"ordering": true
+			}
+		},
+		"acl": false,
+		"submenu" : true
+	}
+]

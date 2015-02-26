@@ -103,17 +103,14 @@ module.exports = yeoman.generators.Base.extend({
 					},
 					views: {
 						bare: (this.configJson) ? false : true,
-						standard: (this.configJson) ? this.fs.readJSON(this.templatePath('configurations/config.json')) : []
-					},
-					submenu: [],
-					default_view: false
+						standard: (this.configJson) ? this.fs.readJSON(this.templatePath('configurations/lifestorage.json')) : []
+					}
 				};
 
 			var jsonConfig = false;
 
 			var ioFileOperations = function(template, destination, useParams)
 			{
-
 				if (useParams)
 				{
 					this.fs.copyTpl(
@@ -135,8 +132,6 @@ module.exports = yeoman.generators.Base.extend({
 			var components = this.config.get('components');
 			components.push(params);
 			this.config.set('components', components);
-
-			console.log(params.views.standard[0].listview.uppercase);
 
 			async.series([
 				ioFileOperations('_manifest.xml', params.rootPath + '/administrator/components/com_' + params.component + '/' + params.component + '.xml', true),
