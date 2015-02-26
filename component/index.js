@@ -183,8 +183,6 @@ module.exports = yeoman.generators.Base.extend({
 						ioFileOperations('_admin_edit_controller.php', params.rootPath + '/administrator/components/com_' + params.component + '/controllers/' + params.views.standard[i].detailview.lowercase + '.php', true),
 						ioFileOperations('_admin_edit_model.php', params.rootPath + '/administrator/components/com_' + params.component + '/models/' + params.views.standard[i].detailview.lowercase + '.php', true),
 						ioFileOperations('_form.xml', params.rootPath + '/administrator/components/com_' + params.component + '/models/forms/' + params.views.standard[i].detailview.lowercase + '.xml', true),
-						ioFileOperations('_install.mysql.utf8.sql', params.rootPath + '/administrator/components/com_' + params.component + '/sql/install.mysql.utf8.sql', true),
-						ioFileOperations('_uninstall.mysql.utf8.sql', params.rootPath + '/administrator/components/com_' + params.component + '/sql/uninstall.mysql.utf8.sql', true),
 						ioFileOperations('_table.php', params.rootPath + '/administrator/components/com_' + params.component + '/tables/' + params.views.standard[i].detailview.lowercase + '.php', true),
 						ioFileOperations('_admin_edit_view.php', params.rootPath + '/administrator/components/com_' + params.component + '/views/' + params.views.standard[i].detailview.lowercase + '/view.html.php', true),
 						ioFileOperations('_admin_edit.php', params.rootPath + '/administrator/components/com_' + params.component + '/views/' + params.views.standard[i].detailview.lowercase + '/tmpl/edit.php', true),
@@ -231,6 +229,15 @@ module.exports = yeoman.generators.Base.extend({
 				}
 
 			}
+
+			if (params.views.standard.length > 0)
+			{
+				async.series([
+					ioFileOperations('_install.mysql.utf8.sql', params.rootPath + '/administrator/components/com_' + params.component + '/sql/install.mysql.utf8.sql', true),
+					ioFileOperations('_uninstall.mysql.utf8.sql', params.rootPath + '/administrator/components/com_' + params.component + '/sql/uninstall.mysql.utf8.sql', true)
+				]);
+			}
+
 
 			// Need to cycle through views to generate required language definitions
 			// Template admin language files
