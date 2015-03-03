@@ -235,12 +235,36 @@ module.exports = function(grunt) {
 			main: {
 				files: [{
 					cwd: '<%= joomlaFolder %>',
-					src: ["**"],
+					src: ["<%= joomlaFolder %>/**/*"],
 					dest: "/srv/development/www/<%= repositoryName %>.arctg-build.cloudapp.net/public"
 				}],
 				verbose: true,
 				pretend: false,
 				updateAndDelete: true
+			}
+		},
+
+		responsive_images: {
+			build: {
+				options: {
+					sizes: [
+					{
+						width: 320,
+					},
+					{
+						width: 640,
+					},
+					{
+						width: 1024,
+					}
+					]
+				},
+				files: [{
+					expand: true,
+					src: ['**.{jpg,gif,png}'],
+					cwd: 'test/assets/custom_dest/',
+					custom_dest: 'tmp/custom_dest/{%= width %}/'
+				}]
 			}
 		}
 
