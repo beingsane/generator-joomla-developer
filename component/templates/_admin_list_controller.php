@@ -15,7 +15,7 @@ defined('_JEXEC') or die;
  * @package     Joomla.Administrator
  * @subpackage  com_<%= component %>
  */
-class <%= camelcase %>Controller<%= views.standard[index].listview.camelcase %> extends JControllerAdmin
+class <%= camelcase %>Controller<%= views.standard[index].listview.camelcase %> extends JControllerLegacy
 {
 	/**
 	 * Method to get a model object, loading it if required.
