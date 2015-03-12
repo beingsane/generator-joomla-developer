@@ -28,6 +28,9 @@
 		"js-base64": "^2.1.7"
 	},
 	"devDependencies": {
+		"grunt-ftp-deploy": "^0.1.10",
+		"grunt-sftp-deploy": "^0.2.2"
+	}
 	},
 	"engines": {
 		"node": ">=0.8.0"

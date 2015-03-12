@@ -101,6 +101,7 @@ module.exports = yeoman.generators.Base.extend({
 			this.formal = props.camelcase;
 			this.camelcase = props.camelcase.replace(/\s+/g, '');
 			this.pluginType = props.pluginType.toLowerCase();
+			this.uppercaseType = props.pluginType.toUpperCase();
 			this.formalType = this.pluginType.charAt(0).toUpperCase() + this.pluginType.slice(1)
 			this.includedMethods = props.includedMethods;
 			this.languagefile = props.languagefile;
@@ -113,7 +114,7 @@ module.exports = yeoman.generators.Base.extend({
 		plugin: function () {
 			var months = ['January', 'February', 'March', 'April','May','June','July','August','September','October','November','December'];
 			var date = new Date();
-			
+
 			var params = {
 					formal: this.formal,
 					plugin: this.camelcase.toLowerCase(),
@@ -165,11 +166,11 @@ module.exports = yeoman.generators.Base.extend({
 						onGetIcons: this.includedMethods.contains('onGetIcons') ? true : false
 					}
 				};
-				
+
 			var plugins = this.config.get('plugins');
 			plugins.push(params);
 			this.config.set('plugins', plugins);
-			
+
 			this.fs.copyTpl(
 				this.templatePath('_manifest.xml'),
 				this.destinationPath(params.rootPath + '/plugins/' + params.type + '/' + params.plugin + '/' + params.plugin + '.xml'),

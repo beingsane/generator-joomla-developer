@@ -161,6 +161,27 @@ module.exports = yeoman.generators.Base.extend({
 				message : 'Enter database prefix for this Joomla instance:',
 				store : true
 			},
+			{
+				type : 'input',
+				name : 'ftp_url',
+				message : 'Enter ftp url to deploy this Joomla instance:',
+				"default" : "",
+				store : true
+			},
+			{
+				type : 'input',
+				name : 'ftp_user',
+				message : 'Enter ftp username to deploy this Joomla instance:',
+				"default" : "",
+				store : true
+			},
+			{
+				type : 'input',
+				name : 'ftp_password',
+				message : 'Enter ftp password to deploy this Joomla instance:',
+				"default" : "",
+				store : true
+			},
 
 		];
 
@@ -194,6 +215,10 @@ module.exports = yeoman.generators.Base.extend({
 			this.db_host = props.db_host;
 			this.db_database = props.db_database;
 			this.db_prefix = props.db_prefix;
+
+			this.ftp_url = props.ftp_url;
+			this.ftp_user = props.ftp_user;
+			this.ftp_password = props.ftp_password;
 
 			var str = random.string(20);
 
@@ -238,6 +263,7 @@ module.exports = yeoman.generators.Base.extend({
 					ioFileOperations('_package.json', 'package.json', true),
 					ioFileOperations('_bower.json', 'bower.json', true),
 					ioFileOperations('_gruntfile.js', 'gruntfile.js', true),
+					ioFileOperations('_.ftppass', '.ftppass', true),
 					ioFileOperations('_.gitignore', '.gitignore'),
 					ioFileOperations('tasks/**/*', 'tasks/', false),
 					ioFileOperations('index.html', 'database/index.html', false),

@@ -266,6 +266,32 @@ module.exports = function(grunt) {
 					custom_dest: 'tmp/custom_dest/{%= width %}/'
 				}]
 			}
+		},
+
+		"ftp-deploy": {
+			build: {
+				auth: {
+					host: '<%= ftp_url %>',
+					port: 21,
+					authKey: 'key1'
+				},
+				src: './<%= joomlaFolder %>',
+				dest: '/site/wwwroot',
+				exclusions: [
+				'/webroot/**/.DS_Store',
+				'/webroot/**/Thumbs.db',
+				'/webroot/.*',
+				'/webroot/configuration.php',
+				'/webroot/*.xml',
+				'/webroot/*.md',
+				'/webroot/*.json',
+				'/webroot/*.lock',
+				'/webroot/*.dist',
+				],
+				serverSep: '/',
+				concurrency: 4,
+				progress: true
+			}
 		}
 
 	});

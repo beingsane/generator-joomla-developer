@@ -10,7 +10,7 @@
 defined('_JEXEC') or die;
 
 /**
- * <%= CamelCase %> <% type.charAt(0).toUpperCase() + type.slice(1) %> Plugin
+ * <%= camelcase %> <% formalType %> Plugin
  *
  * @package     Joomla.Plugin
  * @subpackage  <%= formalType %>.<%= formal %>
