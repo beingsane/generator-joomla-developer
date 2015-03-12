@@ -103,7 +103,7 @@ module.exports = yeoman.generators.Base.extend({
 					},
 					views: {
 						bare: (this.configJson) ? false : true,
-						standard: (this.configJson) ? this.fs.readJSON(this.templatePath('configurations/lifestorage.json')) : []
+						standard: (this.configJson) ? this.fs.readJSON(this.templatePath('configurations/config.json')) : []
 					}
 				};
 

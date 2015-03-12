@@ -1,17 +1,17 @@
 [
 	{
 		"listview": {
-			"formal" : "Facilities",
-			"camelcase": "Facilities",
-			"lowercase": "facilities",
-			"uppercase": "FACILITIES",
+			"formal" : "Applications",
+			"camelcase": "Applications",
+			"lowercase": "applications",
+			"uppercase": "APPLICATIONS",
 			"default_view" : true
 		},
 		"detailview":{
-			"formal" : "Facility",
-			"camelcase": "Facility",
-			"lowercase": "facility",
-			"uppercase": "FACILITY",
+			"formal" : "Application",
+			"camelcase": "Application",
+			"lowercase": "application",
+			"uppercase": "APPLICATION",
 			"default_view" : false
 		},
 		"db": {
@@ -19,45 +19,15 @@
 				"categories": true,
 				"publish": true,
 				"timestamp": true,
-				"urls": true,
-				"metadata": true,
-				"description": true,
+				"urls": false,
+				"metadata": false,
+				"description": false,
 				"params": true,
-				"images": true,
-				"language": true,
-				"tags": true,
-				"versions": true,
-				"ordering": true
-			}
-		},
-		"acl": false,
-		"submenu" : true
-	},
-	{
-		"listview": {
-			"camelcase": "Units",
-			"lowercase": "units",
-			"uppercase": "UNITS"
-		},
-		"detailview":{
-			"camelcase": "Unit",
-			"lowercase": "unit",
-			"uppercase": "UNIT"
-		},
-		"db": {
-			"fields": {
-				"categories": true,
-				"publish": true,
-				"timestamp": true,
-				"urls": true,
-				"metadata": true,
-				"description": true,
-				"params": true,
-				"images": true,
-				"language": true,
-				"tags": true,
-				"versions": true,
-				"ordering": true
+				"images": false,
+				"language": false,
+				"tags": false,
+				"versions": false,
+				"ordering": false
 			}
 		},
 		"acl": false,
