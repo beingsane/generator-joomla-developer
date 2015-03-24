@@ -28,7 +28,7 @@ class <%= camelcase %>Controller<%= views.standard[index].listview.camelcase %> 
 	 *
 	 * @since   1.6
 	 */
-	public function getModel($name = '<%= views.standard[index].listview.camelcase %>', $prefix = '<%= camelcase %>Model', $config = array('ignore_request' => true))
+	public function getModel($name = '<%= views.standard[index].detailview.camelcase %>', $prefix = '<%= camelcase %>Model', $config = array('ignore_request' => true))
 	{
 		$model = parent::getModel($name, $prefix, $config);
 		return $model;
