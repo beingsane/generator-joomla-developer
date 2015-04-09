@@ -36,7 +36,7 @@ else
 defined('_JEXEC') or die;
 
 /**
- * Weblink Table class
+ * <%= views.standard[index].detailview.camelcase %> Table class
  *
  * @package     Joomla.Administrator
  * @subpackage  com_<%= component %>
