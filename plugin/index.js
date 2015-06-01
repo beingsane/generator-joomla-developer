@@ -133,6 +133,7 @@ module.exports = yeoman.generators.Base.extend({
 					camelcase: this.camelcase,
 					languagefile: this.languagefile,
 					languagecode: this.languagecode || this.config.get('languagecode'),
+					uppercaseType: this.uppercaseType,
 					mediafolder: false,
 					triggers: {
 						onUserLogin: this.includedMethods.contains('onUserLogin') ? true : false,
