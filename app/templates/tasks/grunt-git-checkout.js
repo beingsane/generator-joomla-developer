@@ -12,7 +12,7 @@ module.exports = function(grunt) {
 			var destination = destination + ' ' || ' ';
 
 			exec(
-				'git checkout -b ' + destination + origin,
+				'git checkout -b ' + destination + ' ' + origin,
 				{ cwd: grunt.config('repoPath') },
 				function (error, stdout, stderr) {
 					if (error)

@@ -18,6 +18,28 @@ function errorEvent(e) {
 	this.exit();
 }
 
+function getTagAttribute(tag, attribute)
+{
+	var tags = document.querySelectorAll(tag);
+	return Array.prototype.map.call(tags, function(e) {
+		return e.getAttribute(attribute);
+	});
+}
+function getScripts2()
+{
+	return getTagAttribute('script', 'src');
+}
+
+function getStyles2()
+{
+	return getTagAttribute('link', 'href');
+}
+
+function getImages()
+{
+	return getTagAttribute('img', 'src');
+}
+
 function getScripts() {
 	var tags = document.querySelectorAll('script');
 	return Array.prototype.map.call(tags, function(e) {
@@ -32,6 +54,16 @@ function getStyles() {
 	});
 }
 
+function deminify(str)
+{
+	return str.replace('min.js', 'js');
+}
+
+function decompress(str)
+{
+	return str.replace('.js', '-uncompessed.js');
+}
+
 casper.start(link, function() {
 
 });
@@ -40,7 +72,7 @@ casper.then(function() {
 
 	var tags, temp;
 
-	var temp = this.evaluate(getScripts);
+	temp = this.evaluate(getScripts);
 
 	for (var i = 0; i < temp.length; i++)
 	{
@@ -51,16 +83,37 @@ casper.then(function() {
 				temp[i] = '/' + temp[i];
 			}
 
-			if (temp[i].indexOf('jquery') === -1 && temp[i].indexOf('bootstrap') === -1 && temp[i].indexOf('google-analytics.com') === -1)
+			if (temp[i].indexOf('google-analytics.com') === -1)
 			{
-				if (temp[i].indexOf('media/system/js') > -1)
+				var source = temp[i];
+
+				if (source.indexOf('media/jui/js') > -1)
 				{
-					js.push(temp[i].replace('.js','-uncompressed.js'));
+					if (source.indexOf('html5') === -1 && source.indexOf('jquery-noconflict') === -1)
+					{
+						if (source.indexOf('min.js') > -1)
+						{
+							source = deminify(source);
+						}
+						else
+						{
+							source = decompress(source);
+						}
+					}
 				}
-				else
+				else if (source.indexOf('media/system/js') > -1)
 				{
-					js.push(temp[i].replace('min.',''));
+					if (source.indexOf('min.js') > -1)
+					{
+						source = deminify(source);
+					}
+					else if (source.indexOf('passwordstrength') === -1 || source.indexOf('helpsite') === -1)
+					{
+						source = decompress(source);
+					}
 				}
+
+				js.push(source);
 			}
 		}
 	}
@@ -69,19 +122,26 @@ casper.then(function() {
 
 	for (var i = 0; i < temp.length; i++)
 	{
-		if (temp[i].indexOf('.css') > -1)
+		var href = temp[i];
+		if (href.indexOf('.css') > -1)
 		{
-			if (temp[i].indexOf('/') !== 0 && temp[i].indexOf('http') !== 0)
+			if (href.indexOf('/') !== 0 && href.indexOf('http') !== 0)
 			{
-				temp[i] = '/' + temp[i];
+				href = '/' + href;
 			}
 
-			if (temp[i].indexOf('jquery') === -1 && temp[i].indexOf('bootstrap') === -1)
+			if (href.indexOf('media/jui/css') > -1 && href.indexOf('media/system/css') > -1)
 			{
-				css.push(temp[i].replace('min.',''));
+				if (href !== 'jquery.Jcrop.min.css')
+				{
+					href = deminify(href);
+				}
 			}
+
+			css.push(href);
 		}
 	}
+
 });
 
 casper.run(function() {
