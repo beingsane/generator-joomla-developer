@@ -11,6 +11,8 @@
 		"url": "<%= repositoryUrl %>"
 	},
 	"dependencies": {
+	},
+	"devDependencies": {
 		"async": "^0.9.0",
 		"cross-spawn": "^0.2.3",
 		"grunt": "^0.4.5",
@@ -36,12 +38,9 @@
 		"mysql": "^2.6.2",
 		"ngrok": "^0.1.99",
 		"sftp2sync": "0.0.2",
-		"uncss": "^0.12.1"
-	},
-	"devDependencies": {
 		"grunt-ftp-deploy": "^0.1.10",
-		"grunt-sftp-deploy": "^0.2.2"
-	}
+		"grunt-sftp-deploy": "^0.2.2",
+		"uncss": "^0.12.1"
 	},
 	"engines": {
 		"node": ">=0.8.0"

@@ -555,7 +555,7 @@ module.exports = yeoman.generators.Base.extend({
 			}.bind(this);
 
 			this.replaceCallBack = function(err, data) {
-				this.log(yosay(chalk.yellow('Replacing sql file prefixes...')));
+				this.log(yosay(chalk.yellow('Replacing sql file prefixes with ' + this.db_prefix + '...')));
 
 				if (err)
 				{
