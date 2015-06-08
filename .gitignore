@@ -97,3 +97,4 @@ Desktop.ini
 /libraries/vendor/symfony/yaml/Symfony/Component/Yaml/README.md
 /bower_components/
 /node_modules/
+/nbproject/private/

@@ -550,7 +550,7 @@ module.exports = yeoman.generators.Base.extend({
 
 				this.log(yosay(chalk.yellow('Running database script...')));
 
-				cp.exec('mysql --user=' + params.db_user + ' --password=' + params.db_password + ' ' + params.db_database + ' < ' + params.path + '/database/joomla.sql', this.importCallBack);
+				cp.exec('mysql --user=' + this.db_user + ' --password=' + this.db_password + ' ' + this.db_database + ' < ' + 'joomla.sql',  { cwd: this.destinationPath + "/database" }, this.importCallBack);
 
 			}.bind(this);
 
